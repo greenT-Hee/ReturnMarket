@@ -1,7 +1,13 @@
+import styled from "styled-components"
+
 function MainPage() {
   return (
-    <div>mainPage</div>
+    <Test>mainPage</Test>
   )
 }
+
+const Test = styled.div`
+  color: ${({theme}) => theme.gray1}
+`
 
 export default MainPage
