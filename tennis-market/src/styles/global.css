@@ -10,3 +10,9 @@ body, * {
     font-family: "Pretendard", sans-serif !important;
     font-weight: 400;
 }
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

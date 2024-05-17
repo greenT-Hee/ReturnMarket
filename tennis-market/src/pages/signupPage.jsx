@@ -1,10 +1,15 @@
 import styled from 'styled-components';
 import logo from '../assets/images/logo.png';
+import logo2 from '../assets/images/logo2.png';
 import { useState } from 'react';
 import SellerForm from '../components/signup/SellerForm';
 import ConsumerForm from '../components/signup/ConsumerForm';
-import { Tab_active_btn, Tab_disable_btn } from '../components/buttons';
-
+import { M_btn_disable, Tab_active_btn, Tab_disable_btn } from '../components/buttons';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query'
 const Section = styled.section`
     width: 570px;
     max-width: 100%;
@@ -105,6 +110,11 @@ padding: 20px 0;
 border-radius: 6px;
 `
 
+const AlignBtn = styled.div`
+  display: flex;
+  justify-content: center;
+`
+
 function SignupPage() {
   const [consumer, setConsumer] = useState(true);
   const [seller, setSeller] = useState(false);
@@ -117,7 +127,9 @@ function SignupPage() {
         setConsumer(false);
         setSeller(true);
     }
-  }
+  };
+
+  const queryClient = new QueryClient();
 
   return (
     <Section>
@@ -133,13 +145,20 @@ function SignupPage() {
         {/* 구매회원가입 */}
         <form>
             <FormRound>
-                {consumer ? <ConsumerForm /> : <SellerForm />}
+              <QueryClientProvider client={queryClient}>
+                {consumer ? 
+                  <ConsumerForm /> : 
+                  <SellerForm />
+                }
+              </QueryClientProvider>
             </FormRound>
             <AliginCheckboxInputDiv>
                 <Checkbox type='checkbox' id={'agree_signup'}/>
                 <CheckCont htmlFor={'agree_signup'}>탱글탱글마켓의 <AgreementTitle>이용약관</AgreementTitle> 및 <AgreementTitle>개인정보처리방침</AgreementTitle>에 대한 내용을 확인하였고 동의합니다.</CheckCont>
             </AliginCheckboxInputDiv> 
-            <SignupBtn type='submit'>가입하기</SignupBtn>
+            <AlignBtn>
+              <M_btn_disable>가입하기</M_btn_disable>
+            </AlignBtn>
         </form>
     </Section>
   ) 

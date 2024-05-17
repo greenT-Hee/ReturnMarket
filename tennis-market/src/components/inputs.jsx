@@ -8,10 +8,15 @@ const Label = styled.label`
 `
 const Input = styled.input`
   width: ${(props) => props.$emailnput ? '199px' : '100%'};
-  border: 1px solid ${({theme}) => theme.gray2};
+  outline: 1px solid ${({theme}) => theme.gray2};
+  border: none;
   padding: 12px;
   border-radius: 5px;
   box-sizing: border-box;
+
+  &:focus {
+    outline: 1px solid ${({theme}) => theme.sub};
+  }
 `
 const AliginEmailInputDiv =styled.div`
   display: flex;
@@ -20,11 +25,11 @@ const AliginEmailInputDiv =styled.div`
   flex-wrap: wrap;
 `
 
-export const NormalInput = ({type, id, label}) => {
+export const NormalInput = ({type, id, label, setValue, maxlength}) => {
   return (
     <>
       <Label htmlFor={id}>{label}</Label>
-      <Input type={type} id={id}/>
+      <Input type={type} id={id} name={id} onChange={setValue} maxLength={maxlength}/>
     </>
   )
 }

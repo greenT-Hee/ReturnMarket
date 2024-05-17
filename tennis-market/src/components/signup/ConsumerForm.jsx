@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { EmailInput, NormalInput } from '../inputs';
+import { S_btn } from '../buttons';
 
 
 const FlexInputDiv = styled.div`
@@ -13,16 +14,6 @@ const FlexInputDiv = styled.div`
     align-items: flex-start;
   }
 `
-const Btns = styled.button`
-  display: block;
-  width: 122px;
-  height: 42px;
-  border: 0;
-  color: ${({theme}) => theme.w};
-  background: ${({theme}) => theme.sub};
-  border-radius: 5px;
-  cursor: pointer;
-`
 
 export default function ConsumerForm() {
   return (
@@ -31,7 +22,7 @@ export default function ConsumerForm() {
         <div style={{width:'310px', maxWidth: '100%'}}>
           <NormalInput type={'text'} id={'user_id'} label={'아이디'}/>
         </div>
-        <Btns type='button'>중복확인</Btns>
+        <S_btn type='button'>중복확인</S_btn>
       </FlexInputDiv>
         <NormalInput type={'text'} id={'pwd'} label={'비밀번호'}/>
       <div>

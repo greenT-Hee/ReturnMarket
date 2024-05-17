@@ -66,7 +66,7 @@ const IconMSStyle = styled.button`
 `
 const SmallBtnStyle = styled.button`
   display: block;
-  width: 80px;
+  width: 120px;
   max-width: 100%;
   border: ${(props) => props.$white ? `1px solid #bfbfbf` : `unset`};
   padding: 10px;
@@ -181,14 +181,14 @@ export const MS_btn_icon = ({children, event}) => {
 }
 
 //--- small ---
-export const S_btn = ({children}) => {
+export const S_btn = ({children, btnFn}) => {
   return (
-    <SmallBtnStyle disabled type="button" >{children}</SmallBtnStyle>
+    <SmallBtnStyle type="button" onClick={btnFn}>{children}</SmallBtnStyle>
   )
 }
 export const S_btn_white = ({children}) => {
   return (
-    <SmallBtnStyle $white disabled type="button" >{children}</SmallBtnStyle>
+    <SmallBtnStyle $white type="button" >{children}</SmallBtnStyle>
   )
 }
 
