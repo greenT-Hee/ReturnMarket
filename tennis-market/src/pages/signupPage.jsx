@@ -3,6 +3,7 @@ import logo from '../assets/images/logo.png';
 import { useState } from 'react';
 import SellerForm from '../components/signup/SellerForm';
 import ConsumerForm from '../components/signup/ConsumerForm';
+import { Tab_active_btn, Tab_disable_btn } from '../components/buttons';
 
 const Section = styled.section`
     width: 570px;
@@ -43,17 +44,17 @@ const SortBtn = styled.button`
     cursor: pointer;
     `
 const UnSortBtn = styled.button`
-    display: block;
-    width: 100%;
-    background: 0;
-    border: 0;
-    border: 1px solid ${({theme}) => theme.gray2};
-    padding: 16px;
-    border-radius: 8px;
-    font-size: 18px;
-    color: ${({theme}) => theme.gray1};
-    background:  ${({theme}) => theme.w};
-    cursor: pointer;
+  display: block;
+  width: 100%;
+  background: 0;
+  border: 0;
+  border: 1px solid ${({theme}) => theme.gray2};
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 18px;
+  color: ${({theme}) => theme.gray1};
+  background:  ${({theme}) => theme.w};
+  cursor: pointer;
 `
 
 // from 테두리
@@ -123,10 +124,10 @@ function SignupPage() {
         <LgooStyle src={logo} alt="메인로고" />
         <UL>
             <Li onClick={handleSort}>
-                {consumer ? <SortBtn type='button' >구매회원가입</SortBtn> : <UnSortBtn type='button' >구매회원가입</UnSortBtn>}
+                {consumer ? <Tab_active_btn type='button' >구매회원가입</Tab_active_btn> : <Tab_disable_btn type='button' >구매회원가입</Tab_disable_btn>}
             </Li>
             <Li onClick={handleSort}>
-                {seller ? <SortBtn type='button'>판매회원가입</SortBtn> : <UnSortBtn type='button'>판매회원가입</UnSortBtn>}
+                {seller ? <Tab_active_btn type='button'>판매회원가입</Tab_active_btn> : <Tab_disable_btn type='button'>판매회원가입</Tab_disable_btn>}
             </Li>
         </UL>
         {/* 구매회원가입 */}
