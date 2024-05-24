@@ -45,7 +45,7 @@ const ContentP = styled.p`
   white-space: pre-wrap;
   line-height: 1.4;
   text-align: center;
-  font-size: 16px;
+  font-size: 16px; 
 `
 export function ComfirmModal({content}) {
   const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
@@ -57,7 +57,7 @@ export function ComfirmModal({content}) {
           <ContentBox>
             <ContentP>{content}</ContentP>
             <BtnFlex>
-              <li><S_btn_white btnFn={() => setOpenConfirm(false)}>아니오</S_btn_white></li>
+              <li><S_btn_white btnFn={() => {setOpenConfirm(false); navigate('/')} }>아니오</S_btn_white></li>
               <li><S_btn btnFn={() => navigate('/login')}>예</S_btn></li>
             </BtnFlex>
     

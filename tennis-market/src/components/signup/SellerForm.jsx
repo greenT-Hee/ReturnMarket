@@ -95,7 +95,7 @@ function SellerForm() {
   let { username_err, password_err, password2_err, phone_number_err, name_err, company_registration_number_err,store_name_err } = errorMsg;
   const { username, password, password2, phone_number, name, company_registration_number,store_name } = sellerInputs;
 
-  // ---- 아이디 인증 ---
+  // ---- 1. 아이디 인증 ---
   const [isIdValid, setIsIdValid] = useState(false);
   const checkId = useMutation({
     mutationFn: (username) => {
@@ -113,7 +113,7 @@ function SellerForm() {
     onError : (e) => {console.log(e.message)},
   })
 
-  // --- 사업자번호 확인 ---
+  // --- 2. 사업자번호 확인 ---
   const [isCompanyNumberValid, setIsCompanyNumberValid] = useState(false);
   const checkCompanyNumber = useMutation({
     mutationFn: (company_number) => {
@@ -132,7 +132,7 @@ function SellerForm() {
   })
 
 
-  // --- 회원가입 ---
+  // --- 3. 회원가입 ---
   const [validPwd, setValidPwd] = useState(false);
   const [checkCorrectPwd, setCheckCorrectPwd] = useState(false);
   const [validPhone, setValidPhone] = useState(false);
