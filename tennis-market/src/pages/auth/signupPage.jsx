@@ -8,7 +8,10 @@ import {
   QueryClient,
   QueryClientProvider,
   useQuery,
-} from '@tanstack/react-query'
+} from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { ComfirmModal } from '../../components/modal/comfirmModals';
+
 const Section = styled.section`
     width: 570px;
     max-width: 100%;
@@ -61,9 +64,8 @@ const UnSortBtn = styled.button`
   cursor: pointer;
 `
 
-
-
 function SignupPage() {
+  const navigate = useNavigate();
   const [consumer, setConsumer] = useState(true);
   const [seller, setSeller] = useState(false);
   const handleSort = (e) => {
@@ -77,11 +79,10 @@ function SignupPage() {
     }
   };
 
-  const queryClient = new QueryClient();
 
   return (
     <Section>
-        <LgooStyle src={logo} alt="메인로고" />
+        <LgooStyle src={logo} alt="메인로고" onClick={() => navigate('/')}/>
         <UL>
             <Li onClick={handleSort}>
                 {consumer ? <Tab_active_btn type='button' >구매회원가입</Tab_active_btn> : <Tab_disable_btn type='button' >구매회원가입</Tab_disable_btn>}
@@ -90,13 +91,8 @@ function SignupPage() {
                 {seller ? <Tab_active_btn type='button'>판매회원가입</Tab_active_btn> : <Tab_disable_btn type='button'>판매회원가입</Tab_disable_btn>}
             </Li>
         </UL>
-        {/* 구매회원가입 */}
-        <QueryClientProvider client={queryClient}>
-          {consumer ? 
-            <ConsumerForm /> : 
-            <SellerForm />
-          }
-        </QueryClientProvider>
+        {consumer ? <ConsumerForm /> :<SellerForm /> }
+        <ComfirmModal content={'💚 회원가입이 완료됐습니다 💚\n로그인 페이지로 이동할까요?'}/>
     </Section>
   ) 
 }

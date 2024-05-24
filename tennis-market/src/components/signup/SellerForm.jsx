@@ -7,7 +7,7 @@ import { normalAxios } from '../../axios';
 import { useState } from 'react';
 import iconCheck from '../../assets/images/ico-check.svg'
 import AgreeModal from '../modal/AgreementModal'
-import { AlertOpen } from '../../atom/Atom';
+import { ConfirmOpen, ModalOpen } from '../../atom/Atom';
 import { useRecoilState } from 'recoil';
 // from 테두리
 const FormRound = styled.div`
@@ -70,7 +70,8 @@ const CheckRound = styled.div`
 `
 
 function SellerForm() {
-  const [alertOpen, setAlertOpen] = useRecoilState(AlertOpen);
+  const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
+  const [alertOpen, setAlertOpen] = useRecoilState(ModalOpen);
   const [agreeType, setAgreeType] = useState('');
   const [isAgreeCheck, setIsAgreeCheck] = useState(false)
   const navigate = useNavigate();
@@ -171,7 +172,7 @@ function SellerForm() {
     },
     onSuccess : (data) => {
       if(data.status === 201) {
-        navigate('/')
+        setOpenConfirm(true);
       } else if(data.status === 400) {
         if(data.data.username) {
           setIsIdValid(false);

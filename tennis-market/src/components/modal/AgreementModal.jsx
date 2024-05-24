@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import { MS_btn, M_btn } from "../buttons"
-import { AlertOpen } from "../../atom/Atom"
+import { ModalOpen } from "../../atom/Atom"
 import { useRecoilState } from "recoil"
 
 const ModalBox = styled.article`
@@ -48,7 +48,7 @@ const Content = styled.textarea`
 `
 
 export default function AgreeModal({type}) {
-  const [alertOpen, setAlertOpen] = useRecoilState(AlertOpen);
+  const [alertOpen, setAlertOpen] = useRecoilState(ModalOpen);
   return (
     <>
       {type === 'use' && 

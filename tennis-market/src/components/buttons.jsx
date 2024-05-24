@@ -186,11 +186,11 @@ export const S_btn = ({children, btnFn}) => {
     <SmallBtnStyle type="button" onClick={btnFn}>{children}</SmallBtnStyle>
   )
 }
-export const S_btn_white = ({children}) => {
+export const S_btn_white = ({children, btnFn}) => {
   return (
-    <SmallBtnStyle $white type="button" >{children}</SmallBtnStyle>
+    <SmallBtnStyle $white type="button" onClick={btnFn}>{children}</SmallBtnStyle>
   )
-}
+} 
 
 
 //--- tab ---
