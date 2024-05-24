@@ -6,8 +6,8 @@ import { lightTheme } from './styles/colorPalette';
 import { useState } from 'react';
 import './styles/global.css';
 import MainPage from './pages/mainPage';
-import LoginPage from './pages/loginPage';
-import SignupPage from './pages/signupPage';
+import LoginPage from './pages/auth/loginPage';
+import SignupPage from './pages/auth/signupPage';
 
 const GlobalStyle = createGlobalStyle`
   ${reset};

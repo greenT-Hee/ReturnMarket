@@ -1,10 +1,9 @@
 import styled from 'styled-components';
-import logo from '../assets/images/logo.png';
-import logo2 from '../assets/images/logo2.png';
+import logo from '../../assets/images/logo.png';
 import { useState } from 'react';
-import SellerForm from '../components/signup/SellerForm';
-import ConsumerForm from '../components/signup/ConsumerForm';
-import { M_btn_disable, Tab_active_btn, Tab_disable_btn } from '../components/buttons';
+import SellerForm from '../../components/signup/SellerForm';
+import ConsumerForm from '../../components/signup/ConsumerForm';
+import { M_btn_disable, Tab_active_btn, Tab_disable_btn } from '../../components/buttons';
 import {
   QueryClient,
   QueryClientProvider,
