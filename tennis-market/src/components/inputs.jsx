@@ -44,7 +44,7 @@ export const NormalInput = ({type, id, label, setValue, maxlength, errMsg, errSt
 export const EmailInput = ({id, label}) => {
   return (
     <>
-      <Label htmlFor={id}>{label}</Label>
+      <Label htmlFor={id}>이메일</Label>
       <AliginEmailInputDiv>
         <Input $emailnput='true' type="text" id="email1"/>
         <span>@</span>

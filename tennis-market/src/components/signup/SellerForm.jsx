@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { normalAxios } from '../../axios';
 import { useState } from 'react';
 import iconCheck from '../../assets/images/ico-check.svg'
-import AgreementModal from '../modal/AgreementModal'
+import AgreeModal from '../modal/AgreementModal'
 import { AlertOpen } from '../../atom/Atom';
 import { useRecoilState } from 'recoil';
 // from 테두리
@@ -71,8 +71,8 @@ const CheckRound = styled.div`
 
 function SellerForm() {
   const [alertOpen, setAlertOpen] = useRecoilState(AlertOpen);
-  const [modalTitle, setModalTitle] = useState('');
-  const [modalCont, setModalCont] = useState('');
+  const [agreeType, setAgreeType] = useState('');
+  const [isAgreeCheck, setIsAgreeCheck] = useState(false)
   const navigate = useNavigate();
   const [sellerInputs, setInputs] = useState({
     "username": "", // 아이디
@@ -138,7 +138,7 @@ function SellerForm() {
   function handleInputValue(e) {
     const { value, name } = e.target;
     const pwdReg = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()])[a-zA-Z\d!@#$%^&*()]{8,12}$/gm;
-    const phoneReg = /[010\d]{10,11}/gm;
+    const phoneReg = /^(01[0]{1})?[0-9]{3,4}?[0-9]{4}$/gm;
     const registrationReg = /\d{10}/gm;
     if(e.target.name === 'password') pwdReg.test(e.target.value) ? setValidPwd(true) : setValidPwd(false);
     if(e.target.name === 'password2') e.target.value === password && validPwd ? setCheckCorrectPwd(true) : setCheckCorrectPwd(false);
@@ -154,12 +154,19 @@ function SellerForm() {
       ...sellerInputs,
       [name]: value,
     });
-    console.log(sellerInputs);
   }
 
 
   const signupMutate = useMutation({
     mutationFn: (signdata) => {
+      setErrMsg({
+        "username_err": "", // 아이디
+        "password_err": "",
+        "phone_number_err": "", // 전화번호는 010으로 시작하는 10~11자리 숫자
+        "name_err": "", // 이름
+        "company_registration_number_Err": "",
+        "store_name_err": "",
+      })
       return normalAxios.post('/accounts/signup_seller/', signdata)
     },
     onSuccess : (data) => {
@@ -183,16 +190,13 @@ function SellerForm() {
 
   const openAgreement = (e) => {
     e.preventDefault();
-    console.log(e.target)
     if(e.target.id === 'agree_use') {
       setAlertOpen(true);
-      setModalTitle('코트프렌즈샵 이용약관');
-      setModalCont('제 1조(목적)\n\n본 약관은 (주)코트프렌즈샵이 운영하는 웹사이트 코트츠렌즈샵에 제공하는 온라인 서비스(이사 서비스)를 이용함에 있어서 사이버몰과 이용자의 권리, 의무 및 책인사항을 규정함을 목적으로합니다.]\n\n\n제 2 조 (용어의 정의)\n\n본 약관에서 사용하는 용어는 다음과 같이 정의한다.\n1. “웹사이트”란 회사가 재화 또는 용역을 이용자에게 제공하기 위하여 컴퓨터 등 정보통신설비를 이용하여 재화 또는 용역을 거래 할 수 있도록 설정한 가상의 영업장을 말하며, 아울러 사이버몰을 운영하는 사업자의 의미로도 사용합니다.\n2. “이용자”란 “웹사이트”에 접속하여 서비스를 이용하는 회원 및 비회원을 말합니다.\n3. “회원”이라 함은 “웹사이트”에 개인정보를 제공하여 회원등록을 한 자로서, “웹사이트”의 정보를 지속적으로 제공받으며, “웹사이트”이 제공하는 서비스를 계속적으로 이용할 수 있는 자를 말합니다.\n4. “비회원”이라 함은 회원에 가입하지 않고, “웹사이트”이 제공하는 서비스를 이용하는 자를 말합니다.\n5. “ID”라 함은 이용자가 회원가입당시 등록한 사용자 “개인이용문자”를 말합니다.\n6. “멤버십”이라 함은 회원등록을 한 자로서, 별도의 온/오프라인 상에서 추가 서비스를 제공 받을 수 있는 회원을 말합니다.');
+      setAgreeType('use');
     }
     if(e.target.id === 'agree_info') {
       setAlertOpen(true);
-      setModalTitle('코트프렌즈샵 개인정보동의약관');
-      setModalCont('제 1조(목적)\n\n본 약관은 (주)코트프렌즈샵이 운영하는 웹사이트 코트츠렌즈샵에 제공하는 온라인 서비스(이사 서비스)를 이용함에 있어서 사이버몰과 이용자의 권리, 의무 및 책인사항을 규정함을 목적으로합니다.]\n\n\n제 2 조 (용어의 정의)\n\n본 약관에서 사용하는 용어는 다음과 같이 정의한다.\n1. “웹사이트”란 회사가 재화 또는 용역을 이용자에게 제공하기 위하여 컴퓨터 등 정보통신설비를 이용하여 재화 또는 용역을 거래 할 수 있도록 설정한 가상의 영업장을 말하며, 아울러 사이버몰을 운영하는 사업자의 의미로도 사용합니다.\n2. “이용자”란 “웹사이트”에 접속하여 서비스를 이용하는 회원 및 비회원을 말합니다.\n3. “회원”이라 함은 “웹사이트”에 개인정보를 제공하여 회원등록을 한 자로서, “웹사이트”의 정보를 지속적으로 제공받으며, “웹사이트”이 제공하는 서비스를 계속적으로 이용할 수 있는 자를 말합니다.\n4. “비회원”이라 함은 회원에 가입하지 않고, “웹사이트”이 제공하는 서비스를 이용하는 자를 말합니다.\n5. “ID”라 함은 이용자가 회원가입당시 등록한 사용자 “개인이용문자”를 말합니다.\n6. “멤버십”이라 함은 회원등록을 한 자로서, 별도의 온/오프라인 상에서 추가 서비스를 제공 받을 수 있는 회원을 말합니다.');
+      setAgreeType('info');
     }
   }
 
@@ -229,19 +233,21 @@ function SellerForm() {
           <NormalInput type={'text'} id={'store_name'} label={'스토어 이름'} setValue={handleInputValue} errMsg={store_name_err}/>
         </div>
       </FormRound>
+      {/* 약관 */}
+      {alertOpen && <AgreeModal type={agreeType}/>}
       <AliginCheckboxInputDiv>
-        <Checkbox type='checkbox' id={'agree_signup'} />
+        <Checkbox type='checkbox' id={'agree_signup'} onChange={(e) => setIsAgreeCheck(e.target.checked)}/>
         <CheckCont onClick={openAgreement} htmlFor={'agree_signup'}>탱글탱글마켓의 <AgreementTitle id="agree_use">이용약관</AgreementTitle> 및 <AgreementTitle id="agree_info">개인정보처리방침</AgreementTitle>에 대한 내용을 확인하였고 동의합니다.</CheckCont>
       </AliginCheckboxInputDiv> 
+      {/* 회원가입 버튼 */}
       <AlignBtn>
-        {validPhone && checkCorrectPwd && validPwd && isCompanyNumberValid && isIdValid ?
+        {validPhone && checkCorrectPwd && validPwd && isCompanyNumberValid && isIdValid && isAgreeCheck ?
         <M_btn btnFn={() => {signupMutate.mutate(sellerInputs)}}>가입하기</M_btn>
         :
         <M_btn_disable>가입하기</M_btn_disable>
       }
       </AlignBtn> 
-      {alertOpen && <AgreementModal title={modalTitle} content={modalCont}/>}
-  
+     
     </form>
   )
 }
