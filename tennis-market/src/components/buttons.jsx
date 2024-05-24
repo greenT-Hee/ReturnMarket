@@ -161,9 +161,9 @@ export const M_btn_disable = ({children}) => {
 }
 
 //--- medium small ---
-export const MS_btn = ({children, event}) => {
+export const MS_btn = ({children, btnFn}) => {
   return (
-    <MSBtnStyle type="button" onClick={() => event}>{children}</MSBtnStyle>
+    <MSBtnStyle type="button" onClick={btnFn}>{children}</MSBtnStyle>
   )
 }
 export const MS_btn_white = ({children, event}) => {

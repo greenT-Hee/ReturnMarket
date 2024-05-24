@@ -6,11 +6,14 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { normalAxios } from '../../axios';
 import { useState } from 'react';
 import iconCheck from '../../assets/images/ico-check.svg'
+import AgreementModal from '../modal/AgreementModal'
+import { AlertOpen } from '../../atom/Atom';
+import { useRecoilState } from 'recoil';
 // from 테두리
 const FormRound = styled.div`
   width: 100%;
   box-sizing: border-box;
-  padding: 36px 35px;
+  padding: 24px 35px 35px;
   border: 1px solid ${({theme}) => theme.gray2};
   border-radius: 16px;
 `
@@ -41,19 +44,6 @@ const AgreementTitle = styled.span`
   cursor: pointer;
 `
 
-const SignupBtn = styled.button`
-display: block;
-width: 460px;
-max-width: 100%;
-color: ${({theme}) => theme.w};
-background: ${({theme}) => theme.gray2};
-border: 0;
-font-weight: 700;
-margin: 0 auto;
-padding: 20px 0;
-border-radius: 6px;
-`
-
 const AlignBtn = styled.div`
   display: flex;
   justify-content: center;
@@ -80,6 +70,9 @@ const CheckRound = styled.div`
 `
 
 function SellerForm() {
+  const [alertOpen, setAlertOpen] = useRecoilState(AlertOpen);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalCont, setModalCont] = useState('');
   const navigate = useNavigate();
   const [sellerInputs, setInputs] = useState({
     "username": "", // 아이디
@@ -188,6 +181,21 @@ function SellerForm() {
     onError : (e) => {console.log(e.message)},
   })
 
+  const openAgreement = (e) => {
+    e.preventDefault();
+    console.log(e.target)
+    if(e.target.id === 'agree_use') {
+      setAlertOpen(true);
+      setModalTitle('코트프렌즈샵 이용약관');
+      setModalCont('제 1조(목적)\n\n본 약관은 (주)코트프렌즈샵이 운영하는 웹사이트 코트츠렌즈샵에 제공하는 온라인 서비스(이사 서비스)를 이용함에 있어서 사이버몰과 이용자의 권리, 의무 및 책인사항을 규정함을 목적으로합니다.]\n\n\n제 2 조 (용어의 정의)\n\n본 약관에서 사용하는 용어는 다음과 같이 정의한다.\n1. “웹사이트”란 회사가 재화 또는 용역을 이용자에게 제공하기 위하여 컴퓨터 등 정보통신설비를 이용하여 재화 또는 용역을 거래 할 수 있도록 설정한 가상의 영업장을 말하며, 아울러 사이버몰을 운영하는 사업자의 의미로도 사용합니다.\n2. “이용자”란 “웹사이트”에 접속하여 서비스를 이용하는 회원 및 비회원을 말합니다.\n3. “회원”이라 함은 “웹사이트”에 개인정보를 제공하여 회원등록을 한 자로서, “웹사이트”의 정보를 지속적으로 제공받으며, “웹사이트”이 제공하는 서비스를 계속적으로 이용할 수 있는 자를 말합니다.\n4. “비회원”이라 함은 회원에 가입하지 않고, “웹사이트”이 제공하는 서비스를 이용하는 자를 말합니다.\n5. “ID”라 함은 이용자가 회원가입당시 등록한 사용자 “개인이용문자”를 말합니다.\n6. “멤버십”이라 함은 회원등록을 한 자로서, 별도의 온/오프라인 상에서 추가 서비스를 제공 받을 수 있는 회원을 말합니다.');
+    }
+    if(e.target.id === 'agree_info') {
+      setAlertOpen(true);
+      setModalTitle('코트프렌즈샵 개인정보동의약관');
+      setModalCont('제 1조(목적)\n\n본 약관은 (주)코트프렌즈샵이 운영하는 웹사이트 코트츠렌즈샵에 제공하는 온라인 서비스(이사 서비스)를 이용함에 있어서 사이버몰과 이용자의 권리, 의무 및 책인사항을 규정함을 목적으로합니다.]\n\n\n제 2 조 (용어의 정의)\n\n본 약관에서 사용하는 용어는 다음과 같이 정의한다.\n1. “웹사이트”란 회사가 재화 또는 용역을 이용자에게 제공하기 위하여 컴퓨터 등 정보통신설비를 이용하여 재화 또는 용역을 거래 할 수 있도록 설정한 가상의 영업장을 말하며, 아울러 사이버몰을 운영하는 사업자의 의미로도 사용합니다.\n2. “이용자”란 “웹사이트”에 접속하여 서비스를 이용하는 회원 및 비회원을 말합니다.\n3. “회원”이라 함은 “웹사이트”에 개인정보를 제공하여 회원등록을 한 자로서, “웹사이트”의 정보를 지속적으로 제공받으며, “웹사이트”이 제공하는 서비스를 계속적으로 이용할 수 있는 자를 말합니다.\n4. “비회원”이라 함은 회원에 가입하지 않고, “웹사이트”이 제공하는 서비스를 이용하는 자를 말합니다.\n5. “ID”라 함은 이용자가 회원가입당시 등록한 사용자 “개인이용문자”를 말합니다.\n6. “멤버십”이라 함은 회원등록을 한 자로서, 별도의 온/오프라인 상에서 추가 서비스를 제공 받을 수 있는 회원을 말합니다.');
+    }
+  }
+
   return (
     <form>
       <FormRound>
@@ -222,8 +230,8 @@ function SellerForm() {
         </div>
       </FormRound>
       <AliginCheckboxInputDiv>
-        <Checkbox type='checkbox' id={'agree_signup'}/>
-        <CheckCont htmlFor={'agree_signup'}>탱글탱글마켓의 <AgreementTitle>이용약관</AgreementTitle> 및 <AgreementTitle>개인정보처리방침</AgreementTitle>에 대한 내용을 확인하였고 동의합니다.</CheckCont>
+        <Checkbox type='checkbox' id={'agree_signup'} />
+        <CheckCont onClick={openAgreement} htmlFor={'agree_signup'}>탱글탱글마켓의 <AgreementTitle id="agree_use">이용약관</AgreementTitle> 및 <AgreementTitle id="agree_info">개인정보처리방침</AgreementTitle>에 대한 내용을 확인하였고 동의합니다.</CheckCont>
       </AliginCheckboxInputDiv> 
       <AlignBtn>
         {validPhone && checkCorrectPwd && validPwd && isCompanyNumberValid && isIdValid ?
@@ -231,7 +239,9 @@ function SellerForm() {
         :
         <M_btn_disable>가입하기</M_btn_disable>
       }
-      </AlignBtn>
+      </AlignBtn> 
+      {alertOpen && <AgreementModal title={modalTitle} content={modalCont}/>}
+  
     </form>
   )
 }

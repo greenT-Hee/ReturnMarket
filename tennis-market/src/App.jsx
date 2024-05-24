@@ -9,8 +9,8 @@ import MainPage from './pages/mainPage';
 import LoginPage from './pages/loginPage';
 import SignupPage from './pages/signupPage';
 
-const GlobalStyle = createGlobalStyle`;
-  ${reset},
+const GlobalStyle = createGlobalStyle`
+  ${reset};
   /* other styles */
 `
 
