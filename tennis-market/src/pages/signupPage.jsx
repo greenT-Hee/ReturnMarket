@@ -62,58 +62,7 @@ const UnSortBtn = styled.button`
   cursor: pointer;
 `
 
-// from 테두리
-const FormRound = styled.div`
-  width: 100%;
-  box-sizing: border-box;
-  padding: 36px 35px;
-  border: 1px solid ${({theme}) => theme.gray2};
-  border-radius: 16px;
-`
 
-// checkbox style
-const AliginCheckboxInputDiv =styled.div`
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  max-width: 460px;
-  margin: 34px auto;
-`
-
-const Checkbox = styled.input`
-  width: 20px;
-  height: 20px;
-  display: block;
-`
-
-const CheckCont = styled.span`
-  color: ${({theme}) => theme.gray3};
-  line-height: 1.2;
-`
-const AgreementTitle = styled.span`
-  color: ${({theme}) => theme.gray3};
-  font-weight: 700;
-  text-decoration: underline;
-  cursor: pointer;
-`
-
-const SignupBtn = styled.button`
-display: block;
-width: 460px;
-max-width: 100%;
-color: ${({theme}) => theme.w};
-background: ${({theme}) => theme.gray2};
-border: 0;
-font-weight: 700;
-margin: 0 auto;
-padding: 20px 0;
-border-radius: 6px;
-`
-
-const AlignBtn = styled.div`
-  display: flex;
-  justify-content: center;
-`
 
 function SignupPage() {
   const [consumer, setConsumer] = useState(true);
@@ -143,23 +92,12 @@ function SignupPage() {
             </Li>
         </UL>
         {/* 구매회원가입 */}
-        <form>
-            <FormRound>
-              <QueryClientProvider client={queryClient}>
-                {consumer ? 
-                  <ConsumerForm /> : 
-                  <SellerForm />
-                }
-              </QueryClientProvider>
-            </FormRound>
-            <AliginCheckboxInputDiv>
-                <Checkbox type='checkbox' id={'agree_signup'}/>
-                <CheckCont htmlFor={'agree_signup'}>탱글탱글마켓의 <AgreementTitle>이용약관</AgreementTitle> 및 <AgreementTitle>개인정보처리방침</AgreementTitle>에 대한 내용을 확인하였고 동의합니다.</CheckCont>
-            </AliginCheckboxInputDiv> 
-            <AlignBtn>
-              <M_btn_disable>가입하기</M_btn_disable>
-            </AlignBtn>
-        </form>
+        <QueryClientProvider client={queryClient}>
+          {consumer ? 
+            <ConsumerForm /> : 
+            <SellerForm />
+          }
+        </QueryClientProvider>
     </Section>
   ) 
 }

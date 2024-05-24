@@ -25,11 +25,18 @@ const AliginEmailInputDiv =styled.div`
   flex-wrap: wrap;
 `
 
-export const NormalInput = ({type, id, label, setValue, maxlength}) => {
+const ErrMsg = styled.p`
+  font-size: 12px;
+  color: ${(props) => props.$error ? props.theme.red : props.theme.sub};
+  padding: 0 0 4px;
+`
+
+export const NormalInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false, placeholder}) => {
   return (
     <>
       <Label htmlFor={id}>{label}</Label>
-      <Input type={type} id={id} name={id} onChange={setValue} maxLength={maxlength}/>
+      {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>}
+      <Input type={type} id={id} name={id} onChange={setValue} maxLength={maxlength} placeholder={placeholder}/>
     </>
   )
 }

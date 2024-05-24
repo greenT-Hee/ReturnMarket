@@ -138,9 +138,9 @@ export const L_btn_disable = ({children}) => {
 }
 
 //--- medium ---
-export const M_btn = ({children, event}) => {
+export const M_btn = ({children, btnFn}) => {
   return (
-    <MediumBtnStyle type="button" onClick={() => event}>{children}</MediumBtnStyle>
+    <MediumBtnStyle type="button" onClick={btnFn}>{children}</MediumBtnStyle>
   )
 }
 export const M_btn_dark = ({children, event}) => {
