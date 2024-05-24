@@ -9,7 +9,7 @@ function SignupPage() {
   const userRole = useRecoilValue(user_role)
   return (
     <AuthLayout>
-        {userRole === 'consumer' ? <ConsumerForm /> :<SellerForm /> }
+        {userRole === 'BUYER' ? <ConsumerForm /> :<SellerForm /> }
         <ComfirmModal content={'💚 회원가입이 완료됐습니다 💚\n로그인 페이지로 이동할까요?'}/>
     </AuthLayout>
    

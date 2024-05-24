@@ -5,28 +5,28 @@ import { Tab_active_btn, Tab_disable_btn } from "../buttons";
 import { useRecoilState } from "recoil";
 import { user_role } from "../../atom/Atom";
 const Section = styled.section`
-    width: 570px;
-    max-width: 100%;
-    margin: 70px auto;
-    padding: 20px;
-    box-sizing: border-box;
+  width: 570px;
+  max-width: 100%;
+  margin: 50px auto;
+  padding: 20px;
+  box-sizing: border-box;
 `
 const LgooStyle = styled.img`
-    display: block;
-    width: 250px;
-    max-width: 100%;
-    margin: 0 auto 40px;
+  display: block;
+  width: 220px;
+  max-width: 100%;
+  margin: 0 auto 40px;
 `
 const UL = styled.ul`
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-    margin-bottom: 30px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 30px;
 `
 const Li = styled.li`
-    width: calc(100% / 2);
+  width: calc(100% / 2);
 `
 export default function AuthLayout({children}) {
   const navigate = useNavigate();
@@ -37,9 +37,9 @@ export default function AuthLayout({children}) {
   const handleSort = (e) => {
     console.log(e.target.innerText)
     if(e.target.innerText === '구매회원가입') {
-      setUserRole("consumer");
+      setUserRole("BUYER");
     } else {
-      setUserRole("seller");
+      setUserRole("SELLER");
     }
   };
   return (
@@ -48,10 +48,10 @@ export default function AuthLayout({children}) {
         <h1><LgooStyle src={logo} alt="메인로고" onClick={() => navigate('/')}/></h1>
         <UL>
             <Li onClick={handleSort}>
-                {userRole === 'consumer' ? <Tab_active_btn type='button' >구매회원가입</Tab_active_btn> : <Tab_disable_btn type='button' >구매회원가입</Tab_disable_btn>}
+                {userRole === 'BUYER' ? <Tab_active_btn type='button' >구매회원가입</Tab_active_btn> : <Tab_disable_btn type='button' >구매회원가입</Tab_disable_btn>}
             </Li>
             <Li onClick={handleSort}>
-                {userRole === 'seller'  ? <Tab_active_btn type='button'>판매회원가입</Tab_active_btn> : <Tab_disable_btn type='button'>판매회원가입</Tab_disable_btn>}
+                {userRole === 'SELLER'  ? <Tab_active_btn type='button'>판매회원가입</Tab_active_btn> : <Tab_disable_btn type='button'>판매회원가입</Tab_disable_btn>}
             </Li>
         </UL>
         {children}

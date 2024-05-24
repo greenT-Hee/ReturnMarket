@@ -19,7 +19,7 @@ const ConfirmOpen = atom({
 // -- auth --
 const user_role = atom({
   key: "user_role", // unique ID (with respect to other atoms/selectors)
-  default: "", // default value (aka initial value)
+  default: "BUYER", // default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
 export  {ModalOpen, ConfirmOpen, user_role}

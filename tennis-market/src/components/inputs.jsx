@@ -13,11 +13,33 @@ const Input = styled.input`
   padding: 12px;
   border-radius: 5px;
   box-sizing: border-box;
-
+  font-size: 16px;
+  
   &:focus {
     outline: 1px solid ${({theme}) => theme.sub};
   }
+  &::placeholder {
+    font-size: 14px;
+  }
 `
+
+const LineInputStyle = styled.input`
+  width: ${(props) => props.$emailnput ? '199px' : '100%'};
+  outline: none;
+  border: none;
+  border-bottom: 1px solid ${({theme}) => theme.gray2};
+  padding: 12px;
+  box-sizing: border-box;
+  font-size: 16px;
+
+  &:focus {
+    border-bottom: 1px solid ${({theme}) => theme.sub};
+  }
+  &::placeholder {
+    font-size: 14px;
+  }
+`
+
 const AliginEmailInputDiv =styled.div`
   display: flex;
   gap: 10px;
@@ -37,6 +59,16 @@ export const NormalInput = ({type, id, label, setValue, maxlength, errMsg, errSt
       <Label htmlFor={id}>{label}</Label>
       {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>}
       <Input type={type} id={id} name={id} onChange={setValue} maxLength={maxlength} placeholder={placeholder}/>
+    </>
+  )
+}
+
+export const LineInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false, placeholder}) => {
+  return (
+    <>
+      <Label htmlFor={id}>{label}</Label>
+      {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>}
+      <LineInputStyle type={type} id={id} name={id} onChange={setValue} maxLength={maxlength} placeholder={placeholder}/>
     </>
   )
 }
