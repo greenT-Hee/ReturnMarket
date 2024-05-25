@@ -1,9 +1,7 @@
-import styled from "styled-components"
-import { S_btn, S_btn_white } from "../buttons"
-import { useRecoilState } from "recoil"
-import { ConfirmOpen } from "../../atom/Atom"
-import { useNavigate } from "react-router-dom"
-
+import styled from "styled-components";
+import { S_btn, S_btn_white } from "../buttons";
+import { useRecoilState } from "recoil";
+import { AlertOpen, ConfirmOpen } from "../../atom/Atom";
 
 const ConfirmBox = styled.article`
   position: fixed;
@@ -49,14 +47,17 @@ const ContentP = styled.p`
 `
 
 export function AlertModal({content}) {
-  const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
-  const navigate = useNavigate();
+  const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   return (
     <>
-      {openConfrim && 
+      {openAlert && 
         <ConfirmBox>
           <ContentBox>
             <ContentP>{content}</ContentP>
+            <BtnFlex>
+              <li><S_btn btnFn={() => setOpenAlert(false)}>확인</S_btn></li>
+            </BtnFlex>
+
           </ContentBox>
         </ConfirmBox>
       }

@@ -14,6 +14,11 @@ const ConfirmOpen = atom({
   default: false, // default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
+const AlertOpen = atom({
+  key: "AlertOpen", // unique ID (with respect to other atoms/selectors)
+  default: false, // default value (aka initial value)
+  effects_UNSTABLE: [persistAtom],
+});
 
 
 // -- auth --
@@ -22,4 +27,4 @@ const user_role = atom({
   default: "BUYER", // default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
-export  {ModalOpen, ConfirmOpen, user_role}
+export  {ModalOpen, ConfirmOpen,AlertOpen, user_role}

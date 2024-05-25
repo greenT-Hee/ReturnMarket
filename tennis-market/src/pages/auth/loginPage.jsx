@@ -1,12 +1,14 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import AuthLayout from "../../components/layout/AuthLayout";
-import { useRecoilValue } from "recoil";
-import { user_role } from "../../atom/Atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { AlertOpen, user_role } from "../../atom/Atom";
 import { useMutation } from '@tanstack/react-query';
 import { LineInput } from "../../components/inputs";
 import { M_btn } from "../../components/buttons";
 import { useState } from "react";
+import { AlertModal } from "../../components/modal/AlertModal";
+import { normalAxios } from "../../axios";
 
 
 // from 테두리
@@ -37,41 +39,56 @@ const StyledLink = styled(Link)`
 
 
 function LoginPage() {
+  const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   const login_type = useRecoilValue(user_role);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [alertCont, setAlertCont] = useState('');
   const loginData = {
     "username": username,
 		"password": password,
 		"login_type": login_type
   };
-
+//   {
+//     "id": 264,
+//     "user_type": "SELLER",
+//     "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyNjQsImVtYWlsIjoiIiwidXNlcm5hbWUiOiJ3aWxzb24iLCJleHAiOjE3MTcyMzUwNjB9.xU70iXhL1TOIzAyzqHMyh7GbmM_gyPYzCwJEbWKyNTk"
+// }
   const loginMutate = useMutation({
     mutationFn: (logdata) => {
-      return normalAxios.post('/accounts/signup/', logdata);
+      return normalAxios.post('/accounts/login/', logdata);
     },
     onSuccess : (data) => {
       if(data.status === 201) {
        
-      } else if(data.status === 400) {
-       
+      } else if(data.status === 401) {
+        setOpenAlert(true);
+        setAlertCont(data.data.FAIL_Message);
       }
     },
     onError : (e) => {console.log(e.message)},
   })
 
   const handleLogin = () => {
-    if(!username || !password) {
-      
+    if(!username) {
+      setOpenAlert(true);
+      setAlertCont('아이디를 입력해주세요.');
+      return;
+    } else if (!password) {
+      setOpenAlert(true);
+      setAlertCont('비밀번호를 입력해주세요.');
+      return;
+    } else {
+      loginMutate.mutate(loginData);
     }
   }
 
   return (
     <AuthLayout>
+      <AlertModal content={alertCont} />
       <FormRound>
         <LineInput type={'text'} setValue={(e) => setUsername(e.target.value)} placeholder={'아이디를 입력하세요'}/>
         <LineInput type={'password'} setValue={(e) => setPassword(e.target.value)} placeholder={'비밀번호를 입력하세요'}/>
-
         <WrapBtn>
           <M_btn btnFn={handleLogin}>로그인하기</M_btn>
         </WrapBtn>
