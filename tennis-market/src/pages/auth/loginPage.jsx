@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import logo from '../../assets/images/logo.png';
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthLayout from "../../components/layout/AuthLayout";
 import { useRecoilValue } from "recoil";
 import { user_role } from "../../atom/Atom";
 import { useMutation } from '@tanstack/react-query';
 import { LineInput } from "../../components/inputs";
-import { L_btn, M_btn } from "../../components/buttons";
+import { M_btn } from "../../components/buttons";
+import { useState } from "react";
 
 
 // from 테두리
@@ -37,11 +37,12 @@ const StyledLink = styled(Link)`
 
 
 function LoginPage() {
-  const navigate = useNavigate();
   const login_type = useRecoilValue(user_role);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const loginData = {
-    "username": "",
-		"password": "",
+    "username": username,
+		"password": password,
 		"login_type": login_type
   };
 
@@ -58,20 +59,28 @@ function LoginPage() {
     },
     onError : (e) => {console.log(e.message)},
   })
+
+  const handleLogin = () => {
+    if(!username || !password) {
+      
+    }
+  }
+
   return (
     <AuthLayout>
       <FormRound>
-        <LineInput type={'text'} placeholder={'아이디를 입력하세요'}/>
-        <LineInput type={'password'} placeholder={'비밀번호를 입력하세요'}/>
+        <LineInput type={'text'} setValue={(e) => setUsername(e.target.value)} placeholder={'아이디를 입력하세요'}/>
+        <LineInput type={'password'} setValue={(e) => setPassword(e.target.value)} placeholder={'비밀번호를 입력하세요'}/>
+
         <WrapBtn>
-          <M_btn>로그인하기</M_btn>
+          <M_btn btnFn={handleLogin}>로그인하기</M_btn>
         </WrapBtn>
       </FormRound>
 
       <FlexLink>
         <li><StyledLink to='/signup'>회원가입</StyledLink></li>
         <li><StyledLink>|</StyledLink></li>
-        <li><StyledLink to='/'>비밀번호 찾기</StyledLink></li>
+        <li><StyledLink to='/login'>비밀번호 찾기</StyledLink></li>
       </FlexLink>
     </AuthLayout>
   )

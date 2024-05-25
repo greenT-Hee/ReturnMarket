@@ -199,7 +199,7 @@ function ConsumerForm() {
       {alertOpen && <AgreeModal type={agreeType}/>}
       <AliginCheckboxInputDiv>
         <Checkbox type='checkbox' id={'agree_signup'} onChange={(e) => setIsAgreeCheck(e.target.checked)}/>
-        <CheckCont onClick={openAgreement} htmlFor={'agree_signup'}>탱글탱글마켓의 <AgreementTitle id="agree_use">이용약관</AgreementTitle> 및 <AgreementTitle id="agree_info">개인정보처리방침</AgreementTitle>에 대한 내용을 확인하였고 동의합니다.</CheckCont>
+        <CheckCont onClick={openAgreement} htmlFor={'agree_signup'}>리턴마켓의 <AgreementTitle id="agree_use">이용약관</AgreementTitle> 및 <AgreementTitle id="agree_info">개인정보처리방침</AgreementTitle>에 대한 내용을 확인하였고 동의합니다.</CheckCont>
       </AliginCheckboxInputDiv> 
       {/* 회원가입 버튼 */}
       <AlignBtn>
