@@ -56,13 +56,17 @@ const IconMSStyle = styled.button`
   max-width: 100%;
   background: none;
   border: unset;
-  padding: 19px;
+  padding: 12px;
   border-radius: 5px;
   font-size: 18px;
   color: ${({theme}) => theme.w};
   background: ${({theme}) => theme.sub};
   box-sizing: border-box;
   cursor: pointer;
+`
+const IconImg = styled.img`
+  width: 26px;
+  height: 26px;
 `
 const SmallBtnStyle = styled.button`
   display: block;
@@ -171,10 +175,10 @@ export const MS_btn_white = ({children, event}) => {
     <MSBtnStyle $white type="button" onClick={() => event}>{children}</MSBtnStyle>
   )
 }
-export const MS_btn_icon = ({children, event}) => {
+export const MS_btn_icon = ({children, btnFn, icon}) => {
   return (
-      <IconMSStyle type="button" onClick={() => event}>
-        <img src={iconPlus} alt="추가 아이콘" />
+      <IconMSStyle type="button" onClick={btnFn}>
+        <IconImg src={icon} alt="추가 아이콘" />
         {children}
       </IconMSStyle>
   )

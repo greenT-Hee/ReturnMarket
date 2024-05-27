@@ -58,7 +58,7 @@ export function ComfirmModal({content}) {
             <ContentP>{content}</ContentP>
             <BtnFlex>
               <li><S_btn_white btnFn={() => {setOpenConfirm(false); navigate('/')} }>아니오</S_btn_white></li>
-              <li><S_btn btnFn={() => navigate('/login')}>예</S_btn></li>
+              <li><S_btn btnFn={() => {setOpenConfirm(false);navigate('/login')}}>예</S_btn></li>
             </BtnFlex>
     
           </ContentBox>

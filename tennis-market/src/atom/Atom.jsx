@@ -25,7 +25,7 @@ const AlertOpen = atom({
 const user_role = atom({
   key: "user_role", // unique ID (with respect to other atoms/selectors)
   default: "BUYER", // default value (aka initial value)
-  effects_UNSTABLE: [persistAtom],
+  // effects_UNSTABLE: [persistAtom],
 });
 const user_info = atom({
   key: "user_info", // unique ID (with respect to other atoms/selectors)
