@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../../components/layout/AuthLayout";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { AlertOpen, user_role } from "../../atom/Atom";
+import { AlertOpen, user_info, user_role } from "../../atom/Atom";
 import { useMutation } from '@tanstack/react-query';
 import { LineInput } from "../../components/inputs";
 import { M_btn } from "../../components/buttons";
@@ -39,6 +39,8 @@ const StyledLink = styled(Link)`
 
 
 function LoginPage() {
+  const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useRecoilState(user_info);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   const login_type = useRecoilValue(user_role);
   const [username, setUsername] = useState('');
@@ -59,8 +61,10 @@ function LoginPage() {
       return normalAxios.post('/accounts/login/', logdata);
     },
     onSuccess : (data) => {
-      if(data.status === 201) {
-       
+      if(data.status === 200) {
+        setUserInfo(data.data);
+        normalAxios.defaults.headers.common['Authorization'] = data.data.token;
+        navigate('/');
       } else if(data.status === 401) {
         setOpenAlert(true);
         setAlertCont(data.data.FAIL_Message);
