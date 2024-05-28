@@ -13,6 +13,12 @@ const HeaderStyle = styled.header`
   width: 100%;
   box-sizing: border-box;
   box-shadow: 0 5px 6px rgba(0,0,0,0.06);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background:${({theme}) => theme.w};
 `
 const HeaderLayout = styled.div`
   width: 1280px;
@@ -26,6 +32,7 @@ const HeaderLayout = styled.div`
 
 const Logo = styled.img`
   width: 100px;
+  cursor: pointer;
 `
 
 const LeftFlex = styled.div`
@@ -74,7 +81,7 @@ export function TopbarMain() {
     <HeaderStyle>
       <HeaderLayout>
         <LeftFlex>
-          <Logo src={logo} alt="리턴마켓로고" />
+          <Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/>
           <SearchInput type="search" />
         </LeftFlex>
 
