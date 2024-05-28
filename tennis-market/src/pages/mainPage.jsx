@@ -1,61 +1,124 @@
 import styled from "styled-components"
 import MainLayout from "../components/layout/MainLayout"
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Scrollbar, A11y, Autoplay } from 'swiper/modules';
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import 'swiper/css/autoplay';
-import slide1 from '../assets/images/tennis1.jpg';
-import slide2 from '../assets/images/tennis2.jpg';
-import slide3 from '../assets/images/tennis3.jpg';
-import slide4 from '../assets/images/tennis4.jpg';
+import MainSwiper from "../components/swiper"
+import { normalAxios } from "../axios"
+import { useMutation, useQuery } from "@tanstack/react-query"
 
-const WrapSwiper = styled.div`
-  width: 1920px;
-  max-width: 100%;
-  margin: 0 auto;
+
+const ProductUl = styled.ul`
+  max-width: 1280px;
   box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(3, 380px);
+  gap: 70px;
+  margin: 60px auto 120px;
+  justify-content: center;
+
+  @media only screen and (max-width: 1280px) {
+    grid-template-columns: repeat(2, 380px);
+  }
+  @media only screen and (max-width: 800px) {
+    grid-template-columns: repeat(1, 380px);
+  }
+  @media only screen and (max-width: 430px) {
+    grid-template-columns: repeat(1, 280px);
+  }
 `
-const SwiperImg = styled.img`
+const ProdcutLi = styled.li`
+  display: block;
   width: 100%;
-  height: 800px;
-  object-fit: cover;
+  cursor: pointer;
+`
+const ProdcutImg = styled.img`
+  width: 380px;
+  height: 380px;
+  border-radius: 32px;
+  border: 1px solid ${({theme}) => theme.gray1} ;
+  box-sizing: border-box;
+  margin-bottom: 12px;
+  @media only screen and (max-width: 430px) {
+    width: 280px;
+    height: 280px;
+  }
+`
+
+const ShopP = styled.p`
+  color: ${({theme}) => theme.gray3};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  @media only screen and (max-width: 430px) {
+    font-size: 14px;
+  }
+`
+const ProductP = styled.p`
+  color: ${({theme}) => theme.gray4};
+  font-size: 18px;
+  padding: 6px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  @media only screen and (max-width: 430px) {
+    font-size: 16px;
+  }
+  `
+const PriceP = styled.p`
+  color: ${({theme}) => theme.b};
+  font-size: 14px;
+  font-weight: 600;
+  `
+const PriceSpan = styled.span`
+  color: ${({theme}) => theme.b};
+  font-size: 24px;
+  @media only screen and (max-width: 430px) {
+    font-size: 20px;
+  }
+`
+const Loading = styled.p`
+  padding: 80px 0 160px;
+  text-align: center;
+  font-size: 24px;
+
 `
 
 function MainPage() {
-  const slideArr = [
-    {src: slide1, title: '슬라이드 이미지 1'},
-    {src: slide2, title: '슬라이드 이미지 2'},
-    {src: slide3, title: '슬라이드 이미지 3'},
-    {src: slide4, title: '슬라이드 이미지 4'},
-  ]
+  const getProducts = async () => {
+   return normalAxios.get('/products/');
+  };
+
+  const { isPending, isError, data, error, isSuccess} = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts,
+  })
+
   return (
     <MainLayout>
-      {/* slider */}
-      <WrapSwiper>
-        <Swiper
-        // install Swiper modules
-        modules={[Navigation, Pagination, Scrollbar, Autoplay ,A11y]}
-        spaceBetween={0}
-        slidesPerView={1}
-        navigation
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        pagination={{ clickable: true }}
-        onSwiper={(swiper) => console.log(swiper)}
-        onSlideChange={() => console.log('slide change')}
-      >
-        {slideArr.map((ele, idx) => {
-          return (
-          <SwiperSlide key={idx}>
-            <SwiperImg src={ele.src} alt={ele.title} />
-          </SwiperSlide>
-          )
-        })}
-      </Swiper>
-      </WrapSwiper>
+      {/* 슬라이더 */}
+      <MainSwiper />
+
+      {/* 상품 리스트 */}
+      <section>
+        <h2 className="screen_out">상품 리스트 영역</h2>
+        {isPending && <Loading>로딩 중...</Loading>}
+        {isError && <Loading>로딩 중...</Loading>}
+        {isSuccess && 
+          <ProductUl>
+            {data.data.results.map((ele, idx) => {
+              return(
+                <ProdcutLi key={ele.product_id}>
+                  <ProdcutImg src={ele.image} alt={ele.product_name + "썸네일"} />
+                  <ShopP>{ele.store_name}</ShopP>
+                  <ProductP>{ele.product_name}</ProductP>
+                  <PriceP><PriceSpan>{ele.price.toLocaleString()}</PriceSpan>원</PriceP>
+                </ProdcutLi>
+              )
+            })}
+          </ProductUl>
+        }
+
+      </section>
     </MainLayout>
   )
 }

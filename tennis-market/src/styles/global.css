@@ -17,6 +17,15 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
+.screen_out {
+    overflow: hidden;
+    position: absolute;
+    width: 0;
+    height: 0;
+    line-height: 0;
+    text-indent: -9999px;
+  }
+
 :root {
     --swiper-theme-color: #fff !important;
 }
