@@ -42,6 +42,7 @@ const Logo = styled.img`
 const Title = styled.p`
   font-size: 30px;
   font-weight: 600;
+  padding-bottom: 5px;
 `
 
 const LeftFlex = styled.div`
@@ -150,7 +151,7 @@ export function TopbarMain() {
     <HeaderStyle>
       <HeaderLayout>
         <LeftFlex>
-          <Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/>
+          <h1><Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/></h1>
           <SearchInput type="search" />
         </LeftFlex>
 
@@ -203,13 +204,14 @@ export function TopbarMain() {
 };
 
 export function TopbarSeller() {
+  const navigate = useNavigate();
+
   return (
     <HeaderStyle>
       <HeaderLayout>
         <LeftFlex>
-          <Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/>
+          <h1><Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/></h1>
           <Title>판매자 센터</Title>
-          <SearchInput type="search" />
         </LeftFlex>
       </HeaderLayout>
     </HeaderStyle>

@@ -98,7 +98,7 @@ const TabBtnStyle = styled.button`
 const TabMeuStyle = styled.button`
   position: relative;
   display: block;
-  width: 320px;
+  width: 250px;
   max-width: 100%;
   border: none;
   border-radius: 5px;
@@ -126,7 +126,7 @@ const RoundStyle = styled.span`
   color: ${({theme}) => theme.w};
   font-size: 12px;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 1.6;
 `
 
 //--- large ---
@@ -211,16 +211,19 @@ export const Tab_disable_btn = ({children}) => {
 
 
 // --- tab menu ---
-export const TabMenu_on_btn = ({children}) => {
+export const TabMenu_on_btn = ({children, round=null, btnFn}) => {
   return (
-    <TabMeuStyle type="button" >{children}<RoundStyle>1</RoundStyle></TabMeuStyle>
+    <TabMeuStyle type="button" onClick={btnFn}>
+      {children}
+      {round && <RoundStyle>{round}</RoundStyle>}
+    </TabMeuStyle>
   )
 }
-export const TabMenu_off_btn = ({children}) => {
+export const TabMenu_off_btn = ({children, round=null, btnFn}) => {
   return (
-      <TabMeuStyle $off type="button" >
+      <TabMeuStyle $off type="button" onClick={btnFn}>
         {children}
-        <RoundStyle>1</RoundStyle>
+        {round && <RoundStyle>{round}</RoundStyle>}
       </TabMeuStyle>
   )
 }

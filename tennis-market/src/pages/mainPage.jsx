@@ -2,7 +2,9 @@ import styled from "styled-components"
 import MainLayout from "../components/layout/MainLayout"
 import MainSwiper from "../components/swiper"
 import { normalAxios } from "../axios"
-import { useMutation, useQuery } from "@tanstack/react-query"
+import { useMutation, useQueries, useQuery } from "@tanstack/react-query"
+import { useRecoilValue } from "recoil"
+import { user_info } from "../atom/Atom"
 
 
 const ProductUl = styled.ul`
@@ -84,13 +86,18 @@ const Loading = styled.p`
 `
 
 function MainPage() {
-  const getProducts = async () => {
+  const userInfo = useRecoilValue(user_info);
+  const getBuyerProducts = async () => {
    return normalAxios.get('/products/');
+  };
+  const getSellerProducts = async () => {
+   return normalAxios.get('/seller/');
   };
 
   const { isPending, isError, data, error, isSuccess} = useQuery({
-    queryKey: ['products'],
-    queryFn: getProducts,
+    queryKey: ['buyer_products'],
+    queryFn: getBuyerProducts,
+    // queryFn: userInfo.user_type === 'SELLER' ? getSellerProducts : getBuyerProducts, 
   })
 
   return (
