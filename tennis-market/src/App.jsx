@@ -42,7 +42,7 @@ function App() {
                 <Route path="/signup" element={<SignupPage />}></Route>
                 <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/seller_center" element={<SellerCenterPage />}></Route>
-                <Route path="/regist_produdct" element={<RegistProductPage />}></Route>
+                <Route path="/regist_product" element={<RegistProductPage />}></Route>
               </Routes>
             </ThemeProvider>
           </BrowserRouter>

@@ -9,6 +9,7 @@ export const lightTheme  = {
   w: "#fff",
   b: "#000", 
   red: "#EB5757", 
+  light_red: "#FFEFE8", 
 }
 
 export const darkTheme  = {

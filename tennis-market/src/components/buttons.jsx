@@ -38,7 +38,7 @@ const MSBtnStyle = styled.button`
   max-width: 100%;
   background: none;
   border: ${(props) => props.$white ? `1px solid ${props.theme.gray2}` : `unset`};
-  padding: 19px;
+  padding: 16px;
   border-radius: 5px;
   font-size: 16px;
   color: ${(props) => props.$white ? props.theme.gray3 : props.theme.w};
@@ -170,9 +170,9 @@ export const MS_btn = ({children, btnFn}) => {
     <MSBtnStyle type="button" onClick={btnFn}>{children}</MSBtnStyle>
   )
 }
-export const MS_btn_white = ({children, event}) => {
+export const MS_btn_white = ({children, btnFn}) => {
   return (
-    <MSBtnStyle $white type="button" onClick={() => event}>{children}</MSBtnStyle>
+    <MSBtnStyle $white type="button" onClick={btnFn}>{children}</MSBtnStyle>
   )
 }
 export const MS_btn_icon = ({children, btnFn, icon}) => {

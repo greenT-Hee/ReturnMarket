@@ -126,9 +126,6 @@ export function TopbarMain() {
   const userInfo = useRecoilValue(user_info);
   const [openMypage, setOpenMypage] = useState(false);
 
-  const handleMypage = () => {
-    openMypage ? setOpenMypage(false) : setOpenMypage(true);
-  };
 
   const resetRecoil = useContext(ResetRecoilContext);
   const logout = useMutation({
@@ -180,7 +177,7 @@ export function TopbarMain() {
                 <RightIcon src={cartIcon} alt="" />
                 <p>장바구니</p>
               </RightLi>
-              <RightLi onClick={handleMypage}>
+              <RightLi onClick={()=>{openMypage ? setOpenMypage(false) : setOpenMypage(true);}}>
                 <RightIcon src={mypageIcon} alt="" />
                 <p>마이페이지</p>
               </RightLi>
@@ -188,7 +185,7 @@ export function TopbarMain() {
           }
           {userInfo.user_type === 'SELLER' && 
             <RightUl>
-               <RightLi onClick={handleMypage}>
+               <RightLi onClick={()=>{openMypage ? setOpenMypage(false) : setOpenMypage(true);}}>
                 <RightIcon src={mypageIcon} alt="" />
                 <p>마이페이지</p>
               </RightLi>
@@ -205,7 +202,7 @@ export function TopbarMain() {
 
 export function TopbarSeller() {
   const navigate = useNavigate();
-
+  const [openMypage, setOpenMypage] = useState(false);
   return (
     <HeaderStyle>
       <HeaderLayout>
