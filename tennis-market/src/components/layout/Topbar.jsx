@@ -7,6 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { user_info } from '../../atom/Atom';
 import { MS_btn_icon } from '../buttons';
+import { useContext, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { normalAxios } from '../../axios';
+import ResetRecoilContext from '../../ResetRecoilContext';
 
 const HeaderStyle = styled.header`
   padding: 15px 20px 25px;
@@ -35,6 +39,11 @@ const Logo = styled.img`
   cursor: pointer;
 `
 
+const Title = styled.p`
+  font-size: 30px;
+  font-weight: 600;
+`
+
 const LeftFlex = styled.div`
   width: fit-content;
   display: flex;
@@ -51,7 +60,44 @@ const SearchInput = styled.input`
   outline: 2px solid ${({theme}) => theme.main};
   border-radius: 32px;
 `
+const RightArea = styled.div`
+  position: relative;
+`
+const MypageUl = styled.ul`
+  width: 140px;
+  padding: 10px 0;
+  background: ${({theme}) => theme.w};
+  text-align: center;
+  position: absolute;
+  right: 160px;
+  top: 68px;
+  border-radius: 8px;
+  box-shadow: -2px 5px 25px rgba(0,0,0,0.3);
+  z-index: 1100;
 
+  ::after {
+    clear: both;
+    position: absolute;
+    display: block;
+    content: '';
+    top: -10px;
+    left: 57px;
+    width: 25px;
+    height: 25px;
+    rotate: 224deg;
+    background: ${({theme}) => theme.w};
+  }
+`
+const MypageLi = styled.li`
+  padding: 20px 35px 10px;
+  cursor: pointer;
+  
+  :hover {
+    color: ${({theme}) => theme.main};
+    font-weight: 500;
+  }
+  
+`
 
 const RightUl = styled.div`
   width: fit-content;
@@ -77,6 +123,29 @@ const RightIcon = styled.img`
 export function TopbarMain() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(user_info);
+  const [openMypage, setOpenMypage] = useState(false);
+
+  const handleMypage = () => {
+    openMypage ? setOpenMypage(false) : setOpenMypage(true);
+  };
+
+  const resetRecoil = useContext(ResetRecoilContext);
+  const logout = useMutation({
+    mutationFn: () => {
+      return normalAxios.post('/accounts/logout/');
+    },
+    onSuccess : (data) => {
+      if(data.status === 200) {
+        // reciol reset
+        localStorage.removeItem("recoil-persist");
+        resetRecoil();
+        // 로그인 화면으로 이동
+        navigate('/login');
+      } else if(data.status === 400) {
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  })
   return (
     <HeaderStyle>
       <HeaderLayout>
@@ -85,7 +154,13 @@ export function TopbarMain() {
           <SearchInput type="search" />
         </LeftFlex>
 
-        <div>
+        <RightArea>
+          {openMypage && 
+            <MypageUl>
+              <MypageLi>마이페이지</MypageLi>
+              <MypageLi onClick={() => logout.mutate()}>로그아웃</MypageLi>
+            </MypageUl>
+          }
           {!userInfo.user_type && 
             <RightUl>
               <RightLi onClick={() => navigate('/cart')}>
@@ -104,7 +179,7 @@ export function TopbarMain() {
                 <RightIcon src={cartIcon} alt="" />
                 <p>장바구니</p>
               </RightLi>
-              <RightLi onClick={() => navigate('/login')}>
+              <RightLi onClick={handleMypage}>
                 <RightIcon src={mypageIcon} alt="" />
                 <p>마이페이지</p>
               </RightLi>
@@ -112,16 +187,16 @@ export function TopbarMain() {
           }
           {userInfo.user_type === 'SELLER' && 
             <RightUl>
-              <RightLi onClick={() => navigate('/cart')}>
-                <RightIcon src={cartIcon} alt="" />
-                <p>장바구니</p>
+               <RightLi onClick={handleMypage}>
+                <RightIcon src={mypageIcon} alt="" />
+                <p>마이페이지</p>
               </RightLi>
-              <RightLi onClick={() => navigate('/login')}>
+              <RightLi onClick={() => navigate('/seller_center')}>
                 <MS_btn_icon icon={shoppingbag}>판매자센터</MS_btn_icon>
               </RightLi>
             </RightUl>
           }
-        </div>
+        </RightArea>
       </HeaderLayout>
     </HeaderStyle>
   )
@@ -129,7 +204,15 @@ export function TopbarMain() {
 
 export function TopbarSeller() {
   return (
-    <div>Header</div>
+    <HeaderStyle>
+      <HeaderLayout>
+        <LeftFlex>
+          <Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/>
+          <Title>판매자 센터</Title>
+          <SearchInput type="search" />
+        </LeftFlex>
+      </HeaderLayout>
+    </HeaderStyle>
   ) 
 };
  

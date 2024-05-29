@@ -15,12 +15,12 @@ import slide4 from '../assets/images/tennis4.jpg';
 const WrapSwiper = styled.article`
   width: 1920px;
   max-width: 100%;
-  margin: 0 auto;
+  margin: 104px auto 0;
   box-sizing: border-box;
 `
 const SwiperImg = styled.img`
   width: 100%;
-  height: 800px;
+  height: 700px;
   object-fit: cover;
 `
 
@@ -39,10 +39,10 @@ export default function MainSwiper() {
       spaceBetween={0}
       slidesPerView={1}
       navigation
-      autoplay={{ delay: 3000, disableOnInteraction: false }}
+      autoplay={{ delay: 5000, disableOnInteraction: false }}
       pagination={{ clickable: true }}
-      onSwiper={(swiper) => console.log(swiper)}
-      onSlideChange={() => console.log('slide change')}
+      // onSwiper={(swiper) => console.log(swiper)}
+      // onSlideChange={() => console.log('slide change')}
     >
       {slideArr.map((ele, idx) => {
         return (
