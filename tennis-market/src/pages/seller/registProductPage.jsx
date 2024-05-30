@@ -1,10 +1,16 @@
 import styled from 'styled-components';
 import SellerLayout from '../../components/layout/SellerLayout';
 import { MS_btn, MS_btn_white } from '../../components/buttons';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import iconImg from '../../assets/images/icon-img.png';
+import { useMutation } from '@tanstack/react-query';
+import { AlertModal } from '../../components/modal/AlertModal';
+import { useRecoilState } from 'recoil';
+import { AlertOpen } from '../../atom/Atom';
 import { normalAxios } from '../../axios';
+import ResetRecoilContext from '../../ResetRecoilContext';
+
 
 const RightArea = styled.div`
   display: flex;
@@ -131,7 +137,11 @@ const EditorBtnFlex = styled.div`
   gap: 10px;
   justify-content: flex-end;
 `
-
+const ErrorP = styled.p`
+  font-size: 14px;
+  color: ${({theme}) => theme.red};
+  padding: 6px 0;
+`
 
 export default function RegistProductPage() {
   const navigate = useNavigate();
@@ -140,11 +150,28 @@ export default function RegistProductPage() {
   const [shipping_method, set_shipping_method] = useState('PARCEL');
   const [inputs, setInputs] = useState({
     "product_name" : "",
-    "price" : "",
-    "shipment_fee" : "",
-    "stock" : "",
+    "price" : '',
+    "shipment_fee" : '',
+    "stock" : '',
   });
+
+  // error
+  const [errAlertCont,setErrAlertCont] = useState('');
+  const [errFn,setErrFn] = useState(null);
+  const [alertOpen, setAlertOpen] = useRecoilState(AlertOpen);
+  const [error, setError] = useState({
+    "product_name_err" : "",
+    "image_err" : "",
+    "price_err" : "",
+    "shipping_fee_err" : "",
+    "stock_err" : "",
+    "products_info_err" : "",
+  });
+  
   const { product_name, price, shipment_fee, stock} = inputs;
+  let { product_name_err, image_err, price_err, shipping_fee_err, stock_err,products_info_err} = error;
+
+  // --- input 관리 ---
   function handleInputValue(e) {
     const { value, name } = e.target;
     if(e.target.name === 'price') {
@@ -161,6 +188,7 @@ export default function RegistProductPage() {
     }
   };
 
+  // -- formdata 처리 ---
   const imgRef = useRef(null);
   const formData = new FormData();
   const uploadFile = (e) => {
@@ -168,7 +196,7 @@ export default function RegistProductPage() {
       // 이미지 파일 세팅
       const currentImg = imgRef.current.files;
       setPostImg(currentImg);
-      formData.append("file", postImg);
+      formData.append("file", imgRef.current.files);
       
       //이미지 미리보기
       if(currentImg.length <= 0) return; 
@@ -182,47 +210,91 @@ export default function RegistProductPage() {
     }
   }
 
-  // 업로드 요청
-  const uploadApi = () => {
-    const blob = new Blob([JSON.stringify(inputs)], {type: "application/json"}) 
-    formData.append('shipping_method', shipping_method);
-    formData.append('product_info', 'helloworld\ntest');
-    formData.append('data', blob);
+  // --- 업로드 api 요청 ---
+  const uploadApi = useMutation({
+    mutationFn: () => {
+      const blob = new Blob([JSON.stringify(inputs)], {type: "application/json"}) 
+      formData.append('shipping_method', shipping_method);
+      formData.append('product_info', '🐰 head코리아 공식 사이트에서 알아보기\nhttps://headkorea.kr/product-category/tennis/racquets/');
+      formData.append('data', blob);
+      setError({
+        "product_name_err" : "",
+        "image_err" : "",
+        "price_err" : "",
+        "shipping_fee_err" : "",
+        "stock_err" : "",
+        "products_info_err" : "",
+      })
 
-    return normalAxios.post('/products/',formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      }  
-    })  
-  };  
+      return normalAxios.post('/products/',formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }  
+      }) 
+    },
+    onSuccess : (data) => {
+      if(data.status === 201) {
+        // navigate('/detail/:id');
+      } else if(data.status === 400) {
+        setAlertOpen(true);
+        setErrFn(() => scrollToTop);
+        setErrAlertCont('필수값을 확인해주세요🍀');
 
-  // 401(토큰), 400
-// data.data [
-  //   {
-  //     "product_name": [
-  //         "이 필드는 필수 항목입니다."
-  //     ],
-  //     "image": [
-  //         "파일이 제출되지 않았습니다."
-  //     ],
-  //     "price": [
-  //         "이 필드는 필수 항목입니다."
-  //     ],
-  //     "shipping_fee": [
-  //         "이 필드는 필수 항목입니다."
-  //     ],
-  //     "stock": [
-  //         "이 필드는 필수 항목입니다."
-  //     ]
-  // }
-// ]
+        if(data.data.product_name) setError({...error, product_name_err :data.data.product_name[0]});
+        if(data.data.image) setError({...error, image_err :data.data.image[0]});
+        if(data.data.price) setError({...error, price_err: data.data.price[0]});
+        if(data.data.shipping_fee) setError({...error, shipping_fee_err :data.data.shipping_fee[0]});
+        if(data.data.stock) setError({...error, stock_err :data.data.stock[0]});
+        if(data.data.products_info) setError({...error, products_info_err :data.data.products_info[0]});
+
+      } else if(data.status === 401) {
+        setAlertOpen(true);
+        setErrAlertCont(data.data.detail);
+        setErrFn(() => logout.mutate)
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  })
+
+
+  console.log(error)
+
+
+  // -- logout 처리 ---
+  const resetRecoil = useContext(ResetRecoilContext);
+  const logout = useMutation({
+    mutationFn: () => {
+      return normalAxios.post('/accounts/logout/');
+    },
+    onSuccess : (data) => {
+      if(data.status === 200) {
+        // reciol reset
+        localStorage.removeItem("recoil-persist");
+        resetRecoil();
+        // 로그인 화면으로 이동
+        navigate('/login');
+      } else if(data.status === 400) {
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  })
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    setAlertOpen(false)
+  }
 
   return (
     <SellerLayout>
+      <AlertModal content={errAlertCont} btnFn={errFn}/>
       <RightArea>
         <ImageBox>
           <LabelStyle>상품이미지</LabelStyle>
           <label htmlFor="product_img">
+           {image_err && <ErrorP>{image_err}</ErrorP>}
             <WrapImg>
             {postImg.length > 0 ?
               <PostImg src={previewImg ? previewImg : ''} alt={postImg.name} /> :       
@@ -236,9 +308,11 @@ export default function RegistProductPage() {
         <OptionBox>
           <LabelStyle htmlFor='product_name'>상품명</LabelStyle>
           <Input value={product_name ? product_name : ""} name='product_name' type='text' placeholder='최대 20자' maxLength={20} onChange={handleInputValue}/>
+          {product_name_err && <ErrorP>{product_name_err}</ErrorP>}
           <WrapNumberInput>
             <LabelStyle htmlFor='price'>판매가</LabelStyle>
             <NumberInput name='price' value={price ? price.toLocaleString() : ""} type='text' onChange={handleInputValue}/>
+            {price_err && <ErrorP>{price_err}</ErrorP>}
           </WrapNumberInput>
           <LabelStyle>배송방법</LabelStyle>
           <ShipmentDiv>
@@ -257,10 +331,12 @@ export default function RegistProductPage() {
           <WrapNumberInput>
             <LabelStyle htmlFor='shipment_fee'>기본 배송비</LabelStyle>
             <NumberInput value={shipment_fee ? shipment_fee.toLocaleString() : ""} name='shipment_fee' type='text' onChange={handleInputValue} />
+            {shipping_fee_err && <ErrorP>{shipping_fee_err}</ErrorP>}
           </WrapNumberInput>
           <WrapNumberInput>
             <LabelStyle htmlFor='stock'>재고</LabelStyle>
             <NumberInput value={stock ? stock.toLocaleString() : ""} name='stock' type='text' onChange={handleInputValue} />
+            {stock_err && <ErrorP>{stock_err}</ErrorP>}
           </WrapNumberInput>
         </OptionBox>
       </RightArea>
@@ -268,10 +344,11 @@ export default function RegistProductPage() {
       {/* 에디터 영역 */}
       <EditorArea>
         <LabelStyle>상품 상세정보</LabelStyle>
+        {products_info_err && <ErrorP>{products_info_err}</ErrorP>}
         <EditorBox>👷 에디터 영역은 준비 중</EditorBox>
         <EditorBtnFlex>
           <MS_btn_white btnFn={() => navigate('/seller_center')}>취소</MS_btn_white>
-          <MS_btn btnFn={uploadApi}>저장하기</MS_btn>
+          <MS_btn btnFn={() => uploadApi.mutate()}>저장하기</MS_btn>
         </EditorBtnFlex>
       </EditorArea>
     </SellerLayout>

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { S_btn, S_btn_white } from "../buttons";
 import { useRecoilState } from "recoil";
-import { AlertOpen, ConfirmOpen } from "../../atom/Atom";
+import { AlertOpen } from "../../atom/Atom";
 
 const ConfirmBox = styled.article`
   position: fixed;
@@ -46,16 +46,27 @@ const ContentP = styled.p`
   font-size: 16px; 
 `
 
-export function AlertModal({content}) {
+export function AlertModal({content, btnFn=null}) {
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   return (
     <>
-      {openAlert && 
+      {(openAlert && btnFn === null )&& 
         <ConfirmBox>
           <ContentBox>
             <ContentP>{content}</ContentP>
             <BtnFlex>
               <li><S_btn btnFn={() => setOpenAlert(false)}>확인</S_btn></li>
+            </BtnFlex>
+
+          </ContentBox>
+        </ConfirmBox>
+      }
+      {(openAlert && btnFn != null )&& 
+        <ConfirmBox>
+          <ContentBox>
+            <ContentP>{content}</ContentP>
+            <BtnFlex>
+              <li><S_btn btnFn={btnFn}>확인</S_btn></li>
             </BtnFlex>
 
           </ContentBox>
