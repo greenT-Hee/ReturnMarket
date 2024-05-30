@@ -51,11 +51,7 @@ function LoginPage() {
 		"password": password,
 		"login_type": login_type
   };
-//   {
-//     "id": 264,
-//     "user_type": "SELLER",
-//     "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyNjQsImVtYWlsIjoiIiwidXNlcm5hbWUiOiJ3aWxzb24iLCJleHAiOjE3MTcyMzUwNjB9.xU70iXhL1TOIzAyzqHMyh7GbmM_gyPYzCwJEbWKyNTk"
-// }
+
   const loginMutate = useMutation({
     mutationFn: (logdata) => {
       return normalAxios.post('/accounts/login/', logdata);
@@ -63,7 +59,7 @@ function LoginPage() {
     onSuccess : (data) => {
       if(data.status === 200) {
         setUserInfo(data.data);
-        normalAxios.defaults.headers.common['Authorization'] = data.data.token;
+        normalAxios.defaults.headers.common['Authorization'] = 'JWT ' + data.data.token;
         navigate('/');
       } else if(data.status === 401) {
         setOpenAlert(true);
