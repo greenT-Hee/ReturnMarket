@@ -11,6 +11,7 @@ import { useContext, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { normalAxios } from '../../axios';
 import ResetRecoilContext from '../../ResetRecoilContext';
+import Cookies from 'universal-cookie';
 
 const HeaderStyle = styled.header`
   padding: 15px 20px 25px;
@@ -128,6 +129,7 @@ export function TopbarMain() {
 
 
   const resetRecoil = useContext(ResetRecoilContext);
+  const cookies = new Cookies();
   const logout = useMutation({
     mutationFn: () => {
       return normalAxios.post('/accounts/logout/');
@@ -137,6 +139,7 @@ export function TopbarMain() {
         // reciol reset
         localStorage.removeItem("recoil-persist");
         resetRecoil();
+        cookies.remove('accessToken');
         // 로그인 화면으로 이동
         navigate('/login');
       } else if(data.status === 400) {

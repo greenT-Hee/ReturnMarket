@@ -10,6 +10,7 @@ import { useRecoilState } from 'recoil';
 import { AlertOpen } from '../../atom/Atom';
 import { normalAxios } from '../../axios';
 import ResetRecoilContext from '../../ResetRecoilContext';
+import Cookies from 'universal-cookie';
 
 
 const RightArea = styled.div`
@@ -235,6 +236,7 @@ export default function RegistProductPage() {
 
 
   // -- logout 처리 ---
+  const cookies = new Cookies();
   const resetRecoil = useContext(ResetRecoilContext);
   const logout = useMutation({
     mutationFn: () => {
@@ -245,6 +247,7 @@ export default function RegistProductPage() {
         // reciol reset
         localStorage.removeItem("recoil-persist");
         resetRecoil();
+        cookies.remove('accessToken');
         // 로그인 화면으로 이동
         navigate('/login');
       } else if(data.status === 400) {
