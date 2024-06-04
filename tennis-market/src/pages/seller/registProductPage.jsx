@@ -86,7 +86,7 @@ const WrapNumberInput = styled.div`
   width: 220px;
   ::after {
     display: block;
-    content: '원';
+    content: "원";
     position: absolute;
     right: 0;
     top: 40px;
@@ -101,7 +101,30 @@ const WrapNumberInput = styled.div`
     font-weight: 500;
     color: ${({theme}) => theme.gray4};
     text-align: center;
-    line-height: 1;
+    line-height: 1.2;
+  }
+`
+const WrapNumberInput_stock = styled.div`
+  position: relative;
+  width: 220px;
+  ::after {
+    display: block;
+    content: "개";
+    position: absolute;
+    right: 0;
+    top: 40px;
+    width: 50px;
+    height: 50px;
+    outline: 1px solid ${({theme}) => theme.gray2};
+    border: none;
+    padding: 16px; 
+    border-radius: 0 5px 5px 0;
+    box-sizing: border-box;
+    background: ${({theme}) => theme.gray2};
+    font-weight: 500;
+    color: ${({theme}) => theme.gray4};
+    text-align: center;
+    line-height: 1.2;
   }
 `
 const NumberInput = styled.input`
@@ -124,13 +147,15 @@ const EditorArea = styled.div`
   width: 100%;
   margin: 40px 0 130px;
 `
-const EditorBox = styled.div`
+const EditorBox = styled.textarea`
   width: 100%;
-  padding: 180px 0;
+  height: 100px;
+  padding: 30px;
   margin-bottom: 30px;
   border: 1px solid  ${({theme}) => theme.gray2};
-  background:  ${({theme}) => theme.gray1};
-  text-align: center;
+  background:  ${({theme}) => theme.w};
+  resize: none;
+  overflow-y: scroll;
 `
 
 const EditorBtnFlex = styled.div`
@@ -150,6 +175,7 @@ export default function RegistProductPage() {
   const [postImg, setPostImg] = useState([]);
   const [previewImg, setPreviewImg] = useState([]);
   const [shipping_method, set_shipping_method] = useState('PARCEL');
+  const [product_info, set_product_info] = useState('');
   const [inputs, setInputs] = useState({
     "product_name" : "",
     "price" : '',
@@ -188,7 +214,8 @@ export default function RegistProductPage() {
       // 이미지 파일 세팅
       const currentImg = imgRef.current.files;
       setPostImg(currentImg);
-      formData.append("file", imgRef.current.files);
+      console.log(postImg)
+      // formData.append("image", imgRef.current.files);
       
       //이미지 미리보기
       if(currentImg.length <= 0) return; 
@@ -205,24 +232,29 @@ export default function RegistProductPage() {
   // --- 업로드 api 요청 ---
   const uploadApi = useMutation({
     mutationFn: () => {
-      const blob = new Blob([JSON.stringify(inputs)], {type: "application/json"}) 
-      formData.append('shipping_method', shipping_method);
-      formData.append('product_info', '🐰 head코리아 공식 사이트에서 알아보기\nhttps://headkorea.kr/product-category/tennis/racquets/');
-      formData.append('data', blob);
+      const postData = {
+        "product_name" : product_name,
+        "price" : price,
+        "shipping_fee" : shipment_fee,
+        "stock" : stock,
+        "image": postImg[0],
+        "shipping_method" : shipping_method,
+        "product_info" : product_info
+      }
 
-      return normalAxios.post('/products/',formData, {
+      return normalAxios.post('/products/',postData,{
         headers: {
-          'Content-Type': 'multipart/form-data',
-        }  
+          "Content-Type": "multipart/form-data"
+        }
       }) 
     },
     onSuccess : (data) => {
       if(data.status === 201) {
-        // navigate('/detail/:id');
+        navigate('/seller_center');
       } else if(data.status === 400) {
         setAlertOpen(true);
         setErrFn(() => scrollToTop);
-        setErrAlertCont('필수값을 확인해주세요🍀');
+        setErrAlertCont('필수값을 확인해주세요.');
 
       } else if(data.status === 401) {
         setAlertOpen(true);
@@ -266,6 +298,7 @@ export default function RegistProductPage() {
 
   return (
     <SellerLayout>
+      {/* {uploadApi.isLoading ?? } */}
       <AlertModal content={errAlertCont} btnFn={errFn}/>
       <RightArea>
         <ImageBox>
@@ -306,17 +339,17 @@ export default function RegistProductPage() {
             <LabelStyle htmlFor='shipment_fee'>기본 배송비 <EssentailSpan> (필수)</EssentailSpan></LabelStyle>
             <NumberInput value={shipment_fee ? shipment_fee.toLocaleString() : ""} name='shipment_fee' type='text' onChange={handleInputValue} />
           </WrapNumberInput>
-          <WrapNumberInput>
+          <WrapNumberInput_stock>
             <LabelStyle htmlFor='stock'>재고 <EssentailSpan>(필수)</EssentailSpan></LabelStyle>
             <NumberInput value={stock ? stock.toLocaleString() : ""} name='stock' type='text' onChange={handleInputValue} />
-          </WrapNumberInput>
+          </WrapNumberInput_stock>
         </OptionBox>
       </RightArea>
 
       {/* 에디터 영역 */}
       <EditorArea>
         <LabelStyle>상품 상세정보 <EssentailSpan>(필수)</EssentailSpan></LabelStyle>
-        <EditorBox>👷 에디터 영역은 준비 중</EditorBox>
+        <EditorBox onChange={(e) => set_product_info(e.target.value)} placeholder='상품 정보를 입력해주세요.'></EditorBox>
         <EditorBtnFlex>
           <MS_btn_white btnFn={() => navigate('/seller_center')}>취소</MS_btn_white>
           <MS_btn btnFn={() => uploadApi.mutate()}>저장하기</MS_btn>

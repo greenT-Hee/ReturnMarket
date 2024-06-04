@@ -70,7 +70,7 @@ const IconImg = styled.img`
 `
 const SmallBtnStyle = styled.button`
   display: block;
-  width: 120px;
+  width: 80px;
   max-width: 100%;
   border: ${(props) => props.$white ? `1px solid #bfbfbf` : `unset`};
   padding: 10px;

@@ -33,9 +33,9 @@ const SidebarLayout = styled.article`
   display: flex;
   gap: 30px;
   height: 100%;
-
   @media only screen and (max-width: 1280px) {
-    flex-direction: column;
+    flex-wrap: ${(props) => props.$center ? 'wrap' : null};
+    flex-direction: ${(props) => props.$center ? 'row' : 'column'};
   }
 `
 
@@ -64,12 +64,13 @@ const ContP2 = styled.p`
   line-height: 1.2;
 `
 const RightSideSyle = styled.div`
-  border: 1px solid ${({theme}) => theme.gray1};
+  /* border: 1px solid ${({theme}) => theme.gray1}; */
   background: ${({theme}) => theme.gray1};
   width: 1000px;
   min-height: 500px;
-  overflow-y: scroll;
+  overflow: scroll;
   border-radius: 6px;
+  margin-bottom: 130px;
 
   ::-webkit-scrollbar {
     width: 13px;  
@@ -96,7 +97,7 @@ export default function SellerLayout({children}) {
             <TopH2>대시보드 <TopH2Span>백엔드글로벌</TopH2Span></TopH2>
             <MS_btn_icon icon={plustIcon} btnFn={() => navigate('/regist_product')}>상품 업로드</MS_btn_icon>
           </TopTitleArea>
-          <SidebarLayout>
+          <SidebarLayout $center='true'>
             <div>
               <SidebarUl>
                 <li><TabMenu_on_btn>판매중인 상품</TabMenu_on_btn></li>
