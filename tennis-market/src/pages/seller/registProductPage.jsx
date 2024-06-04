@@ -137,11 +137,12 @@ const EditorBtnFlex = styled.div`
   gap: 10px;
   justify-content: flex-end;
 `
-const ErrorP = styled.p`
+const EssentailSpan = styled.span`
   font-size: 14px;
   color: ${({theme}) => theme.red};
-  padding: 6px 0;
+  /* padding: 6px 0; */
 `
+
 
 export default function RegistProductPage() {
   const navigate = useNavigate();
@@ -159,17 +160,7 @@ export default function RegistProductPage() {
   const [errAlertCont,setErrAlertCont] = useState('');
   const [errFn,setErrFn] = useState(null);
   const [alertOpen, setAlertOpen] = useRecoilState(AlertOpen);
-  const [error, setError] = useState({
-    "product_name_err" : "",
-    "image_err" : "",
-    "price_err" : "",
-    "shipping_fee_err" : "",
-    "stock_err" : "",
-    "products_info_err" : "",
-  });
-  
   const { product_name, price, shipment_fee, stock} = inputs;
-  let { product_name_err, image_err, price_err, shipping_fee_err, stock_err,products_info_err} = error;
 
   // --- input 관리 ---
   function handleInputValue(e) {
@@ -217,14 +208,6 @@ export default function RegistProductPage() {
       formData.append('shipping_method', shipping_method);
       formData.append('product_info', '🐰 head코리아 공식 사이트에서 알아보기\nhttps://headkorea.kr/product-category/tennis/racquets/');
       formData.append('data', blob);
-      setError({
-        "product_name_err" : "",
-        "image_err" : "",
-        "price_err" : "",
-        "shipping_fee_err" : "",
-        "stock_err" : "",
-        "products_info_err" : "",
-      })
 
       return normalAxios.post('/products/',formData, {
         headers: {
@@ -240,13 +223,6 @@ export default function RegistProductPage() {
         setErrFn(() => scrollToTop);
         setErrAlertCont('필수값을 확인해주세요🍀');
 
-        if(data.data.product_name) setError({...error, product_name_err :data.data.product_name[0]});
-        if(data.data.image) setError({...error, image_err :data.data.image[0]});
-        if(data.data.price) setError({...error, price_err: data.data.price[0]});
-        if(data.data.shipping_fee) setError({...error, shipping_fee_err :data.data.shipping_fee[0]});
-        if(data.data.stock) setError({...error, stock_err :data.data.stock[0]});
-        if(data.data.products_info) setError({...error, products_info_err :data.data.products_info[0]});
-
       } else if(data.status === 401) {
         setAlertOpen(true);
         setErrAlertCont(data.data.detail);
@@ -256,8 +232,6 @@ export default function RegistProductPage() {
     onError : (e) => {console.log(e.message)},
   })
 
-
-  console.log(error)
 
 
   // -- logout 처리 ---
@@ -292,9 +266,8 @@ export default function RegistProductPage() {
       <AlertModal content={errAlertCont} btnFn={errFn}/>
       <RightArea>
         <ImageBox>
-          <LabelStyle>상품이미지</LabelStyle>
+          <LabelStyle>상품이미지 <EssentailSpan>(필수)</EssentailSpan> </LabelStyle>
           <label htmlFor="product_img">
-           {image_err && <ErrorP>{image_err}</ErrorP>}
             <WrapImg>
             {postImg.length > 0 ?
               <PostImg src={previewImg ? previewImg : ''} alt={postImg.name} /> :       
@@ -306,15 +279,13 @@ export default function RegistProductPage() {
          
         </ImageBox>
         <OptionBox>
-          <LabelStyle htmlFor='product_name'>상품명</LabelStyle>
+          <LabelStyle htmlFor='product_name'>상품명<EssentailSpan> (필수)</EssentailSpan></LabelStyle>
           <Input value={product_name ? product_name : ""} name='product_name' type='text' placeholder='최대 20자' maxLength={20} onChange={handleInputValue}/>
-          {product_name_err && <ErrorP>{product_name_err}</ErrorP>}
           <WrapNumberInput>
-            <LabelStyle htmlFor='price'>판매가</LabelStyle>
+            <LabelStyle htmlFor='price'>판매가<EssentailSpan> (필수)</EssentailSpan></LabelStyle>
             <NumberInput name='price' value={price ? price.toLocaleString() : ""} type='text' onChange={handleInputValue}/>
-            {price_err && <ErrorP>{price_err}</ErrorP>}
           </WrapNumberInput>
-          <LabelStyle>배송방법</LabelStyle>
+          <LabelStyle>배송방법 <EssentailSpan> (필수)</EssentailSpan></LabelStyle>
           <ShipmentDiv>
             {shipping_method === 'PARCEL' ? 
               <MS_btn value='' btnFn={() => set_shipping_method('PARCEL')}>택배,소포,등기</MS_btn>
@@ -329,22 +300,19 @@ export default function RegistProductPage() {
             }
           </ShipmentDiv>
           <WrapNumberInput>
-            <LabelStyle htmlFor='shipment_fee'>기본 배송비</LabelStyle>
+            <LabelStyle htmlFor='shipment_fee'>기본 배송비 <EssentailSpan> (필수)</EssentailSpan></LabelStyle>
             <NumberInput value={shipment_fee ? shipment_fee.toLocaleString() : ""} name='shipment_fee' type='text' onChange={handleInputValue} />
-            {shipping_fee_err && <ErrorP>{shipping_fee_err}</ErrorP>}
           </WrapNumberInput>
           <WrapNumberInput>
-            <LabelStyle htmlFor='stock'>재고</LabelStyle>
+            <LabelStyle htmlFor='stock'>재고 <EssentailSpan>(필수)</EssentailSpan></LabelStyle>
             <NumberInput value={stock ? stock.toLocaleString() : ""} name='stock' type='text' onChange={handleInputValue} />
-            {stock_err && <ErrorP>{stock_err}</ErrorP>}
           </WrapNumberInput>
         </OptionBox>
       </RightArea>
 
       {/* 에디터 영역 */}
       <EditorArea>
-        <LabelStyle>상품 상세정보</LabelStyle>
-        {products_info_err && <ErrorP>{products_info_err}</ErrorP>}
+        <LabelStyle>상품 상세정보 <EssentailSpan>(필수)</EssentailSpan></LabelStyle>
         <EditorBox>👷 에디터 영역은 준비 중</EditorBox>
         <EditorBtnFlex>
           <MS_btn_white btnFn={() => navigate('/seller_center')}>취소</MS_btn_white>

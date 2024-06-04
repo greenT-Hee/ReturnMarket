@@ -9,6 +9,7 @@ import { M_btn } from "../../components/buttons";
 import { useState } from "react";
 import { AlertModal } from "../../components/modal/AlertModal";
 import { normalAxios } from "../../axios";
+import { setAccessTokenToCookie } from "../../api/auth";
 
 
 // from 테두리
@@ -60,6 +61,7 @@ function LoginPage() {
       if(data.status === 200) {
         setUserInfo(data.data);
         normalAxios.defaults.headers.common['Authorization'] = 'JWT ' + data.data.token;
+        setAccessTokenToCookie('JWT ' + data.data.token);
         navigate('/');
       } else if(data.status === 401) {
         setOpenAlert(true);

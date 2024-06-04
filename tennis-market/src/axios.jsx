@@ -1,12 +1,13 @@
 import axios from "axios";
+import { getCookie } from "./api/auth";
 
+const userAccessToken = getCookie('accessToken') ? getCookie('accessToken') : null;
 export const normalAxios = axios.create({
   baseURL: 'https://openmarket.weniv.co.kr/',
   timeout: 5000,
-  // headers: {
-  //   Authorization: userAccessToken? userAccessToken : null,
-  //   withCredentials: true,
-  // },
+  headers: {
+    Authorization: userAccessToken,
+  },
 });
 
 // instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
