@@ -67,7 +67,7 @@ const RightSideSyle = styled.div`
   /* border: 1px solid ${({theme}) => theme.gray1}; */
   background: ${({theme}) => theme.gray1};
   width: 1000px;
-  min-height: 500px;
+  height: 500px;
   overflow: scroll;
   border-radius: 6px;
   margin-bottom: 130px;

@@ -147,14 +147,14 @@ export const M_btn = ({children, btnFn}) => {
     <MediumBtnStyle type="button" onClick={btnFn}>{children}</MediumBtnStyle>
   )
 }
-export const M_btn_dark = ({children, event}) => {
+export const M_btn_dark = ({children, btnFn}) => {
   return (
-    <MediumBtnStyle $dark type="button" onClick={() => event}>{children}</MediumBtnStyle>
+    <MediumBtnStyle $dark type="button" onClick={btnFn}>{children}</MediumBtnStyle>
   )
 }
-export const M_btn_white = ({children, event}) => {
+export const M_btn_white = ({children, btnFn}) => {
   return (
-    <MediumBtnStyle $white type="button" onClick={() => event}>{children}</MediumBtnStyle>
+    <MediumBtnStyle $white type="button" onClick={btnFn}>{children}</MediumBtnStyle>
   )
 }
 

@@ -17,6 +17,8 @@ import LoginPage from './pages/auth/loginPage';
 import SignupPage from './pages/auth/signupPage';
 import SellerCenterPage from './pages/seller/sellerCenterPage';
 import RegistProductPage from './pages/seller/registProductPage';
+import EditPage from './pages/seller/editPage';
+import ErrorPage from './pages/errorPage';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
@@ -43,6 +45,8 @@ function App() {
                 <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/seller_center" element={<SellerCenterPage />}></Route>
                 <Route path="/regist_product" element={<RegistProductPage />}></Route>
+                <Route path="/edit" element={<EditPage />}></Route>
+                <Route path="/*" element={<ErrorPage />}></Route>
               </Routes>
             </ThemeProvider>
           </BrowserRouter>
