@@ -1,7 +1,7 @@
 import SellerForm from '../../components/signup/SellerForm';
 import ConsumerForm from '../../components/signup/ConsumerForm';
 import AuthLayout from '../../components/layout/AuthLayout';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { AlertOpen, user_role } from '../../atom/Atom';
 import { AlertModal } from '../../components/modal/AlertModal';
 import { useNavigate } from 'react-router-dom';

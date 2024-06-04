@@ -11,6 +11,7 @@ import { AlertOpen } from '../../atom/Atom';
 import { normalAxios } from '../../axios';
 import ResetRecoilContext from '../../ResetRecoilContext';
 import Cookies from 'universal-cookie';
+import Spinner from '../../components/spinner';
 
 
 const RightArea = styled.div`
@@ -148,7 +149,7 @@ const EditorArea = styled.div`
   margin: 40px 0 130px;
 `
 const EditorBox = styled.textarea`
-  width: 100%;
+  width: calc(100% - 60px);
   height: 100px;
   padding: 30px;
   margin-bottom: 30px;
@@ -156,6 +157,7 @@ const EditorBox = styled.textarea`
   background:  ${({theme}) => theme.w};
   resize: none;
   overflow-y: scroll;
+  outline: none;
 `
 
 const EditorBtnFlex = styled.div`
@@ -172,6 +174,7 @@ const EssentailSpan = styled.span`
 
 export default function RegistProductPage() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false); 
   const [postImg, setPostImg] = useState([]);
   const [previewImg, setPreviewImg] = useState([]);
   const [shipping_method, set_shipping_method] = useState('PARCEL');
@@ -248,8 +251,12 @@ export default function RegistProductPage() {
         }
       }) 
     },
+    onSettled: () => {
+      setIsLoading(true);
+    },
     onSuccess : (data) => {
       if(data.status === 201) {
+        setIsLoading(false);
         navigate('/seller_center');
       } else if(data.status === 400) {
         setAlertOpen(true);
@@ -264,7 +271,6 @@ export default function RegistProductPage() {
     },
     onError : (e) => {console.log(e.message)},
   })
-
 
 
   // -- logout 처리 ---
@@ -298,7 +304,7 @@ export default function RegistProductPage() {
 
   return (
     <SellerLayout>
-      {/* {uploadApi.isLoading ?? } */}
+      {isLoading && <Spinner />}
       <AlertModal content={errAlertCont} btnFn={errFn}/>
       <RightArea>
         <ImageBox>
