@@ -29,3 +29,12 @@ input[type="number"]::-webkit-inner-spin-button {
 :root {
     --swiper-theme-color: #4E1DD9 !important;
 }
+
+::-moz-selection {
+    background: #4E1DD9;
+    color: #fff;
+ }
+ ::selection {
+    background: #4E1DD9;
+    color: #fff;
+ }

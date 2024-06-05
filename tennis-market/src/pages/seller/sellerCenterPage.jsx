@@ -107,7 +107,7 @@ export default function SellerCenterPage() {
   return (
     <SellerLayout>
       <ComfirmModal content="상품을 삭제하시겠습니까?" btnFn={() =>deletePrdocut.mutate()}></ComfirmModal>
-      {data && data.data.results.length > 0 ?
+      {data ?
       <Table>
         <thead>
           <TrStyle>

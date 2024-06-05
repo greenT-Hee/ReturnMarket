@@ -21,7 +21,7 @@ const MediumBtnStyle = styled.button`
   max-width: 100%;
   background: none;
   border: ${(props) => props.$white ? `1px solid ${props.theme.gray2}` : `unset`};
-  padding: 19px;
+  padding: 16px;
   border-radius: 5px;
   font-size: 18px;
   color: ${(props) => props.$white ? props.theme.gray3 : props.theme.w};
@@ -31,18 +31,21 @@ const MediumBtnStyle = styled.button`
   background: ${(props) => props.$white ? props.theme.w : ""};
   box-sizing: border-box;
   cursor: pointer;
-`
+  `
 const MSBtnStyle = styled.button`
   display: block;
   width: 166px;
   max-width: 100%;
   background: none;
   border: ${(props) => props.$white ? `1px solid ${props.theme.gray2}` : `unset`};
+  border: ${(props) => props.disabled ? `1px solid ${props.theme.gray2}` : `unset`};
   padding: 16px;
   border-radius: 5px;
   font-size: 16px;
   color: ${(props) => props.$white ? props.theme.gray3 : props.theme.w};
+  color: ${(props) => props.disabled ? props.theme.w : ""};
   background: ${({theme}) => theme.sub};
+  background: ${(props) => props.disabled ? props.theme.gray2 : ""};
   background: ${(props) => props.$white ? props.theme.w : ""};
   box-sizing: border-box;
   cursor: pointer;
@@ -175,6 +178,11 @@ export const MS_btn_white = ({children, btnFn}) => {
     <MSBtnStyle $white type="button" onClick={btnFn}>{children}</MSBtnStyle>
   )
 }
+export const MS_btn_disable = ({children, btnFn}) => {
+  return (
+    <MSBtnStyle disabled={true} type="button" >{children}</MSBtnStyle>
+  )
+}
 export const MS_btn_icon = ({children, btnFn, icon}) => {
   return (
       <IconMSStyle type="button" onClick={btnFn}>
@@ -205,7 +213,7 @@ export const Tab_active_btn = ({children}) => {
 }
 export const Tab_disable_btn = ({children}) => {
   return (
-    <TabBtnStyle $off type="button" >{children}</TabBtnStyle>
+    <TabBtnStyle disabled $off type="button" >{children}</TabBtnStyle>
   )
 }
 
@@ -225,5 +233,5 @@ export const TabMenu_off_btn = ({children, round=null, btnFn}) => {
         {children}
         {round && <RoundStyle>{round}</RoundStyle>}
       </TabMeuStyle>
-  )
+  )   
 }

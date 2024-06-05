@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom';
 import reset from 'styled-reset';
 import { createGlobalStyle, ThemeProvider} from 'styled-components';
 import { lightTheme } from './styles/colorPalette';
@@ -19,6 +19,7 @@ import SellerCenterPage from './pages/seller/sellerCenterPage';
 import RegistProductPage from './pages/seller/registProductPage';
 import EditPage from './pages/seller/editPage';
 import ErrorPage from './pages/errorPage';
+import DetailPage from './pages/detailPage';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
@@ -32,6 +33,7 @@ function App() {
   const resetRecoil = () => {
 		setRecoilKey(prev => prev + 1);
 	};
+
   return (
     <QueryClientProvider client={queryClient}>
       <ResetRecoilContext.Provider value={resetRecoil}>
@@ -43,6 +45,7 @@ function App() {
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/signup" element={<SignupPage />}></Route>
                 <Route path="/login" element={<LoginPage />}></Route>
+                <Route path="/product/:pid" element={<DetailPage />}></Route>
                 <Route path="/seller_center" element={<SellerCenterPage />}></Route>
                 <Route path="/regist_product" element={<RegistProductPage />}></Route>
                 <Route path="/edit" element={<EditPage />}></Route>

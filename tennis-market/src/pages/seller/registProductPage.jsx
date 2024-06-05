@@ -235,6 +235,7 @@ export default function RegistProductPage() {
   // --- 업로드 api 요청 ---
   const uploadApi = useMutation({
     mutationFn: () => {
+      setIsLoading(true);
       const postData = {
         "product_name" : product_name,
         "price" : price,
@@ -252,18 +253,18 @@ export default function RegistProductPage() {
       }) 
     },
     onSettled: () => {
-      setIsLoading(true);
+      setIsLoading(false);
     },
     onSuccess : (data) => {
       if(data.status === 201) {
         setIsLoading(false);
-        navigate('/seller_center');
+        navigate(`/product/${data.data.product_id}`);
       } else if(data.status === 400) {
         setAlertOpen(true);
+        setErrAlertCont('필수값을 입력하세요.');
         setErrFn(() => scrollToTop);
-        setErrAlertCont('필수값을 확인해주세요.');
-
       } else if(data.status === 401) {
+        setIsLoading(false);
         setAlertOpen(true);
         setErrAlertCont(data.data.detail);
         setErrFn(() => logout.mutate)

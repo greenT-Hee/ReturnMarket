@@ -5,6 +5,7 @@ import { normalAxios } from "../axios"
 import { useMutation, useQueries, useQuery } from "@tanstack/react-query"
 import { useRecoilValue } from "recoil"
 import { user_info } from "../atom/Atom"
+import { useNavigate } from "react-router-dom"
 
 
 const ProductUl = styled.ul`
@@ -86,6 +87,7 @@ const Loading = styled.p`
 `
 
 function MainPage() {
+  const navigate = useNavigate();
   const userInfo = useRecoilValue(user_info);
   const getBuyerProducts = async () => {
    return normalAxios.get('/products/');
@@ -114,7 +116,7 @@ function MainPage() {
           <ProductUl>
             {data.data.results.map((ele, idx) => {
               return(
-                <ProdcutLi key={ele.product_id}>
+                <ProdcutLi key={ele.product_id} onClick={() => navigate(`product/${ele.product_id}`)}>
                   <ProdcutImg src={ele.image} alt={ele.product_name + "썸네일"} />
                   <ShopP>{ele.store_name}</ShopP>
                   <ProductP>{ele.product_name}</ProductP>
