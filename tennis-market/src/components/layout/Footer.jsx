@@ -2,6 +2,8 @@ import styled from "styled-components";
 import insta from "../../assets/images/icon-insta.svg";
 import facebook from "../../assets/images/icon-fb.svg";
 import youtube from "../../assets/images/icon-yt.svg";
+import { useEffect } from "react";
+import { getCookie, logout } from "../../api/auth";
 const FooterStyle = styled.footer`
   width: 100%;
   padding: 60px 0;
@@ -52,6 +54,10 @@ const LiStyle2 = styled.li`
 `
 
 export default function Footer() {
+  useEffect(() => {
+    // const accessToken = getCookie('accessToken');
+    // if(!accessToken) logout();
+  }, [])
   return (
     <FooterStyle>
       <ContentBox>

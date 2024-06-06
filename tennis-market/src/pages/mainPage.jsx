@@ -92,9 +92,6 @@ function MainPage() {
   const getBuyerProducts = async () => {
    return normalAxios.get('/products/');
   };
-  const getSellerProducts = async () => {
-   return normalAxios.get('/seller/');
-  };
 
   const { isPending, isError, data, error, isSuccess} = useQuery({
     queryKey: ['buyer_products'],

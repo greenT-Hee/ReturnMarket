@@ -213,7 +213,7 @@ export const Tab_active_btn = ({children}) => {
 }
 export const Tab_disable_btn = ({children}) => {
   return (
-    <TabBtnStyle disabled $off type="button" >{children}</TabBtnStyle>
+    <TabBtnStyle $off type="button" >{children}</TabBtnStyle>
   )
 }
 
