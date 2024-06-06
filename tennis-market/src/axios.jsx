@@ -1,25 +1,23 @@
 import axios from "axios";
 import { getCookie } from "./api/auth";
+import { useEffect } from "react";
 
-const userAccessToken = getCookie('accessToken') ? getCookie('accessToken') : null;
+
 export const normalAxios = axios.create({
   baseURL: 'https://openmarket.weniv.co.kr/',
   timeout: 5000,
-  headers: {
-    Authorization: userAccessToken,
-  },
+  headers: {}
 });
 
-// instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-
 // 요청 인터셉터 추가하기
-// normalAxios.interceptors.request.use(function (config) {
-//   // 요청이 전달되기 전에 작업 수행
-//   // return config;
-// }, function (error) {
-//   // 요청 오류가 있는 작업 수행
-//   // return Promise.reject(error);
-// });
+normalAxios.interceptors.request.use(function (config) {
+  // 요청이 전달되기 전에 작업 수행
+  config.headers.Authorization = getCookie('accessToken') ? getCookie('accessToken') : null;
+  return config;
+}, function (error) {
+  // 요청 오류가 있는 작업 수행
+  return Promise.reject(error);
+});
 
 // 응답 인터셉터 추가하기
 normalAxios.interceptors.response.use(function (response) {
