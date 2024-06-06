@@ -52,7 +52,6 @@ function LoginPage() {
 		"password": password,
 		"login_type": login_type
   };
-
   const loginMutate = useMutation({
     mutationFn: (logdata) => {
       return normalAxios.post('/accounts/login/', logdata);

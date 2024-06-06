@@ -4,6 +4,9 @@ import facebook from "../../assets/images/icon-fb.svg";
 import youtube from "../../assets/images/icon-yt.svg";
 import { useEffect } from "react";
 import { getCookie, logout } from "../../api/auth";
+import { useRecoilValue } from "recoil";
+import { user_info } from "../../atom/Atom";
+import { AlertModal } from "../modal/AlertModal";
 const FooterStyle = styled.footer`
   width: 100%;
   padding: 60px 0;
@@ -54,9 +57,11 @@ const LiStyle2 = styled.li`
 `
 
 export default function Footer() {
+  const userInfo = useRecoilValue(user_info);
   useEffect(() => {
-    // const accessToken = getCookie('accessToken');
-    // if(!accessToken) logout();
+    if(getCookie('accessToken') === undefined && userInfo.id) {
+      logout();
+    }
   }, [])
   return (
     <FooterStyle>

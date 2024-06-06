@@ -18,15 +18,17 @@ export const getCookie = (name) => {
 export const logout = async () => {
   const cookies = new Cookies();
   try {
-    const response = await normalAxios.post(`/account/logout`, logoutData);
+    const response = await normalAxios.post(`/accounts/logout/`);
     // window.localStorage.setItem('logout', Date.now());
     if (response.status === 200) {
-      localStorage.removeItem("recoil-persist");;
+      localStorage.removeItem("recoil-persist");
+      cookies.remove('accessToken');
       normalAxios.defaults.headers.common["Authorization"] = null;
       window.location.href = '/';
     }
   } catch (err) {
     window.localStorage.removeItem("recoil-persist");
+    cookies.remove('accessToken');
     normalAxios.defaults.headers.common["Authorization"] = null;
     window.location.href = '/';
     console.error(err);
