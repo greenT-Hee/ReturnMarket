@@ -48,7 +48,7 @@ function App() {
                 <Route path="/product/:pid" element={<DetailPage />}></Route>
                 <Route path="/seller_center" element={<SellerCenterPage />}></Route>
                 <Route path="/regist_product" element={<RegistProductPage />}></Route>
-                <Route path="/edit" element={<EditPage />}></Route>
+                <Route path="/edit/:pid" element={<EditPage />}></Route>
                 <Route path="/*" element={<ErrorPage />}></Route>
               </Routes>
             </ThemeProvider>

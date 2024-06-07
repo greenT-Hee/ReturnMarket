@@ -112,7 +112,7 @@ export default function SellerLayout({children}) {
         </>
       )
     }
-    if(locationName.includes('regist_product')) {
+    if(locationName.includes('regist_product') || locationName.includes('edit')) {
       return (
         <>
           <TopTitleArea>

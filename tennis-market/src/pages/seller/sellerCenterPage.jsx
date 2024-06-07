@@ -8,6 +8,7 @@ import { ComfirmModal } from "../../components/modal/comfirmModals";
 import { ConfirmOpen } from "../../atom/Atom";
 import { useRecoilState } from "recoil";
 import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Table = styled.table`
   table-layout: fixed;
@@ -70,6 +71,7 @@ const NoCont = styled.p`
 
 
 export default function SellerCenterPage() {
+  const navigate = useNavigate();
   const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
   const [pid, setPid] = useState('');
   const selectId = (e) => {
@@ -131,7 +133,7 @@ export default function SellerCenterPage() {
                   </FlexItem>
                 </TdStyle>
                 <TdStyle $second={'true'}><PriceSpan>{ele.price.toLocaleString()}</PriceSpan>원</TdStyle>
-                <TdStyle $third={'true'}><S_btn>수정</S_btn></TdStyle>
+                <TdStyle $third={'true'}><S_btn btnFn={(e) => navigate(`/edit/${ele.product_id}`)}>수정</S_btn></TdStyle>
                 <TdStyle $fourth={'true'}><S_btn_white btnFn={() => setOpenConfirm(true)}>삭제</S_btn_white></TdStyle>
               </TrStyle>
             )
