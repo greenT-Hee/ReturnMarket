@@ -107,8 +107,8 @@ function MainPage() {
       {/* 상품 리스트 */}
       <section>
         <h2 className="screen_out">상품 리스트 영역</h2>
-        {isPending && <Loading>로딩 중...</Loading>}
-        {isError && <Loading>로딩 중...</Loading>}
+        {isPending && <Loading>🎾 상품 준비 중</Loading>}
+        {isError && <Loading>ERROR</Loading>}
         {isSuccess && 
           <ProductUl>
             {data.data.results.map((ele, idx) => {

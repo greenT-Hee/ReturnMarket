@@ -26,64 +26,79 @@ export default function DetailPage() {
   }
   
   return (
-    <>
-    {data && 
-      <MainLayout>
-        <Main> 
-          <section>
-            <h2 className="screen_out">상품 정보</h2>
-            <ContentArticle>      
-              <Thumbnail src={data.data.image} alt="" /> 
-              <ContBox>
-                <div>
-                  <StoreP>{data.data.store_name}</StoreP>
-                  <ProductP>{data.data.product_name}</ProductP>
-                  <PriceP><PriceSpan>{data.data.price.toLocaleString()}</PriceSpan>원</PriceP>
-                </div>
-
-                <div>
-                  <DeliveryP>
-                    <span>{data.data.shipping_method === 'PARCEL' ? '택배배송' : '직접배송'} / </span>
-                    <span>{data.data.shipping_fee === 0 ? '무료배송' : data.data.shipping_fee + '원'}</span></DeliveryP>
-                  <CountBox>
-                    <CountMinus type="button" $minus="true">-</CountMinus>
-                    <CountNumber type="button">1</CountNumber>
-                    <CountPlus type="button" $plus="true">+</CountPlus>
-                  </CountBox>
-                </div>
-
-                <PriceBox>
-                  <p>총 상품금액</p>
-                  <TotalNumBox>
-                    <CountP>총 수량 <CountSpan>1</CountSpan>개</CountP>
-                    <CountP> | </CountP>
-                    <TotalP><TotalSpan>17,500</TotalSpan>원</TotalP>
-                  </TotalNumBox>
-                </PriceBox>
-                
-                <OrderBtnFelx>
-                  <M_btn_disable>바로구매</M_btn_disable>
-                  <MS_btn_disable>장바구니</MS_btn_disable>
-                </OrderBtnFelx>
-              </ContBox>
-            </ContentArticle>
-          </section>
-
-          <section>
-            <h2 className="screen_out">상품 디테일 설명</h2>
-            <TabBtnFelx>
-              <Tab_active_btn>상세설명</Tab_active_btn>
-              <Tab_disable_btn>리뷰</Tab_disable_btn>
-              <Tab_disable_btn>Q&A</Tab_disable_btn>
-              <Tab_disable_btn>반품/교환정보</Tab_disable_btn>
-            </TabBtnFelx>
-
-            <Textarea readOnly ref={desc_ref} value={data.data.product_info}></Textarea>
-          </section>
-        </Main>
-      </MainLayout>
+    <MainLayout>
+    {isPending && 
+      <Main> 
+        <section>
+          <h2 className="screen_out">상품 정보</h2>
+          <ContentArticle>      
+            <LoadingThumbnail></LoadingThumbnail> 
+            <ContBox>
+            <div>
+                <LoadingP $150></LoadingP>
+                <LoadingP $250></LoadingP>
+                <LoadingP $200></LoadingP>
+              </div>
+            </ContBox>
+          </ContentArticle>
+        </section>
+      </Main>
     }
-    </>
+    {data && 
+      <Main> 
+        <section>
+          <h2 className="screen_out">상품 정보</h2>
+          <ContentArticle>      
+            <Thumbnail src={data.data.image} alt="" /> 
+            <ContBox>
+              <div>
+                <StoreP>{data.data.store_name}</StoreP>
+                <ProductP>{data.data.product_name}</ProductP>
+                <PriceP><PriceSpan>{data.data.price.toLocaleString()}</PriceSpan>원</PriceP>
+              </div>
+
+              <div>
+                <DeliveryP>
+                  <span>{data.data.shipping_method === 'PARCEL' ? '택배배송' : '직접배송'} / </span>
+                  <span>{data.data.shipping_fee === 0 ? '무료배송' : data.data.shipping_fee + '원'}</span></DeliveryP>
+                <CountBox>
+                  <CountMinus type="button" $minus="true">-</CountMinus>
+                  <CountNumber type="button">1</CountNumber>
+                  <CountPlus type="button" $plus="true">+</CountPlus>
+                </CountBox>
+              </div>
+
+              <PriceBox>
+                <p>총 상품금액</p>
+                <TotalNumBox>
+                  <CountP>총 수량 <CountSpan>1</CountSpan>개</CountP>
+                  <CountP> | </CountP>
+                  <TotalP><TotalSpan>17,500</TotalSpan>원</TotalP>
+                </TotalNumBox>
+              </PriceBox>
+              
+              <OrderBtnFelx>
+                <M_btn_disable>바로구매</M_btn_disable>
+                <MS_btn_disable>장바구니</MS_btn_disable>
+              </OrderBtnFelx>
+            </ContBox>
+          </ContentArticle>
+        </section>
+
+        <section>
+          <h2 className="screen_out">상품 디테일 설명</h2>
+          <TabBtnFelx>
+            <Tab_active_btn>상세설명</Tab_active_btn>
+            <Tab_disable_btn>리뷰</Tab_disable_btn>
+            <Tab_disable_btn>Q&A</Tab_disable_btn>
+            <Tab_disable_btn>반품/교환정보</Tab_disable_btn>
+          </TabBtnFelx>
+
+          <Textarea readOnly ref={desc_ref} value={data.data.product_info}></Textarea>
+        </section>
+      </Main>
+    }
+    </MainLayout>
   )
 }
 
@@ -117,6 +132,22 @@ const Thumbnail = styled.img`
   max-width: 100%;
   height: 600px;
   object-fit: cover;
+`
+
+const LoadingThumbnail = styled.div`
+  width: 600px;
+  max-width: 100%;
+  height: 600px;
+  background: ${({theme}) => theme.gray1};
+  `
+
+const LoadingP = styled.p`
+  padding: 14px 0;
+  width: ${(props) => props.$150 ? `150px` : ``};
+  width: ${(props) => props.$250 ? `250px` : ``};
+  width: ${(props) => props.$200 ? `200px` : ``};
+  background: ${({theme}) => theme.gray1};
+  margin: 0 0 6px;
 `
 
 const StoreP = styled.p`
