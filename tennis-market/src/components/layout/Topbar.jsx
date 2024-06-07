@@ -71,7 +71,7 @@ const MypageUl = styled.ul`
   background: ${({theme}) => theme.w};
   text-align: center;
   position: absolute;
-  right: 160px;
+  right: ${(props) => props.$buyer ? `-35px` : `160px`};
   top: 68px;
   border-radius: 8px;
   box-shadow: -2px 5px 25px rgba(0,0,0,0.3);
@@ -156,7 +156,13 @@ export function TopbarMain() {
         </LeftFlex>
 
         <RightArea>
-          {openMypage && 
+          {(openMypage && userInfo.user_type === 'BUYER') && 
+            <MypageUl $buyer='true'>
+              <MypageLi>마이페이지</MypageLi>
+              <MypageLi onClick={() => logout.mutate()}>로그아웃</MypageLi>
+            </MypageUl>
+          }
+          {(openMypage && userInfo.user_type === 'SELLER')  && 
             <MypageUl>
               <MypageLi>마이페이지</MypageLi>
               <MypageLi onClick={() => logout.mutate()}>로그아웃</MypageLi>
