@@ -36,11 +36,12 @@ const ThStyle = styled.th`
   width: ${(props) => props.$second ? '25%' : null};
   width: ${(props) => props.$third ? '10%' : null};
   width: ${(props) => props.$fourth ? '10%' : null};
-`
+  `
 const TdStyle = styled.td`
   padding: 16px;
   word-break:break-all;
   vertical-align: middle;
+  cursor: ${(props) => props.$first ? 'pointer' : null};
   text-align: ${(props) => props.$first ? 'left' : 'center'};
   line-height: 1.3;
 `
@@ -123,7 +124,7 @@ export default function SellerCenterPage() {
           {data.data.results.map((ele) => {
             return(
               <TrStyle id={ele.product_id} key={ele.product_id} onClick={selectId}>
-                <TdStyle $first={'true'}>
+                <TdStyle $first={'true'} onClick={() => navigate('/product/' + ele.product_id)}>
                   <FlexItem>
                     <ProductImg src={ele.image} alt={ele.product_name + "썸네일"} />
                     <div>
