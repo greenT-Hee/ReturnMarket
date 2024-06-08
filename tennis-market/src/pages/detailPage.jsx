@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import MainLayout from "../components/layout/MainLayout";
 import styled from "styled-components";
-import { MS_btn, MS_btn_disable, M_btn, M_btn_disable, Tab_active_btn, Tab_disable_btn } from "../components/buttons";
+import { MS_btn, MS_btn_disable, MS_btn_white, M_btn, M_btn_disable, Tab_active_btn, Tab_disable_btn } from "../components/buttons";
 import rabbit from "../assets/images/rabbit.png";
 import { normalAxios } from "../axios";
 import { useQuery } from "@tanstack/react-query";
@@ -92,7 +92,7 @@ export default function DetailPage() {
                      {(userInfo.user_type === 'BUYER') && 
                        <OrderBtnFelx>
                          <M_btn>바로구매</M_btn>
-                         <MS_btn>장바구니</MS_btn>
+                         <MS_btn_white>장바구니</MS_btn_white>
                        </OrderBtnFelx>
                      }
                      {(userInfo.user_type === 'SELLER') && 
