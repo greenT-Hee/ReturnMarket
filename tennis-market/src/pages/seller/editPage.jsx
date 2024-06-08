@@ -371,7 +371,7 @@ export default function EditPage() {
           <EditorBox id='product_info' name="product_info"  placeholder='상품 정보를 입력해주세요.' value={product_info} onChange={handleInputValue}></EditorBox>
           <EditorBtnFlex>
             <MS_btn_white btnFn={() => navigate('/seller_center')}>취소</MS_btn_white>
-            <MS_btn btnFn={() => uploadApi.mutate()}>저장하기</MS_btn>
+            <MS_btn btnFn={() => uploadApi.mutate()}>수정하기</MS_btn>
           </EditorBtnFlex>
         </EditorArea>
         </>
