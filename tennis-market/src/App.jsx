@@ -10,7 +10,7 @@ import {
   QueryClientProvider,
   useQuery,
 } from '@tanstack/react-query';
-import { RecoilRoot } from 'recoil';
+import { RecoilRoot, useRecoilValue } from 'recoil';
 import ResetRecoilContext from './ResetRecoilContext';
 import MainPage from './pages/mainPage';
 import LoginPage from './pages/auth/loginPage';
@@ -21,14 +21,16 @@ import EditPage from './pages/seller/editPage';
 import ErrorPage from './pages/errorPage';
 import DetailPage from './pages/detailPage';
 import CartPage from './pages/buyer/CartPage';
+import { user_info } from './atom/Atom';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
   ${reset};
   /* other styles */
-`
+  `
 
 function App() {
+  const userInfo = useRecoilValue(user_info);
   const [theme, setTheme] = useState(lightTheme);
   const [recoilKey, setRecoilKey] = useState(0);
   const resetRecoil = () => {
@@ -49,11 +51,19 @@ function App() {
                 <Route path="/product/:pid" element={<DetailPage />}></Route>
                 <Route path="/*" element={<ErrorPage />}></Route>
                 {/* -- seller -- */}
-                <Route path="/seller_center" element={<SellerCenterPage />}></Route>
-                <Route path="/regist_product" element={<RegistProductPage />}></Route>
-                <Route path="/edit/:pid" element={<EditPage />}></Route>
+                {userInfo.user_type === 'SELLER' &&
+                  <>
+                    <Route path="/seller_center" element={<SellerCenterPage />}></Route>
+                    <Route path="/regist_product" element={<RegistProductPage />}></Route>
+                    <Route path="/edit/:pid" element={<EditPage />}></Route>
+                  </>
+                }
                 {/* -- buyer -- */}
-                <Route path="/cart" element={<CartPage />}></Route>
+                {userInfo.user_type === 'BUYER' &&
+                  <>
+                    <Route path="/cart" element={<CartPage />}></Route>
+                  </>
+                }
               </Routes>
             </ThemeProvider>
           </BrowserRouter>
