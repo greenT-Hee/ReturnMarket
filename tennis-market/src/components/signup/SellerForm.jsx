@@ -7,7 +7,7 @@ import { normalAxios } from '../../axios';
 import { useState } from 'react';
 import iconCheck from '../../assets/images/ico-check.svg'
 import AgreeModal from '../modal/AgreementModal'
-import { ConfirmOpen, ModalOpen } from '../../atom/Atom';
+import { AlertOpen, ConfirmOpen, ModalOpen } from '../../atom/Atom';
 import { useRecoilState } from 'recoil';
 // from 테두리
 const FormRound = styled.div`
@@ -70,7 +70,7 @@ const CheckRound = styled.div`
 `
 
 function SellerForm() {
-  const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
+  const [openConfrim, setOpenConfirm] = useRecoilState(AlertOpen);
   const [alertOpen, setAlertOpen] = useRecoilState(ModalOpen);
   const [agreeType, setAgreeType] = useState('');
   const [isAgreeCheck, setIsAgreeCheck] = useState(false)

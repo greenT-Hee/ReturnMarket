@@ -1,28 +1,42 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import MainLayout from "../components/layout/MainLayout";
 import styled from "styled-components";
 import { MS_btn, MS_btn_disable, MS_btn_white, M_btn, M_btn_disable, Tab_active_btn, Tab_disable_btn } from "../components/buttons";
 import rabbit from "../assets/images/rabbit.png";
 import { normalAxios } from "../axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { user_info } from "../atom/Atom";
-import { useRecoilValue } from "recoil";
+import { ConfirmOpen, user_info } from "../atom/Atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { ComfirmModal } from "../components/modal/comfirmModals";
 
 
 export default function DetailPage() {
   const { pid } = useParams();
+  const navigate = useNavigate();
   const userInfo = useRecoilValue(user_info);
   const desc_ref = useRef(null);
   const [count, setCount] = useState(1);
+  const [isInCart, setIsInCart] = useState(true);
+  const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
+  const [confirmMsg, setConfirmMsg] = useState('');
+  const [confirmFn, setConfirmFn] = useState(null);
   
   const getDetail = async () => {
     return normalAxios.get('/products/' + parseInt(pid));
   };
-  
-  const { isPending, isError, data, error, isSuccess} = useQuery({
+  const getCartList = async () => {
+    return normalAxios.get('/cart/');
+  };
+
+  const { isPending , data : data } = useQuery({
     queryKey: ['product_detail', pid],
     queryFn: getDetail,
+    refetchOnWindowFocus: false,
+  });
+  const { isSuccess : cartOk, data : cart } = useQuery({
+    queryKey: ['cartList'],
+    queryFn: getCartList,
     refetchOnWindowFocus: false,
   });
 
@@ -35,7 +49,57 @@ export default function DetailPage() {
       setCount(count - 1);   
     }
   };
-  console.log(userInfo.user_type)
+
+  useEffect(() => {
+    if(cartOk) {
+      if(cart.data.results.length > 0) {
+        cart.data.results.map((ele) => {
+          if(ele.product_id === parseInt(pid)) setIsInCart(false);
+        })
+      }
+    }
+  }, [cartOk])
+
+  const cartData = {
+    "product_id": parseInt(pid), //product의 id 값을 넣어주면 됩니다.
+    "quantity": count,
+    "check" : isInCart, // 장바구니에 해당 제품이 있는지 확인합니다. False일 때는 확인용 모달창을 띄워야하고, True일 때 카트에 담을 수 있습니다.
+  }
+
+  const handleConfrim =() => {
+    if(!isInCart) {
+      setOpenConfirm(false); 
+      navigate('/cart');
+    } else {
+      cartMutate.mutate(cartData);
+    }
+  }
+
+  const addCart = () => {
+    if(!isInCart) {
+      setOpenConfirm(true);
+      setConfirmMsg('이미 동일한 상품이 존재합니다.\n장바구니로 이동할까요?');
+    } else {
+      setOpenConfirm(true);
+      setConfirmMsg('장바구니에 담으시겠습니까?');
+    }
+  }
+
+  const cartMutate = useMutation({
+    mutationFn: (data) => {
+      // 예외 : cart에 이미 있음
+      return normalAxios.post('/cart/', data);
+    },
+    onSuccess : (data) => {
+      if(data.status === 201) {
+        navigate('/cart');
+      } else if(data.status === 400) {
+    
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  })
+
   return (
     <MainLayout>
     {isPending && 
@@ -57,6 +121,7 @@ export default function DetailPage() {
     }
     {data && 
       <Main> 
+        <ComfirmModal content={confirmMsg} btnFn={handleConfrim} />
         <section>
           <h2 className="screen_out">상품 정보</h2>
           <ContentArticle>      
@@ -92,7 +157,7 @@ export default function DetailPage() {
                      {(userInfo.user_type === 'BUYER') && 
                        <OrderBtnFelx>
                          <M_btn>바로구매</M_btn>
-                         <MS_btn_white>장바구니</MS_btn_white>
+                         <MS_btn_white btnFn={addCart}>장바구니</MS_btn_white>
                        </OrderBtnFelx>
                      }
                      {(userInfo.user_type === 'SELLER') && 

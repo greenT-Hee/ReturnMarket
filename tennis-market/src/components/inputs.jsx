@@ -1,5 +1,6 @@
 import styled from "styled-components"
-
+import checkOn from "../assets/images/icon-check-on.svg";
+import checkOff from "../assets/images/icon-check-off.svg";
 const Label = styled.label`
   display: block;
   color: ${({theme}) => theme.gray3};
@@ -53,6 +54,56 @@ const ErrMsg = styled.p`
   padding: 0 0 4px;
 `
 
+const CheckboxInput = styled.input`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+`
+const CheckboxInputLabel = styled.label`
+  display: inline-block;
+  position: relative;
+  padding-left: 26px;
+  cursor: pointer;
+
+  /* ::after {
+    position: absolute;
+    left: 0;
+    top: 3px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    background: url(${checkOff}) no-repeat;  
+    box-sizing: border-box;
+    border-radius: 5px;
+  } */
+`
+
+/* 보여질 부분의 스타일을 추가하면 된다. */
+// .check__line input[type="checkbox"]:checked + label:after {
+//   content: "";
+//   position: absolute;
+//   top: 3px;
+//   left: 0;
+//   width: 20px;
+//   height: 20px;  
+//   background: url(../images/sub/check_on.png)no-repeat;  
+//   background-position: center center;
+//   border-radius: 5px;
+// }
+
+// .check__line input[type="checkbox"] + label span {
+//   font-weight: 400;
+//   font-size: 13px;
+//   line-height: 26px;  
+//   letter-spacing: -1px;
+//   color: rgba(0, 0, 0, 0.5);
+// }
+
 export const NormalInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false, placeholder}) => {
   return (
     <>
@@ -82,6 +133,16 @@ export const EmailInput = ({id, label}) => {
         <span>@</span>
         <Input $emailnput='true' style={{width: '220px'}} type="text" id='email2'/>
       </AliginEmailInputDiv>
+    </>
+  )
+}
+
+
+export const CartCheckbox = ({label, id}) => {
+  return (
+    <>
+      <CheckboxInput type="checkbox" id={id} name={label}/>
+      <CheckboxInputLabel htmlFor={label}></CheckboxInputLabel>
     </>
   )
 }

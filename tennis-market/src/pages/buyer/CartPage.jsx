@@ -5,6 +5,7 @@ import { L_btn, S_btn } from "../../components/buttons";
 import deleteIcon from "../../assets/images/icon-delete.svg";
 import plusIcon from "../../assets/images/icon-plus-line.svg";
 import minusicon from "../../assets/images/icon-minus-line.svg";
+import { CartCheckbox } from "../../components/inputs";
 const Main = styled.main`
   padding: 107px 20px 180px;
   width: 1300px;
@@ -189,9 +190,7 @@ export default function CartPage() {
         <section>
           <h2 className="screen_out">장바구니 목록 영역</h2>
           <TopUl>
-            <Li $first='true'>
-              <input type="checkbox"/>
-            </Li>
+            <Li $first='true'><CartCheckbox /></Li>
             <Li $scd='true'>상품정보</Li>
             <Li $thd='true'>수량</Li>
             <Li $fth='true'>상품금액</Li>
@@ -202,7 +201,7 @@ export default function CartPage() {
               <img src={deleteIcon} alt="장바구니에서 삭제 버튼" />
             </DeleteBtn>
             <Div1>
-              <input type="checkbox" />
+              <CartCheckbox />
             </Div1>
             <Div2>
               <PImage src={img} alt="" />
