@@ -20,6 +20,7 @@ import RegistProductPage from './pages/seller/registProductPage';
 import EditPage from './pages/seller/editPage';
 import ErrorPage from './pages/errorPage';
 import DetailPage from './pages/detailPage';
+import CartPage from './pages/buyer/CartPage';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
@@ -46,10 +47,13 @@ function App() {
                 <Route path="/signup" element={<SignupPage />}></Route>
                 <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/product/:pid" element={<DetailPage />}></Route>
+                <Route path="/*" element={<ErrorPage />}></Route>
+                {/* -- seller -- */}
                 <Route path="/seller_center" element={<SellerCenterPage />}></Route>
                 <Route path="/regist_product" element={<RegistProductPage />}></Route>
                 <Route path="/edit/:pid" element={<EditPage />}></Route>
-                <Route path="/*" element={<ErrorPage />}></Route>
+                {/* -- buyer -- */}
+                <Route path="/cart" element={<CartPage />}></Route>
               </Routes>
             </ThemeProvider>
           </BrowserRouter>
