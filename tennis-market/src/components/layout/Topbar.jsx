@@ -4,14 +4,15 @@ import shoppingbag from '../../assets/images/icon-shopping-bag.svg';
 import mypageIcon from '../../assets/images/icon-user.svg';
 import cartIcon from '../../assets/images/icon-shopping-cart.svg';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
-import { user_info } from '../../atom/Atom';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { AlertOpen, user_info } from '../../atom/Atom';
 import { MS_btn_icon } from '../buttons';
 import { useContext, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { normalAxios } from '../../axios';
 import ResetRecoilContext from '../../ResetRecoilContext';
 import Cookies from 'universal-cookie';
+import { AlertModal } from '../modal/AlertModal';
 
 const HeaderStyle = styled.header`
   padding: 15px 20px 25px;
@@ -126,6 +127,7 @@ export function TopbarMain() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(user_info);
   const [openMypage, setOpenMypage] = useState(false);
+  const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
 
 
   const resetRecoil = useContext(ResetRecoilContext);
@@ -147,8 +149,11 @@ export function TopbarMain() {
     },
     onError : (e) => {console.log(e.message)},
   })
+
+
   return (
     <HeaderStyle>
+      <AlertModal content={'로그인이 필요한 서비스 입니다.'} btnFn={() => {navigate('/login'); setOpenAlert(false)}}/>
       <HeaderLayout>
         <LeftFlex>
           <h1><Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/></h1>
@@ -156,6 +161,7 @@ export function TopbarMain() {
         </LeftFlex>
 
         <RightArea>
+          {/* 마이페이지 드롭박스 */}
           {(openMypage && userInfo.user_type === 'BUYER') && 
             <MypageUl $buyer='true'>
               <MypageLi>마이페이지</MypageLi>
@@ -168,9 +174,11 @@ export function TopbarMain() {
               <MypageLi onClick={() => logout.mutate()}>로그아웃</MypageLi>
             </MypageUl>
           }
+
+          {/* 로그인 전 */}
           {!userInfo.user_type && 
             <RightUl>
-              <RightLi onClick={() => navigate('/cart')}>
+              <RightLi onClick={ () => setOpenAlert(true) }>
                 <RightIcon src={cartIcon} alt="" />
                 <p>장바구니</p>
               </RightLi>
@@ -180,6 +188,7 @@ export function TopbarMain() {
               </RightLi>
             </RightUl>
           }
+          {/* 구매자 버전 */}
           {userInfo.user_type === 'BUYER' && 
             <RightUl>
               <RightLi onClick={() => navigate('/cart')}>
@@ -192,6 +201,7 @@ export function TopbarMain() {
               </RightLi>
             </RightUl>
           }
+          {/* 판매자 버전 */}
           {userInfo.user_type === 'SELLER' && 
             <RightUl>
                <RightLi onClick={()=>{openMypage ? setOpenMypage(false) : setOpenMypage(true);}}>

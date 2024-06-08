@@ -55,7 +55,7 @@ export function AlertModal({content, btnFn=null}) {
           <ContentBox>
             <ContentP>{content}</ContentP>
             <BtnFlex>
-              <li><S_btn btnFn={() => setOpenAlert(false)}>예</S_btn></li>
+              <li><S_btn btnFn={() => setOpenAlert(false)}>확인</S_btn></li>
             </BtnFlex>
 
           </ContentBox>
@@ -66,7 +66,7 @@ export function AlertModal({content, btnFn=null}) {
           <ContentBox>
             <ContentP>{content}</ContentP>
             <BtnFlex>
-              <li><S_btn btnFn={btnFn}>예</S_btn></li>
+              <li><S_btn btnFn={btnFn}>확인</S_btn></li>
             </BtnFlex>
 
           </ContentBox>
