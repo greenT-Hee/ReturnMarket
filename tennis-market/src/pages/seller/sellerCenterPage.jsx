@@ -36,7 +36,8 @@ const ThStyle = styled.th`
   width: ${(props) => props.$second ? '25%' : null};
   width: ${(props) => props.$third ? '10%' : null};
   width: ${(props) => props.$fourth ? '10%' : null};
-  `
+`
+
 const TdStyle = styled.td`
   padding: 16px;
   word-break:break-all;

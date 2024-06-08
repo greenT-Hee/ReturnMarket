@@ -39,7 +39,7 @@ const MSBtnStyle = styled.button`
   background: none;
   border: ${(props) => props.$disabled ? `1px solid ${props.theme.gray2}` : `unset`};
   border: ${(props) => props.$white ? `1px solid ${props.theme.gray2}` : `unset`};
-  padding: 16px;
+  padding: 18px;
   border-radius: 5px;
   font-size: 16px;
   color: ${(props) => props.$white ? props.theme.gray3 : props.theme.w};
@@ -180,7 +180,7 @@ export const MS_btn_white = ({children, btnFn}) => {
 }
 export const MS_btn_disable = ({children, btnFn}) => {
   return (
-    <MSBtnStyle $disabled disabled={true} type="button" >{children}</MSBtnStyle>
+    <MSBtnStyle $disabled='true' disabled type="button" >{children}</MSBtnStyle>
   )
 }
 export const MS_btn_icon = ({children, btnFn, icon}) => {

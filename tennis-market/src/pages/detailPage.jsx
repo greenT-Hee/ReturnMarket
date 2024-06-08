@@ -1,30 +1,41 @@
 import { useParams } from "react-router-dom"
 import MainLayout from "../components/layout/MainLayout";
 import styled from "styled-components";
-import { MS_btn_disable, M_btn_disable, Tab_active_btn, Tab_disable_btn } from "../components/buttons";
+import { MS_btn, MS_btn_disable, M_btn, M_btn_disable, Tab_active_btn, Tab_disable_btn } from "../components/buttons";
 import rabbit from "../assets/images/rabbit.png";
 import { normalAxios } from "../axios";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { user_info } from "../atom/Atom";
+import { useRecoilValue } from "recoil";
 
 
 export default function DetailPage() {
   const { pid } = useParams();
+  const userInfo = useRecoilValue(user_info);
   const desc_ref = useRef(null);
+  const [count, setCount] = useState(1);
+  
   const getDetail = async () => {
     return normalAxios.get('/products/' + parseInt(pid));
-   };
- 
-   const { isPending, isError, data, error, isSuccess} = useQuery({
-     queryKey: ['product_detail', pid],
-     queryFn: getDetail,
-     refetchOnWindowFocus: false,
-   });
-
-  const calculateTotal = () => {
-    
-  }
+  };
   
+  const { isPending, isError, data, error, isSuccess} = useQuery({
+    queryKey: ['product_detail', pid],
+    queryFn: getDetail,
+    refetchOnWindowFocus: false,
+  });
+
+  const calculateTotal = (e) => {
+    if(e.target.id === 'plus_btn') {
+      setCount(count + 1);
+    }
+    if(e.target.id === 'minus_btn') {
+      if(count === 1) return;
+      setCount(count - 1);   
+    }
+  };
+  console.log(userInfo.user_type)
   return (
     <MainLayout>
     {isPending && 
@@ -57,30 +68,45 @@ export default function DetailPage() {
                 <PriceP><PriceSpan>{data.data.price.toLocaleString()}</PriceSpan>원</PriceP>
               </div>
 
-              <div>
-                <DeliveryP>
-                  <span>{data.data.shipping_method === 'PARCEL' ? '택배배송' : '직접배송'} / </span>
-                  <span>{data.data.shipping_fee === 0 ? '무료배송' : data.data.shipping_fee + '원'}</span></DeliveryP>
-                <CountBox>
-                  <CountMinus type="button" $minus="true">-</CountMinus>
-                  <CountNumber type="button">1</CountNumber>
-                  <CountPlus type="button" $plus="true">+</CountPlus>
-                </CountBox>
-              </div>
-
-              <PriceBox>
-                <p>총 상품금액</p>
-                <TotalNumBox>
-                  <CountP>총 수량 <CountSpan>1</CountSpan>개</CountP>
-                  <CountP> | </CountP>
-                  <TotalP><TotalSpan>17,500</TotalSpan>원</TotalP>
-                </TotalNumBox>
-              </PriceBox>
+                  <div>
+                    <DeliveryP>
+                      <span>{data.data.shipping_method === 'PARCEL' ? '택배배송' : '직접배송'} / </span>
+                      <span>{data.data.shipping_fee === 0 ? '무료배송' : data.data.shipping_fee.toLocaleString() + '원'}</span></DeliveryP>
+                    <CountBox onClick={calculateTotal}>
+                      <CountMinus type="button" $minus="true" id="minus_btn">-</CountMinus>
+                      <CountNumber type="button">{count}</CountNumber>
+                      <CountPlus type="button" $plus="true" id="plus_btn">+</CountPlus>
+                    </CountBox>
+                  </div>
+                
+                  <PriceBox>
+                    <p>총 상품금액</p>
+                    <TotalNumBox>
+                      <CountP>총 수량 <CountSpan>{count}</CountSpan>개</CountP>
+                      <CountP> | </CountP>
+                      <TotalP><TotalSpan>{((count * data.data.price) + data.data.shipping_fee).toLocaleString()}</TotalSpan>원</TotalP>
+                    </TotalNumBox>
+                  </PriceBox>
+                  {data.data.stock > 0 ?
+                    <>
+                     {(userInfo.user_type === 'BUYER') && 
+                       <OrderBtnFelx>
+                         <M_btn>바로구매</M_btn>
+                         <MS_btn>장바구니</MS_btn>
+                       </OrderBtnFelx>
+                     }
+                     {(userInfo.user_type === 'SELLER') && 
+                       <OrderBtnFelx>
+                         <RedFontP>구매자만 상품을 구매할 수 있습니다.</RedFontP>
+                       </OrderBtnFelx>     
+                     }
+                    </>
+                    :
+                    <OrderBtnFelx>
+                      <RedFontP>재고가 없습니다.</RedFontP>
+                    </OrderBtnFelx>  
+                  }
               
-              <OrderBtnFelx>
-                <M_btn_disable>바로구매</M_btn_disable>
-                <MS_btn_disable>장바구니</MS_btn_disable>
-              </OrderBtnFelx>
             </ContBox>
           </ContentArticle>
         </section>
@@ -259,6 +285,12 @@ const OrderBtnFelx = styled.div`
   align-items: center;
   justify-content: flex-end;
   gap: 14px;
+`
+
+const RedFontP = styled.p`
+  color: ${({theme}) => theme.red};
+  font-weight: 500;
+  font-size: 14px;
 `
 
 const TabBtnFelx = styled.div`
