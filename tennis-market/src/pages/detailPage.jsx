@@ -6,7 +6,7 @@ import rabbit from "../assets/images/rabbit.png";
 import { normalAxios } from "../axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ConfirmOpen, user_info } from "../atom/Atom";
+import { ConfirmOpen, user_info, user_role } from "../atom/Atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { ComfirmModal } from "../components/modal/comfirmModals";
 
@@ -21,15 +21,18 @@ export default function DetailPage() {
   const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
   const [confirmMsg, setConfirmMsg] = useState('');
   const [confirmFn, setConfirmFn] = useState(null);
-  
   const getDetail = async () => {
     return normalAxios.get('/products/' + parseInt(pid));
   };
   const getCartList = async () => {
-    return normalAxios.get('/cart/');
+    if(userInfo.user_type) {
+      return normalAxios.get('/cart/');
+    } else {
+      return false;
+    }
   };
 
-  const { isPending , data : data } = useQuery({
+  const { isSuccess, isPending , data : data } = useQuery({
     queryKey: ['product_detail', pid],
     queryFn: getDetail,
     refetchOnWindowFocus: false,
@@ -52,7 +55,7 @@ export default function DetailPage() {
 
   useEffect(() => {
     if(cartOk) {
-      if(cart.data.results.length > 0) {
+      if(cart?.data?.results.length > 0) {
         cart.data.results.map((ele) => {
           if(ele.product_id === parseInt(pid)) setIsInCart(false);
         })
@@ -119,7 +122,7 @@ export default function DetailPage() {
         </section>
       </Main>
     }
-    {data && 
+    {isSuccess && 
       <Main> 
         <ComfirmModal content={confirmMsg} btnFn={handleConfrim} />
         <section>
