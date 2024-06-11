@@ -8,7 +8,7 @@ import minusicon from "../../assets/images/icon-minus-line.svg";
 import { CartCheckbox } from "../../components/inputs";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { normalAxios } from "../../axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function CartPage() {
   const getCartList = async () => {
@@ -51,33 +51,30 @@ export default function CartPage() {
 
 
   const items = [...Array(cart?.data.count).keys()];
-  const [checkedItems, setCheckdItems] = useState(new Set());
+  const [checkedItems, setCheckedItems] = useState(new Set());
   const [isAllChecked, setIsAllChecked] = useState(false);
   const handleCheckItem = (id, isChecked) => {
     if(isChecked) {
       checkedItems.add(id);
-      setCheckdItems(checkedItems);
+      setCheckedItems(checkedItems);
     } else if(!isChecked && checkedItems.has(id)){+
       checkedItems.delete(id);
-      setCheckdItems(checkedItems);
+      setCheckedItems(checkedItems);
     }
   }
-  
+        
   const allCheckedHandler = (isChecked) => {
     if (isChecked) {
-      
+      setCheckedItems(new Set(cart?.data?.results.map((ele) => ele.cart_item_id)))
       setIsAllChecked(true);
     } else {
       checkedItems.clear();
       setIsAllChecked(false);
-    }
-  };
+      }
+    };
+        
+  const allCheckboxRef = useRef(null);
 
-  useEffect(() => {
-    if(cartOk) {
-      // console.log(items)
-    }
-  }, [checkedItems])
   return (
     <MainLayout>
       <Main>
@@ -86,7 +83,7 @@ export default function CartPage() {
           <h2 className="screen_out">장바구니 목록 영역</h2>
           <TopUl>
             {/* 전체 체크박스 */}
-            <Li $first='true'><CartCheckbox /></Li>
+            <Li $first='true'><input ref={allCheckboxRef}  type="checkbox" onChange={(e) => allCheckedHandler(e.target.checked)}/></Li>
             <Li $scd='true'>상품정보</Li>
             <Li $thd='true'>수량</Li>
             <Li $fth='true'>상품금액</Li>
@@ -99,7 +96,7 @@ export default function CartPage() {
               </DeleteBtn>
               <Div1>
                 {/* 개별 체크 박스 */}
-                <CartCheckbox id={ele.cart_item_id} checkHandler={handleCheckItem}/>
+                <CartCheckbox id={ele.cart_item_id} checkHandler={handleCheckItem} isAllChecked={isAllChecked}/>
               </Div1>
               <Div2>
                 <PImage src={img} alt="" />
