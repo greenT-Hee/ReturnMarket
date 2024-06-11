@@ -6,9 +6,167 @@ import deleteIcon from "../../assets/images/icon-delete.svg";
 import plusIcon from "../../assets/images/icon-plus-line.svg";
 import minusicon from "../../assets/images/icon-minus-line.svg";
 import { CartCheckbox } from "../../components/inputs";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { normalAxios } from "../../axios";
+import { useEffect, useState } from "react";
+
+export default function CartPage() {
+  const getCartList = async () => {
+    return normalAxios.get('/cart/');
+  };
+  
+  const { isSuccess : cartOk, data : cart } = useQuery({
+    queryKey: ['cartList'],
+    queryFn: getCartList,
+    refetchOnWindowFocus: false,
+  });
+
+
+  const deleteItem = useMutation({
+    mutationFn: (cart_id) => {
+      return normalAxios.delete('/cart/' + parseInt(cart_id));
+    },
+    onSuccess : (data) => {
+      if(data.status === 200) {
+      
+      } else if(data.status === 401) {
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  });
+
+  const deleteAll = () => useMutation({
+    mutationFn: () => {
+      return normalAxios.delete('/cart/');
+    },
+    onSuccess : (data) => {
+      if(data.status === 200) {
+      
+      } else if(data.status === 401) {
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  })
+
+
+
+  const items = [...Array(cart?.data.count).keys()];
+  const [checkedItems, setCheckdItems] = useState(new Set());
+  const [isAllChecked, setIsAllChecked] = useState(false);
+  const handleCheckItem = (id, isChecked) => {
+    if(isChecked) {
+      checkedItems.add(id);
+      setCheckdItems(checkedItems);
+    } else if(!isChecked && checkedItems.has(id)){+
+      checkedItems.delete(id);
+      setCheckdItems(checkedItems);
+    }
+  }
+  
+  const allCheckedHandler = (isChecked) => {
+    if (isChecked) {
+      
+      setIsAllChecked(true);
+    } else {
+      checkedItems.clear();
+      setIsAllChecked(false);
+    }
+  };
+
+  useEffect(() => {
+    if(cartOk) {
+      // console.log(items)
+    }
+  }, [checkedItems])
+  return (
+    <MainLayout>
+      <Main>
+        <H1>장바구니</H1>
+        <section>
+          <h2 className="screen_out">장바구니 목록 영역</h2>
+          <TopUl>
+            {/* 전체 체크박스 */}
+            <Li $first='true'><CartCheckbox /></Li>
+            <Li $scd='true'>상품정보</Li>
+            <Li $thd='true'>수량</Li>
+            <Li $fth='true'>상품금액</Li>
+          </TopUl>
+          {cart?.data.results.map ((ele, idx) => {
+            return (
+            <Article key={idx}>
+              <DeleteBtn type="button" onClick={() => deleteItem.mutate(ele.cart_item_id)}>
+                <img src={deleteIcon} alt="장바구니에서 삭제 버튼" /> 
+              </DeleteBtn>
+              <Div1>
+                {/* 개별 체크 박스 */}
+                <CartCheckbox id={ele.cart_item_id} checkHandler={handleCheckItem}/>
+              </Div1>
+              <Div2>
+                <PImage src={img} alt="" />
+                <div>
+                  <GrayP>백엔드글로벌</GrayP>
+                  <ProductNameP>딥러닝 개발자 무릎 담요</ProductNameP>
+                  <PriceP><span>17,500</span>원</PriceP>
+                  <GrayP><span>택배배송 / </span><span>무료배송</span></GrayP>
+                </div>
+              </Div2>
+              <Div3>
+                <CountBox>
+                  <CountMinus type="button" $minus="true" id="minus_btn">-</CountMinus>
+                  <CountNumber type="button">{ele.quantity}</CountNumber>
+                  <CountPlus type="button" $plus="true" id="plus_btn">+</CountPlus>
+                </CountBox>
+              </Div3>
+              <Div4>
+                <TotalPriceP><span>17,500</span>원</TotalPriceP>
+                <S_btn>주문하기</S_btn>
+              </Div4>
+            </Article>
+            )
+          })}
+        </section>
+
+        <section>
+          <h2 className="screen_out">장바구니 총 가격 계산 영역</h2>
+          <TotalLineUl>
+            <li>
+              <p>총 상품금액</p>
+              <ListTitle><BoldSpan>46,500</BoldSpan>원</ListTitle>
+            </li>
+            <li>
+              <img src={minusicon} alt="마이너스 아이콘"/>
+              </li>
+            <li>
+              <p>상품 할인</p>
+              <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
+            </li>
+            <li>
+              <img src={plusIcon} alt="플러스 아이콘"/>
+            </li>
+            <li>
+              <p>배송비</p>
+              <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
+            </li>
+            <li>
+              <BoldSpan $small='true'>결제 예정 금액</BoldSpan>
+              <ListTitle $red='true'><BoldSpan $big='true'>46,500</BoldSpan>원</ListTitle>
+            </li>
+          </TotalLineUl>
+
+          <OrderAllBtnDiv>
+            <L_btn>주문하기</L_btn>
+          </OrderAllBtnDiv>
+        </section>
+        
+      </Main>
+    </MainLayout>
+  )
+}
+
 const Main = styled.main`
   padding: 107px 20px 180px;
   width: 1300px;
+  max-width: 100%;
   box-sizing: border-box;
   margin: 0 auto;
 `
@@ -180,85 +338,3 @@ const BoldSpan = styled.span`
   font-size: ${(props) => props.$big ? '36px' : '20px'};
   font-weight: 700;
 `
-
-
-export default function CartPage() {
-  return (
-    <MainLayout>
-      <Main>
-        <H1>장바구니</H1>
-        <section>
-          <h2 className="screen_out">장바구니 목록 영역</h2>
-          <TopUl>
-            <Li $first='true'><CartCheckbox /></Li>
-            <Li $scd='true'>상품정보</Li>
-            <Li $thd='true'>수량</Li>
-            <Li $fth='true'>상품금액</Li>
-          </TopUl>
-
-          <Article>
-            <DeleteBtn type="button" id="delete_btn">
-              <img src={deleteIcon} alt="장바구니에서 삭제 버튼" />
-            </DeleteBtn>
-            <Div1>
-              <CartCheckbox />
-            </Div1>
-            <Div2>
-              <PImage src={img} alt="" />
-              <div>
-                <GrayP>백엔드글로벌</GrayP>
-                <ProductNameP>딥러닝 개발자 무릎 담요</ProductNameP>
-                <PriceP><span>17,500</span>원</PriceP>
-                <GrayP><span>택배배송 / </span><span>무료배송</span></GrayP>
-              </div>
-            </Div2>
-            <Div3>
-              <CountBox>
-                <CountMinus type="button" $minus="true" id="minus_btn">-</CountMinus>
-                <CountNumber type="button">1</CountNumber>
-                <CountPlus type="button" $plus="true" id="plus_btn">+</CountPlus>
-              </CountBox>
-            </Div3>
-            <Div4>
-              <TotalPriceP><span>17,500</span>원</TotalPriceP>
-              <S_btn>주문하기</S_btn>
-            </Div4>
-          </Article>
-        </section>
-
-        <section>
-          <h2 className="screen_out">장바구니 총 가격 계산 영역</h2>
-          <TotalLineUl>
-            <li>
-              <p>총 상품금액</p>
-              <ListTitle><BoldSpan>46,500</BoldSpan>원</ListTitle>
-            </li>
-            <li>
-              <img src={minusicon} alt="마이너스 아이콘"/>
-              </li>
-            <li>
-              <p>상품 할인</p>
-              <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
-            </li>
-            <li>
-              <img src={plusIcon} alt="플러스 아이콘"/>
-            </li>
-            <li>
-              <p>배송비</p>
-              <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
-            </li>
-            <li>
-              <BoldSpan $small='true'>결제 예정 금액</BoldSpan>
-              <ListTitle $red='true'><BoldSpan $big='true'>46,500</BoldSpan>원</ListTitle>
-            </li>
-          </TotalLineUl>
-
-          <OrderAllBtnDiv>
-            <L_btn>주문하기</L_btn>
-          </OrderAllBtnDiv>
-        </section>
-        
-      </Main>
-    </MainLayout>
-  )
-}

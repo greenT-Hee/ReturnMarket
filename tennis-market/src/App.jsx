@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes, useParams } from 'react-router-dom';
 import reset from 'styled-reset';
 import { createGlobalStyle, ThemeProvider} from 'styled-components';
 import { lightTheme } from './styles/colorPalette';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './styles/global.css';
 import {
   QueryClient,
@@ -21,7 +21,7 @@ import EditPage from './pages/seller/editPage';
 import ErrorPage from './pages/errorPage';
 import DetailPage from './pages/detailPage';
 import CartPage from './pages/buyer/CartPage';
-import { user_info } from './atom/Atom';
+import { user_info, user_role } from './atom/Atom';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
@@ -30,7 +30,7 @@ const GlobalStyle = createGlobalStyle`
   `
 
 function App() {
-  const userInfo = useRecoilValue(user_info);
+  const role = useRecoilValue(user_role);
   const [theme, setTheme] = useState(lightTheme);
   const [recoilKey, setRecoilKey] = useState(0);
   const resetRecoil = () => {
@@ -51,19 +51,13 @@ function App() {
                 <Route path="/product/:pid" element={<DetailPage />}></Route>
                 <Route path="/*" element={<ErrorPage />}></Route>
                 {/* -- seller -- */}
-                {userInfo.user_type === 'SELLER' &&
-                  <>
-                    <Route path="/seller_center" element={<SellerCenterPage />}></Route>
-                    <Route path="/regist_product" element={<RegistProductPage />}></Route>
-                    <Route path="/edit/:pid" element={<EditPage />}></Route>
-                  </>
-                }
+                <Route path="/seller_center" element={<SellerCenterPage />}></Route>
+                <Route path="/regist_product" element={<RegistProductPage />}></Route>
+                <Route path="/edit/:pid" element={<EditPage />}></Route>
                 {/* -- buyer -- */}
-                {userInfo.user_type === 'BUYER' &&
-                  <>
-                    <Route path="/cart" element={<CartPage />}></Route>
-                  </>
-                }
+                <Route path="/cart" element={<CartPage />}></Route>
+
+  
               </Routes>
             </ThemeProvider>
           </BrowserRouter>

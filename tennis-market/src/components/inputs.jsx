@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import checkOn from "../assets/images/icon-check-on.svg";
 import checkOff from "../assets/images/icon-check-off.svg";
+import { useState } from "react";
 const Label = styled.label`
   display: block;
   color: ${({theme}) => theme.gray3};
@@ -138,11 +139,18 @@ export const EmailInput = ({id, label}) => {
 }
 
 
-export const CartCheckbox = ({label, id}) => {
+export const CartCheckbox = ({label, id, checkHandler}) => {
+  const [checked, setChecked] = useState(false);
+  const handleCheckbox = ({target}) => {
+    setChecked(!checked);
+    checkHandler(target.id, target.checked);
+  }
+
+
   return (
     <>
-      <CheckboxInput type="checkbox" id={id} name={label}/>
-      <CheckboxInputLabel htmlFor={label}></CheckboxInputLabel>
+      <input type="checkbox" id={id} name={label} checked={checked} onChange={(e) => handleCheckbox(e)}/>
+      <label htmlFor={label}></label>
     </>
   )
 }
