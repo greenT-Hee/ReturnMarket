@@ -1,54 +1,34 @@
 import MainLayout from "../../components/layout/MainLayout";
 import styled from "styled-components";
 import img from "../../assets/images/rabbit.png";
-import { L_btn, S_btn } from "../../components/buttons";
+import { L_btn, S_btn, S_btn_white } from "../../components/buttons";
 import deleteIcon from "../../assets/images/icon-delete.svg";
 import plusIcon from "../../assets/images/icon-plus-line.svg";
 import minusicon from "../../assets/images/icon-minus-line.svg";
 import { CartCheckbox } from "../../components/inputs";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { normalAxios } from "../../axios";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { AlertOpen, ConfirmOpen } from "../../atom/Atom";
+import { AlertModal } from "../../components/modal/AlertModal";
 
 export default function CartPage() {
+  const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
+  const [alertMsg, setAlertMsg] = useState('');
+  const [checkItems, setCeckItems] = useState([]);
+  // const [deleteId, setDeleteId] = useState('')
   const getCartList = async () => {
     return normalAxios.get('/cart/');
   };
   
-  const { isSuccess : cartOk, data : cart } = useQuery({
+  const { isSuccess : cartOk, data : cart, refetch} = useQuery({
     queryKey: ['cartList'],
     queryFn: getCartList,
     refetchOnWindowFocus: false,
   });
 
-
-  const deleteItem = useMutation({
-    mutationFn: (cart_id) => {
-      return normalAxios.delete('/cart/' + parseInt(cart_id));
-    },
-    onSuccess : (data) => {
-      if(data.status === 200) {
-      
-      } else if(data.status === 401) {
-      }
-    },
-    onError : (e) => {console.log(e.message)},
-  });
-
-  const deleteAll = () => useMutation({
-    mutationFn: () => {
-      return normalAxios.delete('/cart/');
-    },
-    onSuccess : (data) => {
-      if(data.status === 200) {
-      
-      } else if(data.status === 401) {
-      }
-    },
-    onError : (e) => {console.log(e.message)},
-  })
-
-  const [checkItems, setCeckItems] = useState([]);
+  // ----- checkbox ------
   const singleCheckHandler = (checked, id) => {
     if(checked) {
       setCeckItems(prev => [...prev, id]);
@@ -58,23 +38,80 @@ export default function CartPage() {
   } 
   
   const AllCheckHandler = (checked) => {
-    console.log(checked)
     if(checked) {
       const idArr = [];
       cart?.data?.results.map(ele => {idArr.push(ele.cart_item_id)});
       setCeckItems(idArr);
+      return true;
     }
     else {
       setCeckItems([]);
+      return false;
     }
   }
-  console.log(checkItems, "🐰")
+
+  // --- 단일 삭제 ---
+  // -- 단일 삭제 체크 여부 ---
+  const clickDeleteSingleBtn = (item_id) => {
+    if(!checkItems.includes(item_id)) {
+      setOpenAlert(true);
+      setAlertMsg('해당 상품을 선택해주세요.');
+    } else {
+      deleteSingle.mutate(item_id);
+    }
+  }
+  const deleteSingle = useMutation({
+    mutationFn: (cart_id) => {
+      return normalAxios.delete('/cart/' + parseInt(cart_id));
+    },
+    onSuccess : (data) => {
+      if(data.status === 204) {
+        setOpenAlert(true);
+        setAlertMsg("상품이 삭제되었습니다.");
+        setCeckItems([]);
+        refetch();
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  });
+  
+  // 전체 삭제
+  const handleDeleteAll = () => {
+    const isAllChecked = checkItems.length === cart?.data?.count;
+    console.log(isAllChecked)
+    if(!isAllChecked) {
+      setOpenAlert(true);
+      setAlertMsg('상품을 모두 선택헤주세요.');
+    } else {
+      deleteAll.mutate();
+    }
+  }
+  const deleteAll = useMutation({
+    mutationFn: () => {
+      return normalAxios.delete('/cart/');
+    },
+    onSuccess : (data) => {
+      if(data.status === 204) {
+        setOpenAlert(true);
+        setAlertMsg("상품이 삭제되었습니다.");
+        refetch();
+        setCeckItems([]);
+      } else if(data.status === 401) {
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  })
+
 
   return (
     <MainLayout>
       <Main>
-        <H1>장바구니</H1>
         <section>
+          <AlertModal content={alertMsg}/>
+          <H1>장바구니</H1>
+          <WrapAllDelBtn>
+            {cart?.data?.count > 0 && <S_btn_white btnFn={handleDeleteAll}>전체삭제</S_btn_white>}
+          </WrapAllDelBtn>
           <h2 className="screen_out">장바구니 목록 영역</h2>
           <TopUl>
             {/* 전체 체크박스 */}
@@ -82,18 +119,21 @@ export default function CartPage() {
               <AllCheckbox  
                 type="checkbox" 
                 onChange={(e)=>AllCheckHandler(e.target.checked)} 
-                checked={checkItems.length === cart?.data?.count ? true : false}
+                checked={(cart?.data?.count > 0 && (checkItems.length === cart?.data?.count)) ? true : false}
               />
               </Li>
             <Li $scd='true'>상품정보</Li>
             <Li $thd='true'>수량</Li>
             <Li $fth='true'>상품금액</Li>
           </TopUl>
+          {cart?.data.count === 0 && (
+            <NoContP>등록된 상품이 없습니다.</NoContP>
+          )}
           {cart?.data.results.map ((ele, idx) => {
             return (
             <Article key={idx}>
-              <DeleteBtn type="button" onClick={() => deleteItem.mutate(ele.cart_item_id)}>
-                <img src={deleteIcon} alt="장바구니에서 삭제 버튼" /> 
+              <DeleteBtn type="button" onClick={() => clickDeleteSingleBtn(ele.cart_item_id)}>
+                <img src={deleteIcon} alt="장바구니에서 삭제 버튼"/> 
               </DeleteBtn>
               <Div1>
                 {/* 개별 체크 박스 */}
@@ -124,38 +164,38 @@ export default function CartPage() {
           })}
         </section>
 
-        <section>
-          <h2 className="screen_out">장바구니 총 가격 계산 영역</h2>
-          <TotalLineUl>
-            <li>
-              <p>총 상품금액</p>
-              <ListTitle><BoldSpan>46,500</BoldSpan>원</ListTitle>
-            </li>
-            <li>
-              <img src={minusicon} alt="마이너스 아이콘"/>
+        {cart?.data.count > 0 &&
+          <section>
+            <h2 className="screen_out">장바구니 총 가격 계산 영역</h2>
+            <TotalLineUl>
+              <li>
+                <p>총 상품금액</p>
+                <ListTitle><BoldSpan>46,500</BoldSpan>원</ListTitle>
               </li>
-            <li>
-              <p>상품 할인</p>
-              <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
-            </li>
-            <li>
-              <img src={plusIcon} alt="플러스 아이콘"/>
-            </li>
-            <li>
-              <p>배송비</p>
-              <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
-            </li>
-            <li>
-              <BoldSpan $small='true'>결제 예정 금액</BoldSpan>
-              <ListTitle $red='true'><BoldSpan $big='true'>46,500</BoldSpan>원</ListTitle>
-            </li>
-          </TotalLineUl>
-
-          <OrderAllBtnDiv>
-            <L_btn>주문하기</L_btn>
-          </OrderAllBtnDiv>
-        </section>
-        
+              <li>
+                <img src={minusicon} alt="마이너스 아이콘"/>
+                </li>
+              <li>
+                <p>상품 할인</p>
+                <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
+              </li>
+              <li>
+                <img src={plusIcon} alt="플러스 아이콘"/>
+              </li>
+              <li>
+                <p>배송비</p>
+                <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
+              </li>
+              <li>
+                <BoldSpan $small='true'>결제 예정 금액</BoldSpan>
+                <ListTitle $red='true'><BoldSpan $big='true'>46,500</BoldSpan>원</ListTitle>
+              </li>
+            </TotalLineUl>
+            <OrderAllBtnDiv>
+              <L_btn>주문하기</L_btn>
+            </OrderAllBtnDiv>
+          </section>
+          }
       </Main>
     </MainLayout>
   )
@@ -172,7 +212,17 @@ const H1 = styled.h1`
   font-size: 36px;
   font-weight: 700;
   text-align: center;
-  padding: 54px 0;
+  padding: 80px 0 50px;
+`
+const NoContP = styled.p`
+  padding: 100px 0;
+  font-weight: 500;
+  text-align: center;
+`
+const WrapAllDelBtn = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 `
 const TopUl = styled.ul`
   display: flex;

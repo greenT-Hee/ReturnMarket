@@ -96,6 +96,7 @@ export default function DetailPage() {
     onSuccess : (data) => {
       if(data.status === 201) {
         navigate('/cart');
+        setOpenConfirm(false);
       } else if(data.status === 400) {
     
       }
