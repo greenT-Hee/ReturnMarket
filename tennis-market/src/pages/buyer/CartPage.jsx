@@ -48,32 +48,27 @@ export default function CartPage() {
     onError : (e) => {console.log(e.message)},
   })
 
-
-
-  const items = [...Array(cart?.data.count).keys()];
-  const [checkedItems, setCheckedItems] = useState(new Set());
-  const [isAllChecked, setIsAllChecked] = useState(false);
-  const handleCheckItem = (id, isChecked) => {
-    if(isChecked) {
-      checkedItems.add(id);
-      setCheckedItems(checkedItems);
-    } else if(!isChecked && checkedItems.has(id)){+
-      checkedItems.delete(id);
-      setCheckedItems(checkedItems);
+  const [checkItems, setCeckItems] = useState([]);
+  const singleCheckHandler = (checked, id) => {
+    if(checked) {
+      setCeckItems(prev => [...prev, id]);
+    } else {
+      setCeckItems(checkItems.filter(ele => ele !== id));
+    }
+  } 
+  
+  const AllCheckHandler = (checked) => {
+    console.log(checked)
+    if(checked) {
+      const idArr = [];
+      cart?.data?.results.map(ele => {idArr.push(ele.cart_item_id)});
+      setCeckItems(idArr);
+    }
+    else {
+      setCeckItems([]);
     }
   }
-        
-  const allCheckedHandler = (isChecked) => {
-    if (isChecked) {
-      setCheckedItems(new Set(cart?.data?.results.map((ele) => ele.cart_item_id)))
-      setIsAllChecked(true);
-    } else {
-      checkedItems.clear();
-      setIsAllChecked(false);
-      }
-    };
-        
-  const allCheckboxRef = useRef(null);
+  console.log(checkItems, "🐰")
 
   return (
     <MainLayout>
@@ -83,7 +78,13 @@ export default function CartPage() {
           <h2 className="screen_out">장바구니 목록 영역</h2>
           <TopUl>
             {/* 전체 체크박스 */}
-            <Li $first='true'><input ref={allCheckboxRef}  type="checkbox" onChange={(e) => allCheckedHandler(e.target.checked)}/></Li>
+            <Li $first='true'>
+              <AllCheckbox  
+                type="checkbox" 
+                onChange={(e)=>AllCheckHandler(e.target.checked)} 
+                checked={checkItems.length === cart?.data?.count ? true : false}
+              />
+              </Li>
             <Li $scd='true'>상품정보</Li>
             <Li $thd='true'>수량</Li>
             <Li $fth='true'>상품금액</Li>
@@ -96,7 +97,7 @@ export default function CartPage() {
               </DeleteBtn>
               <Div1>
                 {/* 개별 체크 박스 */}
-                <CartCheckbox id={ele.cart_item_id} checkHandler={handleCheckItem} isAllChecked={isAllChecked}/>
+                <CartCheckbox id={ele.cart_item_id} checkItems={checkItems} singleCheckHandler={singleCheckHandler}/>
               </Div1>
               <Div2>
                 <PImage src={img} alt="" />
@@ -202,7 +203,11 @@ const Article = styled.article`
   border-radius: 10px;
   border: 1px solid ${({theme}) => theme.gray1};
 `
-
+const AllCheckbox = styled.input`
+  width: 16px;
+  height: 16px;
+  accent-color: ${({theme}) => theme.main};
+`
 
 const DeleteBtn = styled.button`
   display: block;

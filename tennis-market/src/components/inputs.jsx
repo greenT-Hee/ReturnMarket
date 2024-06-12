@@ -56,14 +56,9 @@ const ErrMsg = styled.p`
 `
 
 const CheckboxInput = styled.input`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
+  width: 18px;
+  height: 16px;
+  accent-color: ${({theme}) => theme.main};
 `
 const CheckboxInputLabel = styled.label`
   display: inline-block;
@@ -139,18 +134,16 @@ export const EmailInput = ({id, label}) => {
 }
 
 
-export const CartCheckbox = ({label, id, checkHandler, isAllChecked}) => {
-  const [checked, setChecked] = useState(false);
-  const handleCheckbox = ({target}) => {
-    setChecked(!checked);
-    checkHandler(target.id, target.checked);
-  }
-  const allCheckHandler = () => setChecked(isAllChecked);
-  useEffect(() => allCheckHandler(), [isAllChecked]);
-
+export const CartCheckbox = ({label, id, singleCheckHandler, checkItems}) => {
   return (
     <>
-      <input type="checkbox" id={id} name={label} checked={checked} onChange={(e) => handleCheckbox(e)}/>
+      <CheckboxInput 
+      type="checkbox" 
+      id={id} 
+      name={label} 
+      onChange={(e) => singleCheckHandler(e.target.checked, id)} 
+      checked={checkItems.includes(id) ? true : false}
+      />
       <label htmlFor={label}></label>
     </>
   )
