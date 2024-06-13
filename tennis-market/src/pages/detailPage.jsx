@@ -7,7 +7,7 @@ import { normalAxios } from "../axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmOpen, user_info, user_role } from "../atom/Atom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { ComfirmModal } from "../components/modal/comfirmModals";
 
 
@@ -20,7 +20,7 @@ export default function DetailPage() {
   const [isInCart, setIsInCart] = useState(true);
   const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
   const [confirmMsg, setConfirmMsg] = useState('');
-  const [confirmFn, setConfirmFn] = useState(null);
+ 
   const getDetail = async () => {
     return normalAxios.get('/products/' + parseInt(pid));
   };
@@ -32,15 +32,18 @@ export default function DetailPage() {
     }
   };
 
-  const { isSuccess, isPending , data : data } = useQuery({
+  const { isSuccess, isPending , data : detail_data } = useQuery({
     queryKey: ['product_detail', pid],
     queryFn: getDetail,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
+
   const { isSuccess : cartOk, data : cart } = useQuery({
     queryKey: ['cartList'],
     queryFn: getCartList,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const calculateTotal = (e) => {
@@ -98,7 +101,7 @@ export default function DetailPage() {
         navigate('/cart');
         setOpenConfirm(false);
       } else if(data.status === 400) {
-    
+        
       }
     },
     onError : (e) => {console.log(e.message)},
@@ -129,18 +132,18 @@ export default function DetailPage() {
         <section>
           <h2 className="screen_out">상품 정보</h2>
           <ContentArticle>      
-            <Thumbnail src={data.data.image} alt="" /> 
+            <Thumbnail src={detail_data.data.image} alt="" /> 
             <ContBox>
               <div>
-                <StoreP>{data.data.store_name}</StoreP>
-                <ProductP>{data.data.product_name}</ProductP>
-                <PriceP><PriceSpan>{data.data.price.toLocaleString()}</PriceSpan>원</PriceP>
+                <StoreP>{detail_data.data.store_name}</StoreP>
+                <ProductP>{detail_data.data.product_name}</ProductP>
+                <PriceP><PriceSpan>{detail_data.data.price.toLocaleString()}</PriceSpan>원</PriceP>
               </div>
 
                   <div>
                     <DeliveryP>
-                      <span>{data.data.shipping_method === 'PARCEL' ? '택배배송' : '직접배송'} / </span>
-                      <span>{data.data.shipping_fee === 0 ? '무료배송' : data.data.shipping_fee.toLocaleString() + '원'}</span></DeliveryP>
+                      <span>{detail_data.data.shipping_method === 'PARCEL' ? '택배배송' : '직접배송'} / </span>
+                      <span>{detail_data.data.shipping_fee === 0 ? '무료배송' : detail_data.data.shipping_fee.toLocaleString() + '원'}</span></DeliveryP>
                     <CountBox onClick={calculateTotal}>
                       <CountMinus type="button" $minus="true" id="minus_btn">-</CountMinus>
                       <CountNumber type="button">{count}</CountNumber>
@@ -153,10 +156,10 @@ export default function DetailPage() {
                     <TotalNumBox>
                       <CountP>총 수량 <CountSpan>{count}</CountSpan>개</CountP>
                       <CountP> | </CountP>
-                      <TotalP><TotalSpan>{((count * data.data.price) + data.data.shipping_fee).toLocaleString()}</TotalSpan>원</TotalP>
+                      <TotalP><TotalSpan>{(count * detail_data.data.price).toLocaleString()}</TotalSpan>원</TotalP>
                     </TotalNumBox>
                   </PriceBox>
-                  {data.data.stock > 0 ?
+                  {detail_data.data.stock > 0 ?
                     <>
                      {(userInfo.user_type === 'BUYER') && 
                        <OrderBtnFelx>
@@ -189,7 +192,7 @@ export default function DetailPage() {
             <Tab_disable_btn>반품/교환정보</Tab_disable_btn>
           </TabBtnFelx>
 
-          <Textarea readOnly ref={desc_ref} value={data.data.product_info}></Textarea>
+          <Textarea readOnly ref={desc_ref} value={detail_data.data.product_info}></Textarea>
         </section>
       </Main>
     }

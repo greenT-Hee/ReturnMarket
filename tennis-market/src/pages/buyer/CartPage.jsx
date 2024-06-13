@@ -1,41 +1,31 @@
 import MainLayout from "../../components/layout/MainLayout";
 import styled from "styled-components";
-import img from "../../assets/images/rabbit.png";
-import { L_btn, S_btn, S_btn_white } from "../../components/buttons";
-import deleteIcon from "../../assets/images/icon-delete.svg";
+import { L_btn, S_btn_white } from "../../components/buttons";
 import plusIcon from "../../assets/images/icon-plus-line.svg";
 import minusicon from "../../assets/images/icon-minus-line.svg";
-import { CartCheckbox } from "../../components/inputs";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { normalAxios } from "../../axios";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
-import { AlertOpen, ConfirmOpen } from "../../atom/Atom";
+import { AlertOpen, TOTAL_PRICE } from "../../atom/Atom";
 import { AlertModal } from "../../components/modal/AlertModal";
+import CartDetails from "../../components/cart/CartDetails";
 
 export default function CartPage() {
+  const [totalPrice, setTotalPrice] = useRecoilState(TOTAL_PRICE);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   const [alertMsg, setAlertMsg] = useState('');
   const [checkItems, setCeckItems] = useState([]);
-  // const [deleteId, setDeleteId] = useState('')
+
   const getCartList = async () => {
     return normalAxios.get('/cart/');
   };
-  
+
   const { isSuccess : cartOk, data : cart, refetch} = useQuery({
     queryKey: ['cartList'],
     queryFn: getCartList,
     refetchOnWindowFocus: false,
   });
-
-  // ----- checkbox ------
-  const singleCheckHandler = (checked, id) => {
-    if(checked) {
-      setCeckItems(prev => [...prev, id]);
-    } else {
-      setCeckItems(checkItems.filter(ele => ele !== id));
-    }
-  } 
   
   const AllCheckHandler = (checked) => {
     if(checked) {
@@ -49,51 +39,24 @@ export default function CartPage() {
       return false;
     }
   }
-
-  // --- 단일 삭제 ---
-  // -- 단일 삭제 체크 여부 ---
-  const clickDeleteSingleBtn = (item_id) => {
-    if(!checkItems.includes(item_id)) {
-      setOpenAlert(true);
-      setAlertMsg('해당 상품을 선택해주세요.');
-    } else {
-      deleteSingle.mutate(item_id);
-    }
-  }
-  const deleteSingle = useMutation({
-    mutationFn: (cart_id) => {
-      return normalAxios.delete('/cart/' + parseInt(cart_id));
-    },
-    onSuccess : (data) => {
-      if(data.status === 204) {
-        setOpenAlert(true);
-        setAlertMsg("상품이 삭제되었습니다.");
-        setCeckItems([]);
-        refetch();
-      }
-    },
-    onError : (e) => {console.log(e.message)},
-  });
   
   // 전체 삭제
   const handleDeleteAll = () => {
     const isAllChecked = checkItems.length === cart?.data?.count;
-    console.log(isAllChecked)
     if(!isAllChecked) {
       setOpenAlert(true);
-      setAlertMsg('상품을 모두 선택헤주세요.');
+      setAlertMsg('상품을 모두 선택해주세요.');
     } else {
       deleteAll.mutate();
     }
   }
+
   const deleteAll = useMutation({
     mutationFn: () => {
       return normalAxios.delete('/cart/');
     },
     onSuccess : (data) => {
       if(data.status === 204) {
-        setOpenAlert(true);
-        setAlertMsg("상품이 삭제되었습니다.");
         refetch();
         setCeckItems([]);
       } else if(data.status === 401) {
@@ -102,64 +65,47 @@ export default function CartPage() {
     onError : (e) => {console.log(e.message)},
   })
 
-
   return (
     <MainLayout>
+      <AlertModal content={alertMsg}/>
       <Main>
         <section>
-          <AlertModal content={alertMsg}/>
           <H1>장바구니</H1>
           <WrapAllDelBtn>
             {cart?.data?.count > 0 && <S_btn_white btnFn={handleDeleteAll}>전체삭제</S_btn_white>}
           </WrapAllDelBtn>
           <h2 className="screen_out">장바구니 목록 영역</h2>
           <TopUl>
-            {/* 전체 체크박스 */}
             <Li $first='true'>
               <AllCheckbox  
                 type="checkbox" 
                 onChange={(e)=>AllCheckHandler(e.target.checked)} 
                 checked={(cart?.data?.count > 0 && (checkItems.length === cart?.data?.count)) ? true : false}
-              />
+                />
               </Li>
             <Li $scd='true'>상품정보</Li>
             <Li $thd='true'>수량</Li>
             <Li $fth='true'>상품금액</Li>
           </TopUl>
-          {cart?.data.count === 0 && (
+
+          {/* 콘텐츠 없음 */}
+          {cart?.data?.count === 0 && (
             <NoContP>등록된 상품이 없습니다.</NoContP>
           )}
-          {cart?.data.results.map ((ele, idx) => {
+          {/* 상품 리스트 */}
+          { cart?.data?.results.map ((ele, idx) => {
             return (
-            <Article key={idx}>
-              <DeleteBtn type="button" onClick={() => clickDeleteSingleBtn(ele.cart_item_id)}>
-                <img src={deleteIcon} alt="장바구니에서 삭제 버튼"/> 
-              </DeleteBtn>
-              <Div1>
-                {/* 개별 체크 박스 */}
-                <CartCheckbox id={ele.cart_item_id} checkItems={checkItems} singleCheckHandler={singleCheckHandler}/>
-              </Div1>
-              <Div2>
-                <PImage src={img} alt="" />
-                <div>
-                  <GrayP>백엔드글로벌</GrayP>
-                  <ProductNameP>딥러닝 개발자 무릎 담요</ProductNameP>
-                  <PriceP><span>17,500</span>원</PriceP>
-                  <GrayP><span>택배배송 / </span><span>무료배송</span></GrayP>
-                </div>
-              </Div2>
-              <Div3>
-                <CountBox>
-                  <CountMinus type="button" $minus="true" id="minus_btn">-</CountMinus>
-                  <CountNumber type="button">{ele.quantity}</CountNumber>
-                  <CountPlus type="button" $plus="true" id="plus_btn">+</CountPlus>
-                </CountBox>
-              </Div3>
-              <Div4>
-                <TotalPriceP><span>17,500</span>원</TotalPriceP>
-                <S_btn>주문하기</S_btn>
-              </Div4>
-            </Article>
+              <Article key={idx}>
+                <CartDetails 
+                pid={ele.product_id} 
+                iid={ele.cart_item_id} 
+                quantity={ele.quantity} 
+                setCeckItems={setCeckItems} 
+                checkItems={checkItems}
+                setAlertMsg={setAlertMsg}
+                refetch={refetch}
+                />
+              </Article>
             )
           })}
         </section>
@@ -170,7 +116,7 @@ export default function CartPage() {
             <TotalLineUl>
               <li>
                 <p>총 상품금액</p>
-                <ListTitle><BoldSpan>46,500</BoldSpan>원</ListTitle>
+                <ListTitle><BoldSpan>{totalPrice.toLocaleString()}</BoldSpan>원</ListTitle>
               </li>
               <li>
                 <img src={minusicon} alt="마이너스 아이콘"/>
@@ -258,112 +204,6 @@ const AllCheckbox = styled.input`
   height: 16px;
   accent-color: ${({theme}) => theme.main};
 `
-
-const DeleteBtn = styled.button`
-  display: block;
-  position: absolute;
-  right: 18px;
-  top: 18px;
-  border: unset;
-  background: none;
-  cursor: pointer;
-`
-// --- DIV 구역 ----
-const Div1 = styled.div`
-  text-align: center;
-  width: 10%;
-`
-const Div2 = styled.div`
-  display: flex;
-  gap: 36px;
-  justify-content: flex-start;
-  align-items: center;
-  width: 50%;
-  flex-shrink: 1;
-`
-const Div3 = styled.div`
-  width: 20%;
-
-`
-const Div4 = styled.div`
-  width: 20%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  justify-content: center;
-  align-items: center;
-`
-
-// -- 상품정보 --
-const PImage = styled.img`
-  width: 160px;
-  height: 160px;
-  border-radius: 10px;
-  object-fit: cover;
-`
-
-const GrayP = styled.p`
-  font-size: 14px;
-  color: ${({theme}) => theme.gray3};
-`
-const ProductNameP = styled.p`
-  font-size: 18px;
-  padding: 10px 0;
-`
-const PriceP = styled.p`
-  font-weight: 700;
-  margin-bottom: 60px;
-`
-
-// -- 수량 ---
-const CountBox = styled.div`
-  display: flex;
-  justify-content: center;
-`
-
-const CountMinus = styled.button`
-  display: block;
-  border-radius: 4px 0 0 4px;
-  border: 1px solid ${({theme}) => theme.gray2};
-  background: ${({theme}) => theme.w};
-  font-size: 24px;
-  line-height: 0.8;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-`
-const CountPlus = styled.button`
-  display: block;
-  border-radius: 0 4px 4px 0;
-  border: 1px solid ${({theme}) => theme.gray2};
-  background: ${({theme}) => theme.w};
-  font-size: 20px;
-  line-height: 0.9;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-`
-const CountNumber = styled.button`
-  display: block;
-  border-radius: 0;
-  border: 1px solid ${({theme}) => theme.gray2};
-  border-right: 0;
-  border-left: 0;
-  background: ${({theme}) => theme.w};
-  font-weight: 600;
-  line-height: 0;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-`
-
-// --- 싱픔금액 ---
-const TotalPriceP = styled.p`
-  font-size: 20px;
-  font-weight: 700;
-  color: ${({theme}) => theme.red};
-`
-
 
 // --- 최종 하단 ---
 const TotalLineUl = styled.ul`

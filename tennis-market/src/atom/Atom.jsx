@@ -32,6 +32,10 @@ const user_info = atom({
   default: {}, // default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
+const TOTAL_PRICE = atom({
+  key: "TOTAL_ORDER", // unique ID (with respect to other atoms/selectors)
+  default: 0,// default value (aka initial value)
+});
 
 
-export  {ModalOpen, ConfirmOpen,AlertOpen, user_role, user_info}
+export  {ModalOpen, ConfirmOpen,AlertOpen, user_role, user_info, TOTAL_PRICE}
