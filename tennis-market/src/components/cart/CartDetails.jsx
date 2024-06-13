@@ -8,7 +8,7 @@ import { CartCheckbox } from "../inputs";
 import { S_btn } from "../buttons";
 import { useMutation } from "@tanstack/react-query";
 
-export default function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg, refetch}) {
+export default function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg, refetch, is_active}) {
   const [detail, setDetail] = useState(null);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   // --- 🩶 계산 관련 state 🩶---
@@ -61,7 +61,8 @@ export default function CartDetails({pid, iid, setCeckItems, checkItems, quantit
     },
     onError : (e) => {console.log(e.message)},
   });
-
+  
+  // --- count 수정 ----
   const calculateTotal = (e) => {
     if(e.target.id === 'plus_btn') {
       setCount(count + 1);
@@ -71,6 +72,25 @@ export default function CartDetails({pid, iid, setCeckItems, checkItems, quantit
       setCount(count - 1);   
     }
   };
+  
+  const editCountData = {
+    "product_id": pid ,
+    "quantity": count,
+		"is_active": is_active,  // 장바구니 내 상품 활성화 버튼, 같이 보내지 않으면 False
+  }
+
+  const editCountMutate = useMutation({
+    mutationFn: (editCountData) => {
+      return normalAxios.put(`/cart/${parseInt(iid)}/`, editCountData);
+    },
+    onSuccess : (data) => {
+      if(data.status === 200) {
+        setOpenAlert(true);
+        setAlertMsg("수량이 수정되었습니다.")
+      }
+    },
+    onError : (e) => {console.log(e.message)},
+  });
 
   return (
     <>
@@ -97,12 +117,13 @@ export default function CartDetails({pid, iid, setCeckItems, checkItems, quantit
         <Div3>
           <CountBox>
             <CountMinus type="button" $minus="true" id="minus_btn" onClick={calculateTotal}>-</CountMinus>
-            <CountNumber type="button">{quantity}</CountNumber>
+            <CountNumber type="button">{count}</CountNumber>
             <CountPlus type="button" $plus="true" id="plus_btn" onClick={calculateTotal}>+</CountPlus>
           </CountBox>
+          <EditBtn type="button" onClick={() => editCountMutate.mutate(editCountData)}>옵션 수정 완료</EditBtn>
         </Div3>
         <Div4>
-          <TotalPriceP><span>{detail.price.toLocaleString()}</span>원</TotalPriceP>
+          <TotalPriceP><span>{(detail.price * count).toLocaleString()}</span>원</TotalPriceP>
           <S_btn>주문하기</S_btn>
         </Div4>
       </>
@@ -133,9 +154,16 @@ const Div2 = styled.div`
   align-items: center;
   width: 50%;
   flex-shrink: 1;
+  @media only screen and (max-width: 860px) {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 `
 const Div3 = styled.div`
   width: 20%;
+  @media only screen and (max-width: 860px) {
+    width: 100%;
+  }
 
 `
 const Div4 = styled.div`
@@ -145,6 +173,10 @@ const Div4 = styled.div`
   gap: 16px;
   justify-content: center;
   align-items: center;
+  @media only screen and (max-width: 860px) {
+    width: 100%;
+    align-items: flex-end;
+  }
 `
 
 // -- 상품정보 --
@@ -169,9 +201,29 @@ const PriceP = styled.p`
 `
 
 // -- 수량 ---
+const EditBtn = styled.button`
+  display: block;
+  background: none;
+  border: 1px solid ${({theme}) => theme.gray2};
+  border-radius: 4px;
+  padding: 6px 5px;
+  font-size: 12px;
+  color: ${({theme}) => theme.gray3};
+  font-weight: 500;
+  margin: 10px auto 0;
+  cursor: pointer;
+
+  @media only screen and (max-width: 860px) {
+    margin: 10px 0 0;
+  }
+`
 const CountBox = styled.div`
   display: flex;
   justify-content: center;
+  @media only screen and (max-width: 860px) {
+    margin: 10px 0 0;
+    justify-content: flex-start;
+  }
 `
 
 const CountMinus = styled.button`

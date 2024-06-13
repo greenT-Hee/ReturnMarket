@@ -104,7 +104,8 @@ export default function CartPage() {
                 checkItems={checkItems}
                 setAlertMsg={setAlertMsg}
                 refetch={refetch}
-                />
+                is_active={ele.is_active}
+              />
               </Article>
             )
           })}
@@ -198,6 +199,12 @@ const Article = styled.article`
   box-sizing: border-box;
   border-radius: 10px;
   border: 1px solid ${({theme}) => theme.gray1};
+
+  @media only screen and (max-width: 860px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+  }
 `
 const AllCheckbox = styled.input`
   width: 16px;
