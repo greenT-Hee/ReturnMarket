@@ -21,7 +21,7 @@ import EditPage from './pages/seller/editPage';
 import ErrorPage from './pages/errorPage';
 import DetailPage from './pages/detailPage';
 import CartPage from './pages/buyer/CartPage';
-import { user_info, user_role } from './atom/Atom';
+import { TOTAL_PRICE, user_info, user_role } from './atom/Atom';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`

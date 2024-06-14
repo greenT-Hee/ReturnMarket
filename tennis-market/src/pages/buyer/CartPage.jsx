@@ -5,26 +5,29 @@ import plusIcon from "../../assets/images/icon-plus-line.svg";
 import minusicon from "../../assets/images/icon-minus-line.svg";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { normalAxios } from "../../axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { AlertOpen, TOTAL_PRICE } from "../../atom/Atom";
+import { AlertOpen, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
 import { AlertModal } from "../../components/modal/AlertModal";
 import CartDetails from "../../components/cart/CartDetails";
 
 export default function CartPage() {
   const [totalPrice, setTotalPrice] = useRecoilState(TOTAL_PRICE);
+  const [totalShippinfee, setTotalShippinfee] = useRecoilState(TOTAL_SHIPPING_FEE);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   const [alertMsg, setAlertMsg] = useState('');
   const [checkItems, setCeckItems] = useState([]);
-
+  
   const getCartList = async () => {
     return normalAxios.get('/cart/');
   };
-
+  
   const { isSuccess : cartOk, data : cart, refetch} = useQuery({
     queryKey: ['cartList'],
     queryFn: getCartList,
     refetchOnWindowFocus: false,
+    // retryOnMount: false,
+    // refetchOnMount: false
   });
   
   const AllCheckHandler = (checked) => {
@@ -90,7 +93,7 @@ export default function CartPage() {
 
           {/* 콘텐츠 없음 */}
           {cart?.data?.count === 0 && (
-            <NoContP>등록된 상품이 없습니다.</NoContP>
+            <NoContP>장바구니에 담긴 상품이 없습니다.</NoContP>
           )}
           {/* 상품 리스트 */}
           { cart?.data?.results.map ((ele, idx) => {
@@ -105,7 +108,7 @@ export default function CartPage() {
                 setAlertMsg={setAlertMsg}
                 refetch={refetch}
                 is_active={ele.is_active}
-              />
+                />
               </Article>
             )
           })}
@@ -131,11 +134,11 @@ export default function CartPage() {
               </li>
               <li>
                 <p>배송비</p>
-                <ListTitle><BoldSpan>0</BoldSpan>원</ListTitle>
+                <ListTitle><BoldSpan>{totalShippinfee.toLocaleString()}</BoldSpan>원</ListTitle>
               </li>
               <li>
                 <BoldSpan $small='true'>결제 예정 금액</BoldSpan>
-                <ListTitle $red='true'><BoldSpan $big='true'>46,500</BoldSpan>원</ListTitle>
+                <ListTitle $red='true'><BoldSpan $big='true'>{(totalShippinfee + totalPrice).toLocaleString()}</BoldSpan>원</ListTitle>
               </li>
             </TotalLineUl>
             <OrderAllBtnDiv>

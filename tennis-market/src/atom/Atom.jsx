@@ -25,17 +25,25 @@ const AlertOpen = atom({
 const user_role = atom({
   key: "user_role", // unique ID (with respect to other atoms/selectors)
   default: "BUYER", // default value (aka initial value)
-  // effects_UNSTABLE: [persistAtom],
+  effects_UNSTABLE: [persistAtom],
 });
 const user_info = atom({
   key: "user_info", // unique ID (with respect to other atoms/selectors)
   default: {}, // default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
+
 const TOTAL_PRICE = atom({
   key: "TOTAL_ORDER", // unique ID (with respect to other atoms/selectors)
   default: 0,// default value (aka initial value)
+  effects_UNSTABLE: [persistAtom],
+
+});
+const TOTAL_SHIPPING_FEE = atom({
+  key: "TOTAL_SHIPPING_FEE", // unique ID (with respect to other atoms/selectors)
+  default: 0,// default value (aka initial value)
+  effects_UNSTABLE: [persistAtom],
 });
 
 
-export  {ModalOpen, ConfirmOpen,AlertOpen, user_role, user_info, TOTAL_PRICE}
+export  {ModalOpen, ConfirmOpen,AlertOpen, user_role, user_info, TOTAL_PRICE, TOTAL_SHIPPING_FEE}

@@ -1,44 +1,40 @@
-import { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { normalAxios } from "../../axios";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
-import { AlertOpen, TOTAL_PRICE } from "../../atom/Atom";
+import { AlertOpen, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
 import deleteIcon from "../../assets/images/icon-delete.svg";
 import { CartCheckbox } from "../inputs";
 import { S_btn } from "../buttons";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-export default function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg, refetch, is_active}) {
-  const [detail, setDetail] = useState(null);
+function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg, refetch, is_active}) {
+  // const [detail, setDetail] = useState(null);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   // --- 🩶 계산 관련 state 🩶---
   const [totalPrice, setTotalPrice] = useRecoilState(TOTAL_PRICE);
-  const [count, setCount] = useState(quantity)
+  const [totalShippinfee, setTotalShippinfee] = useRecoilState(TOTAL_SHIPPING_FEE);
+  const [count, setCount] = useState(quantity);
+  const [isMount, setIsMount] = useState(false);
 
-  const getDetails = async (pid) => {
-    try {
-      const res = await normalAxios.get('/products/' + parseInt(pid));
-      if(res.status === 200){
-        setDetail(res.data);
-      }
-      
-    } catch (err) {
-      console.log(err)
-    }
+  const getDetails = async () => {
+    return normalAxios.get('/products/' + parseInt(pid));
   };
-  useEffect(() => {
-    if(pid) { getDetails(pid);}    
-  }, [pid]);
 
-    // ----- checkbox ------
-    const singleCheckHandler = (checked, id) => {
-      if(checked) {
-        setCeckItems(prev => [...prev, id]);
-      } else {
-        setCeckItems(checkItems.filter(ele => ele !== id));
-      }
-    } 
-  
+  const { isSuccess, data : detail, isFetching} = useQuery({
+    queryKey: ['detail', pid],
+    queryFn: getDetails,
+    refetchOnWindowFocus: false,
+  });
+
+  // ----- checkbox ------
+  const singleCheckHandler = (checked, id) => {
+    if(checked) {
+      setCeckItems(prev => [...prev, id]);
+    } else {
+      setCeckItems(checkItems.filter(ele => ele !== id));
+    }
+  } 
     // --- 단일 삭제 ---
   // -- 단일 삭제 체크 여부 ---
   const clickDeleteSingleBtn = (item_id) => {
@@ -63,13 +59,15 @@ export default function CartDetails({pid, iid, setCeckItems, checkItems, quantit
   });
   
   // --- count 수정 ----
-  const calculateTotal = (e) => {
+  const calculateCount = (e) => {
     if(e.target.id === 'plus_btn') {
       setCount(count + 1);
+      setTotalPrice(totalPrice + detail.data.price)
     }
     if(e.target.id === 'minus_btn') {
       if(count === 1) return;
       setCount(count - 1);   
+      setTotalPrice(totalPrice - detail.data.price)
     }
   };
   
@@ -86,16 +84,32 @@ export default function CartDetails({pid, iid, setCeckItems, checkItems, quantit
     onSuccess : (data) => {
       if(data.status === 200) {
         setOpenAlert(true);
-        setAlertMsg("수량이 수정되었습니다.")
+        setAlertMsg("수량이 수정되었습니다.");
       }
     },
     onError : (e) => {console.log(e.message)},
   });
+  
+
+  let cost = 0;
+  let shipping = 0
+  useEffect( () => {
+    if(isMount) return;
+    if(!isFetching) {
+     setTotalPrice(totalPrice + (detail.data.price * count));
+     setTotalShippinfee(totalShippinfee + detail.data.shipping_fee);
+     setIsMount(true);
+    } else {
+      setTotalPrice(0);
+      setTotalShippinfee(0);
+    }
+  }, [isFetching])
 
   return (
     <>
-    {detail && 
+    {isSuccess && 
       <>
+      <p>{totalPrice}  {totalShippinfee}</p>
         <DeleteBtn type="button" onClick={() => clickDeleteSingleBtn(iid)}>
           <img src={deleteIcon} alt="장바구니에서 삭제 버튼"/> 
         </DeleteBtn>
@@ -103,27 +117,27 @@ export default function CartDetails({pid, iid, setCeckItems, checkItems, quantit
           <CartCheckbox id={iid} checkItems={checkItems} singleCheckHandler={singleCheckHandler}/>
         </Div1>
           <Div2>
-            <PImage src={detail.image} alt={"ele.product_name "+ "썸네일"} /> 
+            <PImage src={detail.data.image} alt={"ele.product_name "+ "썸네일"} /> 
             <div>
-              <GrayP>{detail.store_name}</GrayP>
-              <ProductNameP>{detail.product_name}</ProductNameP>
-              <PriceP><span>{detail.price.toLocaleString()}</span>원</PriceP>
+              <GrayP>{detail.data.store_name}</GrayP>
+              <ProductNameP>{detail.data.product_name}</ProductNameP>
+              <PriceP><span>{detail.data.price.toLocaleString()}</span>원</PriceP>
               <GrayP>
-                <span>{detail.shipping_method === "PARCEL" ? "택배배송" : "직접배송"} / </span>
-                <span>{detail.shipping_fee === 0 ? "무료배송" : detail.shipping_fee.toLocaleString() + "원" }</span>
+                <span>{detail.data.shipping_method === "PARCEL" ? "택배배송" : "직접배송"} / </span>
+                <span >{detail.data.shipping_fee === 0 ? "무료배송" : detail.data.shipping_fee.toLocaleString() + "원" }</span>
               </GrayP>
             </div> 
           </Div2>
         <Div3>
           <CountBox>
-            <CountMinus type="button" $minus="true" id="minus_btn" onClick={calculateTotal}>-</CountMinus>
+            <CountMinus type="button" $minus="true" id="minus_btn" onClick={calculateCount}>-</CountMinus>
             <CountNumber type="button">{count}</CountNumber>
-            <CountPlus type="button" $plus="true" id="plus_btn" onClick={calculateTotal}>+</CountPlus>
+            <CountPlus type="button" $plus="true" id="plus_btn" onClick={calculateCount}>+</CountPlus>
           </CountBox>
           <EditBtn type="button" onClick={() => editCountMutate.mutate(editCountData)}>옵션 수정 완료</EditBtn>
         </Div3>
         <Div4>
-          <TotalPriceP><span>{(detail.price * count).toLocaleString()}</span>원</TotalPriceP>
+          <TotalPriceP><span >{(detail.data.price * count).toLocaleString()}</span>원</TotalPriceP>
           <S_btn>주문하기</S_btn>
         </Div4>
       </>
@@ -131,6 +145,9 @@ export default function CartDetails({pid, iid, setCeckItems, checkItems, quantit
     </>
   )
 }
+
+// export default React.memo(CartDetails)
+export default CartDetails
 
 
 const DeleteBtn = styled.button`
