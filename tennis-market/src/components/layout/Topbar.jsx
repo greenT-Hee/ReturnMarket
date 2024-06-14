@@ -15,7 +15,7 @@ import Cookies from 'universal-cookie';
 import { AlertModal } from '../modal/AlertModal';
 
 const HeaderStyle = styled.header`
-  padding: 15px 20px 25px;
+  padding: 25px 20px;
   width: 100%;
   box-sizing: border-box;
   box-shadow: 0 5px 6px rgba(0,0,0,0.06);

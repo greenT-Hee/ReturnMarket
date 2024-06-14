@@ -13,7 +13,7 @@ const TopTitleArea = styled.div`
   width: 100%;
   padding: 42px 0;
   box-sizing: border-box;
-  margin-top: 107px;
+  margin-top: 97px;
 `
 const TopH2 = styled.h2`
   font-size: 36px;

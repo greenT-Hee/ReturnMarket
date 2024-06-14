@@ -109,7 +109,6 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     <>
     {isSuccess && 
       <>
-      <p>{totalPrice}  {totalShippinfee}</p>
         <DeleteBtn type="button" onClick={() => clickDeleteSingleBtn(iid)}>
           <img src={deleteIcon} alt="장바구니에서 삭제 버튼"/> 
         </DeleteBtn>

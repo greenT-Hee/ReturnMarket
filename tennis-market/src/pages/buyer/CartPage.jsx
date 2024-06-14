@@ -152,7 +152,7 @@ export default function CartPage() {
 }
 
 const Main = styled.main`
-  padding: 107px 20px 180px;
+  padding: 97px 20px 180px;
   width: 1300px;
   max-width: 100%;
   box-sizing: border-box;

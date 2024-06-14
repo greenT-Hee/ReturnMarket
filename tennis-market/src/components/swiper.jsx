@@ -13,13 +13,13 @@ import slide3 from '../assets/images/tennis3.jpg';
 import slide4 from '../assets/images/tennis4.jpg';
 
 const WrapSwiper = styled.article`
-  width: 1920px;
+  width: 1280px;
   max-width: 100%;
-  margin: 104px auto 0;
+  margin: 97px auto 0;
   box-sizing: border-box;
 `
 const SwiperImg = styled.img`
-  width: 100%;
+  width: 1280px;
   height: 600px;
   object-fit: cover;
 `
