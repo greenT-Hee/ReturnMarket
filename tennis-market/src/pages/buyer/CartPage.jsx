@@ -93,7 +93,7 @@ export default function CartPage() {
 
           {/* 콘텐츠 없음 */}
           {cart?.data?.count === 0 && (
-            <NoContP>장바구니에 담긴 상품이 없습니다.</NoContP>
+            <NoContP>🛒 장바구니에 담긴 상품이 없습니다.</NoContP>
           )}
           {/* 상품 리스트 */}
           { cart?.data?.results.map ((ele, idx) => {

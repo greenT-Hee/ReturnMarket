@@ -66,6 +66,7 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
   // --- count 수정 ----
   const calculateCount = (e) => {
     if(e.target.id === 'plus_btn') {
+      if(count === detail.data.stock) return;
       setCount(count + 1);
       setTotalPrice(totalPrice + detail.data.price)
     }
@@ -133,6 +134,7 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
             <CountNumber type="button">{count}</CountNumber>
             <CountPlus type="button" $plus="true" id="plus_btn" onClick={calculateCount}>+</CountPlus>
           </CountBox>
+          <StockP>남은 개수: <span>{detail.data.stock}</span></StockP>
           <EditBtn type="button" onClick={() => editCountMutate.mutate(editCountData)}>옵션 수정 완료</EditBtn>
         </Div3>
         <Div4>
@@ -217,6 +219,17 @@ const PriceP = styled.p`
 `
 
 // -- 수량 ---
+const StockP = styled.p`
+  font-size: 13px;
+  color: ${({theme}) => theme.gray3};
+  text-align: center;
+  margin: 8px 0 10px;
+
+  @media only screen and (max-width: 860px) {
+    text-align: left;
+
+  }
+`
 const EditBtn = styled.button`
   display: block;
   background: none;

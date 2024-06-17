@@ -5,8 +5,7 @@ import { normalAxios } from "../axios"
 import { useMutation, useQueries, useQuery } from "@tanstack/react-query"
 import { useRecoilValue } from "recoil"
 import { user_info } from "../atom/Atom"
-import { useNavigate } from "react-router-dom"
-
+import { useNavigate } from "react-router-dom";
 
 const ProductUl = styled.ul`
   max-width: 1280px;
@@ -32,13 +31,22 @@ const ProdcutLi = styled.li`
   width: 100%;
   cursor: pointer;
 `
+const SoldoutDiv = styled.div`
+  font-size: 14px;
+  width: fit-content;
+  padding: 5px 7px 3px;
+  border-radius: 4px;
+  color : ${({theme}) => theme.w};
+  background : ${({theme}) => theme.red};
+  margin:  0 0 4px;
+`
 const ProdcutImg = styled.img`
   width: 380px;
   height: 380px;
   border-radius: 32px;
-  border: 1px solid ${({theme}) => theme.gray1} ;
+  border: 1px solid ${({theme}) => theme.gray1};
   box-sizing: border-box;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   @media only screen and (max-width: 430px) {
     width: 280px;
     height: 280px;
@@ -115,6 +123,7 @@ function MainPage() {
               return(
                 <ProdcutLi key={ele.product_id} onClick={() => navigate(`product/${ele.product_id}`)}>
                   <ProdcutImg src={ele.image} alt={ele.product_name + "썸네일"} />
+                  {ele.stock === 0 && <SoldoutDiv>픔절</SoldoutDiv>}
                   <ShopP>{ele.store_name}</ShopP>
                   <ProductP>{ele.product_name}</ProductP>
                   <PriceP><PriceSpan>{ele.price.toLocaleString()}</PriceSpan>원</PriceP>

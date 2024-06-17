@@ -48,6 +48,7 @@ export default function DetailPage() {
 
   const calculateTotal = (e) => {
     if(e.target.id === 'plus_btn') {
+      if(count === detail_data.data.stock) return;
       setCount(count + 1);
     }
     if(e.target.id === 'minus_btn') {
@@ -154,7 +155,7 @@ export default function DetailPage() {
                   <PriceBox>
                     <p>총 상품금액</p>
                     <TotalNumBox>
-                      <CountP>총 수량 <CountSpan>{count}</CountSpan>개</CountP>
+                      <CountP>남은 수량 <CountSpan>{detail_data.data.stock}</CountSpan>개</CountP>
                       <CountP> | </CountP>
                       <TotalP><TotalSpan>{(count * detail_data.data.price).toLocaleString()}</TotalSpan>원</TotalP>
                     </TotalNumBox>
@@ -175,7 +176,7 @@ export default function DetailPage() {
                     </>
                     :
                     <OrderBtnFelx>
-                      <RedFontP>재고가 없습니다.</RedFontP>
+                      <RedFontP>품절 상품입니다.</RedFontP>
                     </OrderBtnFelx>  
                   }
               
