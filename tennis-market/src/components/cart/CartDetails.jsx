@@ -21,7 +21,7 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     return normalAxios.get('/products/' + parseInt(pid));
   };
 
-  const { isSuccess, data : detail, isFetching} = useQuery({
+  const { isSuccess, data : detail, isFetching, refetch: reDetails} = useQuery({
     queryKey: ['detail', pid],
     queryFn: getDetails,
     refetchOnWindowFocus: false,
@@ -49,10 +49,15 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     mutationFn: (cart_id) => {
       return normalAxios.delete('/cart/' + parseInt(cart_id));
     },
+    onSettled: () => {
+      setTotalPrice(0);
+      setTotalShippinfee(0);
+    },
     onSuccess : (data) => {
       if(data.status === 204) {
         setCeckItems([]);
         refetch();
+        reDetails();
       }
     },
     onError : (e) => {console.log(e.message)},
@@ -90,21 +95,16 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     onError : (e) => {console.log(e.message)},
   });
   
-
-  let cost = 0;
-  let shipping = 0
   useEffect( () => {
-    if(isMount) return;
     if(!isFetching) {
-     setTotalPrice(totalPrice + (detail.data.price * count));
-     setTotalShippinfee(totalShippinfee + detail.data.shipping_fee);
-     setIsMount(true);
+      setTotalPrice(totalPrice + (detail.data.price * count));
+      setTotalShippinfee(totalShippinfee + detail.data.shipping_fee);
     } else {
       setTotalPrice(0);
       setTotalShippinfee(0);
     }
+    console.log(isFetching, "isFetching");
   }, [isFetching])
-
   return (
     <>
     {isSuccess && 

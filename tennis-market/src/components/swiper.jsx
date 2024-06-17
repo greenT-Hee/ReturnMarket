@@ -7,10 +7,10 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import 'swiper/css/autoplay';
-import slide1 from '../assets/images/tennis1.jpg';
-import slide2 from '../assets/images/tennis2.jpg';
-import slide3 from '../assets/images/tennis3.jpg';
-import slide4 from '../assets/images/tennis4.jpg';
+import slide1 from '../assets/images/tennis4.jpg';
+import slide2 from '../assets/images/tennis1.jpg';
+import slide3 from '../assets/images/tennis2.jpg';
+import slide4 from '../assets/images/tennis3.jpg';
 
 const WrapSwiper = styled.article`
   width: 1280px;
