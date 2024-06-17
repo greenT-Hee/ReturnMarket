@@ -2,6 +2,7 @@ import styled from "styled-components"
 import checkOn from "../assets/images/icon-check-on.svg";
 import checkOff from "../assets/images/icon-check-off.svg";
 import { useEffect, useState } from "react";
+import { S_btn, S_btn_white } from "./buttons";
 const Label = styled.label`
   display: block;
   color: ${({theme}) => theme.gray3};
@@ -12,8 +13,8 @@ const Input = styled.input`
   width: ${(props) => props.$emailnput ? '199px' : '100%'};
   outline: 1px solid ${({theme}) => theme.gray2};
   border: none;
-  padding: 12px;
   border-radius: 5px;
+  padding: 12px;
   box-sizing: border-box;
   font-size: 16px;
   
@@ -60,45 +61,70 @@ const CheckboxInput = styled.input`
   height: 16px;
   accent-color: ${({theme}) => theme.main};
 `
-const CheckboxInputLabel = styled.label`
-  display: inline-block;
-  position: relative;
-  padding-left: 26px;
-  cursor: pointer;
 
-  /* ::after {
-    position: absolute;
-    left: 0;
-    top: 3px;
-    width: 20px;
-    height: 20px;
-    text-align: center;
-    background: url(${checkOff}) no-repeat;  
-    box-sizing: border-box;
-    border-radius: 5px;
-  } */
+// --- 결제 input ---
+const WrapPayInput = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid ${({theme}) => theme.gray2};
 `
 
-/* 보여질 부분의 스타일을 추가하면 된다. */
-// .check__line input[type="checkbox"]:checked + label:after {
-//   content: "";
-//   position: absolute;
-//   top: 3px;
-//   left: 0;
-//   width: 20px;
-//   height: 20px;  
-//   background: url(../images/sub/check_on.png)no-repeat;  
-//   background-position: center center;
-//   border-radius: 5px;
-// }
+const PayLabel = styled.label`
+  min-width: 180px;
+`
+const PayInput = styled.input`
+  flex-grow: 0;
+  display: block;
+  width: 334px;
+  height: 45px;
+  box-sizing: border-box;
+  padding: 10px;
+  outline: 1px solid ${({theme}) => theme.gray2};
+  border: none;
+  border-radius: 5px;
 
-// .check__line input[type="checkbox"] + label span {
-//   font-weight: 400;
-//   font-size: 13px;
-//   line-height: 26px;  
-//   letter-spacing: -1px;
-//   color: rgba(0, 0, 0, 0.5);
-// }
+  &:focus {
+    outline: 1px solid ${({theme}) => theme.sub};
+  }
+  &::placeholder {
+    font-size: 14px;
+  }
+`
+const WrapAddressInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  `
+const WrapAddressBtn = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`
+const WrapRadio = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+`
+const RadioInput = styled.input`
+  width: 18px;
+  height: 18px;
+  border: 2px solid #ccc; // 체크되지 않았을 때의 테두리 색상
+  border-radius: 50%;
+  outline: none; // focus 시에 나타나는 기본 스타일 제거
+  cursor: pointer;
+  -webkit-appearance: none; // 웹킷 브라우저에서 기본 스타일 제거
+  -moz-appearance: none; // 모질라 브라우저에서 기본 스타일 제거 
+  appearance: none; // 기본 브라우저에서 기본 스타일 제거
+
+  &:checked {
+    background: ${({theme}) => theme.main}; // 체크 시 내부 원으로 표시될 색상
+    border: 3px solid ${({theme}) => theme.w}; // 테두리가 아닌, 테두리와 원 사이의 색상
+    box-shadow: 0 0 0 1.6px ${({theme}) => theme.main}; // 얘가 테두리가 됨
+    // 그림자로 테두리를 직접 만들어야 함 (퍼지는 정도를 0으로 주면 테두리처럼 보입니다.)
+    // 그림자가 없으면 그냥 설정한 색상이 꽉 찬 원으로만 나옵니다.
+  }
+`
 
 export const NormalInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false, placeholder}) => {
   return (
@@ -146,5 +172,39 @@ export const CartCheckbox = ({label, id, singleCheckHandler, checkItems}) => {
       />
       <label htmlFor={label}></label>
     </>
+  )
+}
+
+export const PaymentInput = ({type, id, label,value, setValue, maxlength, errMsg, errStatus=false, placeholder}) => {
+  return (
+    <WrapPayInput>
+      <PayLabel htmlFor={id}>{label}</PayLabel>
+      {/* {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>} */}
+      <PayInput value={value} type={type} id={id} name={id} onChange={setValue} maxLength={maxlength} placeholder={placeholder}/>
+    </WrapPayInput>
+  )
+}
+export const PaymentAddressInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false}) => {
+  return (
+    <WrapPayInput>
+      <PayLabel htmlFor={id}>{label}</PayLabel>
+      {/* {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>} */}
+      <WrapAddressInput>
+        <WrapAddressBtn>
+          <PayInput type={type} id={"address1"} name={"address1"} onChange={setValue} maxLength={maxlength}/>
+          <S_btn>주소 찾기</S_btn>
+        </WrapAddressBtn>
+        <PayInput type={type} id={"address2"} name={"address2"} onChange={setValue} maxLength={maxlength} placeholder={"상세주소"}/>
+      </WrapAddressInput>
+    </WrapPayInput>
+  )
+}
+
+export const PaymentRadio = ({label, value, payMethod, setPayMethod }) =>{
+  return (
+    <WrapRadio>
+      <RadioInput checked={payMethod === value ? true : false} type="radio" id={value} name={"payment_method"} value={value} onChange={(e) => setPayMethod(e.target.value)}/>
+      <label htmlFor={value}>{label}</label>
+    </WrapRadio>
   )
 }

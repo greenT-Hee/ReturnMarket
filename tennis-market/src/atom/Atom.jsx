@@ -27,11 +27,13 @@ const user_role = atom({
   default: "BUYER", // default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
+
 const user_info = atom({
   key: "user_info", // unique ID (with respect to other atoms/selectors)
   default: {}, // default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
+
 
 const TOTAL_PRICE = atom({
   key: "TOTAL_ORDER", // unique ID (with respect to other atoms/selectors)

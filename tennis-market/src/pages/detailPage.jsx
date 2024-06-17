@@ -58,7 +58,7 @@ export default function DetailPage() {
   };
 
   useEffect(() => {
-    if(cartOk) {
+    if(cartOk && user_role === "BUYER") {
       if(cart?.data?.results.length > 0) {
         cart.data.results.map((ele) => {
           if(ele.product_id === parseInt(pid)) setIsInCart(false);

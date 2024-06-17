@@ -6,7 +6,7 @@ const LargeBtnStyle = styled.button`
   max-width: 100%;
   background: none;
   border: 0;
-  padding: 19px;
+  padding: 16px;
   border-radius: 5px;
   font-size: 24px;
   color: ${({theme}) => theme.w};
