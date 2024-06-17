@@ -22,6 +22,7 @@ import ErrorPage from './pages/errorPage';
 import DetailPage from './pages/detailPage';
 import CartPage from './pages/buyer/CartPage';
 import { TOTAL_PRICE, user_info, user_role } from './atom/Atom';
+import PaymentPage from './pages/buyer/PaymentPage';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
@@ -45,19 +46,20 @@ function App() {
             <ThemeProvider theme={theme}>
               <GlobalStyle/>
               <Routes>
+                {/* --- 공통 --- */}
                 <Route path="/" element={<MainPage />}></Route>
                 <Route path="/signup" element={<SignupPage />}></Route>
-                <Route path="/login" element={<LoginPage />}></Route>
                 <Route path="/product/:pid" element={<DetailPage />}></Route>
                 <Route path="/*" element={<ErrorPage />}></Route>
+                {/* --- 비회원만 --- */}
+                <Route path="/login" element={<LoginPage />}></Route>
                 {/* -- seller -- */}
                 <Route path="/seller_center" element={<SellerCenterPage />}></Route>
                 <Route path="/regist_product" element={<RegistProductPage />}></Route>
                 <Route path="/edit/:pid" element={<EditPage />}></Route>
                 {/* -- buyer -- */}
                 <Route path="/cart" element={<CartPage />}></Route>
-
-  
+                <Route path="/payment" element={<PaymentPage />}></Route>
               </Routes>
             </ThemeProvider>
           </BrowserRouter>
