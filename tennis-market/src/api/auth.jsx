@@ -24,13 +24,13 @@ export const logout = async () => {
       localStorage.removeItem("recoil-persist");
       cookies.remove('accessToken');
       normalAxios.defaults.headers.common["Authorization"] = null;
-      window.location.href = '/';
+      window.location.href = '/login';
     }
   } catch (err) {
     window.localStorage.removeItem("recoil-persist");
     cookies.remove('accessToken');
     normalAxios.defaults.headers.common["Authorization"] = null;
-    window.location.href = '/';
+    window.location.href = '/login';
     console.error(err);
   }
 };

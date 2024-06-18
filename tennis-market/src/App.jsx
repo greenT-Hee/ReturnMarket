@@ -24,6 +24,7 @@ import CartPage from './pages/buyer/CartPage';
 import { TOTAL_PRICE, user_info, user_role } from './atom/Atom';
 import PaymentPage from './pages/buyer/PaymentPage';
 import OrderPage from './pages/buyer/OrderPage';
+import PrivateRouter from './components/PrivateRouter';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
@@ -32,7 +33,8 @@ const GlobalStyle = createGlobalStyle`
   `
 
 function App() {
-  const role = useRecoilValue(user_role);
+
+  const userInfo = useRecoilValue(user_info);
   const [theme, setTheme] = useState(lightTheme);
   const [recoilKey, setRecoilKey] = useState(0);
   const resetRecoil = () => {
@@ -53,15 +55,20 @@ function App() {
                 <Route path="/product/:pid" element={<DetailPage />}></Route>
                 <Route path="/*" element={<ErrorPage />}></Route>
                 {/* --- 비회원만 --- */}
-                <Route path="/login" element={<LoginPage />}></Route>
+                <Route path="/login" element={<LoginPage />} />
                 {/* -- seller -- */}
-                <Route path="/seller_center" element={<SellerCenterPage />}></Route>
-                <Route path="/regist_product" element={<RegistProductPage />}></Route>
-                <Route path="/edit/:pid" element={<EditPage />}></Route>
+                <Route element={<PrivateRouter isAuth={userInfo.user_type === "SELLER"} />}>
+                  <Route path="/seller_center" element={<SellerCenterPage />} />
+                  <Route path="/regist_product" element={<RegistProductPage />} />
+                  <Route path="/edit/:pid" element={<EditPage />} />
+                </Route>
+              
                 {/* -- buyer -- */}
-                <Route path="/cart" element={<CartPage />}></Route>
-                <Route path="/payment" element={<PaymentPage />}></Route>
-                <Route path="/order" element={<OrderPage />}></Route>
+                <Route element={<PrivateRouter isAuth={userInfo.user_type === "BUYER"} />}>
+                  <Route path="/cart" element={<CartPage />} />
+                  <Route path="/payment" element={<PaymentPage />} />
+                  <Route path="/order" element={<OrderPage />} />
+                </Route>
               </Routes>
             </ThemeProvider>
           </BrowserRouter>
