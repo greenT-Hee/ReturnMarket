@@ -8,16 +8,16 @@ import { CartCheckbox } from "../inputs";
 import { S_btn } from "../buttons";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../spinner";
 
 function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg, refetch, is_active}) {
   const navigate = useNavigate();
-  // const [detail, setDetail] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   // --- 🩶 계산 관련 state 🩶---
   const [totalPrice, setTotalPrice] = useRecoilState(TOTAL_PRICE);
   const [totalShippinfee, setTotalShippinfee] = useRecoilState(TOTAL_SHIPPING_FEE);
   const [count, setCount] = useState(quantity);
-  const [arr, setArr] = useState([]);
 
 
 // --- 🐰 상품 정보 불러오기 ---
@@ -35,12 +35,12 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     if(!isFetching) {
       setTotalPrice(totalPrice + (detail.data.price * count));
       setTotalShippinfee(totalShippinfee + detail.data.shipping_fee);
-      arr.push(detail.data.product_name)
     } else {
       setTotalPrice(0);
       setTotalShippinfee(0);
     }
   }, [isFetching])
+        
 
   // ----- 🐰 개별 checkbox 관리------
   const singleCheckHandler = (checked, id) => {
@@ -62,17 +62,16 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
   }
   const deleteSingle = useMutation({
     mutationFn: (cart_id) => {
+      setLoading(true)
       return normalAxios.delete('/cart/' + parseInt(cart_id));
     },
     onSettled: () => {
-      setTotalPrice(0);
-      setTotalShippinfee(0);
+      setLoading(false)
     },
     onSuccess : (data) => {
       if(data.status === 204) {
         setCeckItems([]);
-        refetch();
-        reDetails();
+        window.location.reload();
       }
     },
     onError : (e) => {console.log(e.message)},
@@ -113,7 +112,7 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
 
   // --- 🐰 주문하기 ---
   const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
-  const handleSingleOrder = () => {
+  const handleOrderData = () => {
     setOrderData({
       product_name: detail.data.product_name,
       store_name: detail.data.store_name,
@@ -128,12 +127,9 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     navigate('/payment');
   }
 
-
-
-
-
   return (
     <>
+      {loading && <Spinner/>}
     {isSuccess && 
       <>
         <DeleteBtn type="button" onClick={() => clickDeleteSingleBtn(iid)}>
@@ -165,7 +161,7 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
         </Div3>
         <Div4>
           <TotalPriceP><span >{(detail.data.price * count).toLocaleString()}</span>원</TotalPriceP>
-          <S_btn btnFn={handleSingleOrder}>주문하기</S_btn>
+          <S_btn btnFn={handleOrderData}>주문하기</S_btn>
         </Div4>
       </>
     }

@@ -1,22 +1,26 @@
 import MainLayout from "../../components/layout/MainLayout";
 import styled from "styled-components";
-import { L_btn, S_btn_white } from "../../components/buttons";
+import { L_btn, L_btn_disable, S_btn_white } from "../../components/buttons";
 import plusIcon from "../../assets/images/icon-plus-line.svg";
 import minusicon from "../../assets/images/icon-minus-line.svg";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { normalAxios } from "../../axios";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { AlertOpen, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
+import { AlertOpen, OREDER_DATA, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
 import { AlertModal } from "../../components/modal/AlertModal";
 import CartDetails from "../../components/cart/CartDetails";
+import { useNavigate } from "react-router-dom";
 
 export default function CartPage() {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useRecoilState(TOTAL_PRICE);
   const [totalShippinfee, setTotalShippinfee] = useRecoilState(TOTAL_SHIPPING_FEE);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   const [alertMsg, setAlertMsg] = useState('');
   const [checkItems, setCeckItems] = useState([]);
+  const [isAllChecked, setIsAllChecked] = useState(false);
   
   const getCartList = async () => {
     return normalAxios.get('/cart/');
@@ -56,7 +60,11 @@ export default function CartPage() {
 
   const deleteAll = useMutation({
     mutationFn: () => {
+      setLoading(true);
       return normalAxios.delete('/cart/');
+    },
+    onSettled: () => {
+      setLoading(false);
     },
     onSuccess : (data) => {
       if(data.status === 204) {
@@ -66,10 +74,25 @@ export default function CartPage() {
       }
     },
     onError : (e) => {console.log(e.message)},
-  })
+  });
+
+  // --- 🐰 주문하기 ---
+  const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
+  const handleOrderData = () => {
+    setOrderData({
+      order_kind: "cart_order",
+      total_price: parseInt(totalShippinfee + totalPrice),
+      shipping_fee: parseInt(totalShippinfee),
+      price: parseInt(totalPrice),
+    });
+    navigate('/payment');
+  }
+
+
 
   return (
     <MainLayout>
+      {loading && <Spinner/>}
       <AlertModal content={alertMsg}/>
       <Main>
         <section>
@@ -142,7 +165,10 @@ export default function CartPage() {
               </li>
             </TotalLineUl>
             <OrderAllBtnDiv>
-              <L_btn>주문하기</L_btn>
+              {(cart?.data?.count > 0 && (checkItems.length === cart?.data?.count)) ?
+              <L_btn btnFn={handleOrderData}>전체 주문하기</L_btn> :
+              <L_btn_disable btnFn={handleOrderData}>전체 주문하기</L_btn_disable>
+              }
             </OrderAllBtnDiv>
           </section>
         }

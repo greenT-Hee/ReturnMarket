@@ -51,14 +51,14 @@ export default function PaymentPage() {
   const orderParam = {
     "product_id": orderData.product_id ? orderData.product_id : null,
     "quantity" : orderData.quantity ? orderData.quantity : null,
-    "order_kind" : orderData.order_kind, // 바로주문하기일 경우에는 direct_order여야 합니다.
-    "total_price": orderData.total_price, // 총 금액(total_price)은 자동계산되나, 유효성검사를 위해 받아와야 합니다.
+    "order_kind" : orderData.order_kind,
+    "total_price": orderData.total_price, 
 
     "receiver": receiver,
     "receiver_phone_number": receiver_phone_number,
     "address": address1 + " " + address2,
     "address_message": address_message,
-    "payment_method": payMethod, //CARD, DEPOSIT, PHONE_PAYMENT, NAVERPAY, KAKAOPAY 중 하나 선택
+    "payment_method": payMethod, 
   }
   
   const orderMutate = useMutation({
@@ -97,7 +97,7 @@ export default function PaymentPage() {
             <Li $thd='true'>배송비</Li>  
             <Li $fth='true'>주문금액</Li>
           </TopUl>
-          <PaymentProducts />
+          {/* <PaymentProducts /> */}
         </section>
         <section>
           <H2 $line="true">배송정보</H2>
