@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { normalAxios } from "../../axios";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
-import { AlertOpen, OREDER_DATA, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
+import { AlertOpen, OREDER_DATA, OREDER_PRODUCT_ARRAY, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
 import deleteIcon from "../../assets/images/icon-delete.svg";
 import { CartCheckbox } from "../inputs";
 import { S_btn } from "../buttons";
@@ -10,7 +10,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../spinner";
 
-function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg, refetch, is_active}) {
+function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg, refetch, cart_itmem_count,is_active}) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
@@ -18,19 +18,20 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
   const [totalPrice, setTotalPrice] = useRecoilState(TOTAL_PRICE);
   const [totalShippinfee, setTotalShippinfee] = useRecoilState(TOTAL_SHIPPING_FEE);
   const [count, setCount] = useState(quantity);
-
-
-// --- 🐰 상품 정보 불러오기 ---
+  const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
+  const [orderProductArr, setOrderProductArr] = useRecoilState(OREDER_PRODUCT_ARRAY);
+  
+  // --- 🐰 상품 정보 불러오기 ---
   const getDetails = async () => {
     return normalAxios.get('/products/' + parseInt(pid));
-  };
-
+    };
+  
   const { isSuccess, data : detail, isFetching, refetch: reDetails} = useQuery({
     queryKey: ['detail', pid],
     queryFn: getDetails,
     refetchOnWindowFocus: false,
-  });
-
+    });
+    
   useEffect( () => {
     if(!isFetching) {
       setTotalPrice(totalPrice + (detail.data.price * count));
@@ -38,10 +39,24 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     } else {
       setTotalPrice(0);
       setTotalShippinfee(0);
-    }
-  }, [isFetching])
-        
+      }
+    }, [isFetching]);
 
+  useEffect(() => {
+    if(detail) {
+      if(cart_itmem_count === orderProductArr.length) return;
+      let obj = detail.data;
+      if(!obj.quantity) obj.quantity = parseInt(quantity);
+      setOrderProductArr([...orderProductArr, obj]);
+      } 
+      console.log(quantity)
+      // console.log(orderProductArr)
+  }, [detail]);
+
+  useEffect(() => {
+    setOrderProductArr([]);
+  },[])
+      
   // ----- 🐰 개별 checkbox 관리------
   const singleCheckHandler = (checked, id) => {
     if(checked) {
@@ -111,9 +126,8 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
   
 
   // --- 🐰 주문하기 ---
-  const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
   const handleOrderData = () => {
-    setOrderData({
+    const obj ={
       product_name: detail.data.product_name,
       store_name: detail.data.store_name,
       image: detail.data.image,
@@ -123,10 +137,12 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
       shipping_fee: detail.data.shipping_fee,
       price: (count * detail.data.price),
       total_price: (count * detail.data.price) + detail.data.shipping_fee,
-    })
+    }
+    setOrderData(obj);
+    setOrderProductArr([obj])
     navigate('/payment');
   }
-
+  
   return (
     <>
       {loading && <Spinner/>}

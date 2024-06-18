@@ -49,8 +49,13 @@ const TOTAL_PRICE = atom({
 
 const OREDER_DATA = atom({
   key: "OREDER_DATA", // unique ID (with respect to other atoms/selectors)
-  default: [],// default value (aka initial value)
+  default: {},// default value (aka initial value)
+  effects_UNSTABLE: [persistAtom],
+});
+const OREDER_PRODUCT_ARRAY = atom({
+  key: "OREDER_PRODUCT_ARRAY", // unique ID (with respect to other atoms/selectors)
+  default:[],// default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
 
-export  {ModalOpen, ConfirmOpen,AlertOpen, user_role, user_info, TOTAL_PRICE, TOTAL_SHIPPING_FEE, OREDER_DATA}
+export  {ModalOpen, ConfirmOpen,AlertOpen, user_role, user_info, TOTAL_PRICE, TOTAL_SHIPPING_FEE, OREDER_DATA, OREDER_PRODUCT_ARRAY}

@@ -97,7 +97,7 @@ export default function PaymentPage() {
             <Li $thd='true'>배송비</Li>  
             <Li $fth='true'>주문금액</Li>
           </TopUl>
-          {/* <PaymentProducts /> */}
+          <PaymentProducts />
         </section>
         <section>
           <H2 $line="true">배송정보</H2>

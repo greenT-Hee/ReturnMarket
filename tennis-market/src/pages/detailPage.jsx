@@ -6,7 +6,7 @@ import rabbit from "../assets/images/rabbit.png";
 import { normalAxios } from "../axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ConfirmOpen, OREDER_DATA, user_info, user_role } from "../atom/Atom";
+import { ConfirmOpen, OREDER_DATA, OREDER_PRODUCT_ARRAY, user_info, user_role } from "../atom/Atom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { ComfirmModal } from "../components/modal/comfirmModals";
 
@@ -18,9 +18,10 @@ export default function DetailPage() {
   const desc_ref = useRef(null);
   const [count, setCount] = useState(1);
   const [isInCart, setIsInCart] = useState(true);
+  const [confirmMsg, setConfirmMsg] = useState('');
   const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
   const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
-  const [confirmMsg, setConfirmMsg] = useState('');
+  const [orderProductArr, setOrderProductArr] = useRecoilState(OREDER_PRODUCT_ARRAY);
  
   const getDetail = async () => {
     return normalAxios.get('/products/' + parseInt(pid));
@@ -110,7 +111,7 @@ export default function DetailPage() {
   })
 
   const handleOrder = () => {
-    setOrderData({
+    const obj = {
       product_name: detail_data.data.product_name,
       store_name: detail_data.data.store_name,
       image: detail_data.data.image,
@@ -120,7 +121,9 @@ export default function DetailPage() {
       shipping_fee: detail_data.data.shipping_fee,
       price: (count * detail_data.data.price),
       total_price: (count * detail_data.data.price) + detail_data.data.shipping_fee,
-    })
+    }
+    setOrderData(obj);
+    setOrderProductArr([obj])
     navigate('/payment');
   }
 

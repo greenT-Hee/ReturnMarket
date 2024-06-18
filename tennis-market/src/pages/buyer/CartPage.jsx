@@ -7,7 +7,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { normalAxios } from "../../axios";
 import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import { AlertOpen, OREDER_DATA, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
+import { AlertOpen, OREDER_DATA, OREDER_PRODUCT_ARRAY, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
 import { AlertModal } from "../../components/modal/AlertModal";
 import CartDetails from "../../components/cart/CartDetails";
 import { useNavigate } from "react-router-dom";
@@ -20,8 +20,7 @@ export default function CartPage() {
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   const [alertMsg, setAlertMsg] = useState('');
   const [checkItems, setCeckItems] = useState([]);
-  const [isAllChecked, setIsAllChecked] = useState(false);
-  
+  const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
   const getCartList = async () => {
     return normalAxios.get('/cart/');
   };
@@ -33,6 +32,7 @@ export default function CartPage() {
     // retryOnMount: false,
     // refetchOnMount: false
   });
+
   
   const AllCheckHandler = (checked) => {
     if(checked) {
@@ -77,7 +77,6 @@ export default function CartPage() {
   });
 
   // --- 🐰 주문하기 ---
-  const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
   const handleOrderData = () => {
     setOrderData({
       order_kind: "cart_order",
@@ -130,6 +129,7 @@ export default function CartPage() {
                 checkItems={checkItems}
                 setAlertMsg={setAlertMsg}
                 refetch={refetch}
+                cart_itmem_count={cart?.data?.count}
                 is_active={ele.is_active}
                 />
               </Article>

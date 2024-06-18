@@ -1,36 +1,32 @@
 import styled from "styled-components"
-import { OREDER_DATA } from "../../atom/Atom";
+import { OREDER_DATA, OREDER_PRODUCT_ARRAY } from "../../atom/Atom";
 import { useRecoilState } from "recoil";
 
 export default function PaymentProducts() {
   const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
-  // // --- 🐰 상품 정보 불러오기 ---
-  // const getDetails = async () => {
-  //   return normalAxios.get('/products/' + parseInt(pid));
-  // };
+  const [orderProductArr, setOrderProductArr] = useRecoilState(OREDER_PRODUCT_ARRAY);
 
-  // const { isSuccess, data : detail, isFetching, refetch: reDetails} = useQuery({
-  //   queryKey: ['detail', pid],
-  //   queryFn: getDetails,
-  //   refetchOnWindowFocus: false,
-  // });
   return (
     <>
-      <Article>
-        <Div1>
-          <PImage src={orderData.image} alt={"ele.product_name "+ "썸네일"} /> 
-          <div>
-            <GrayP>{orderData.store_name}</GrayP>
-            <ProductNameP>{orderData.product_name}</ProductNameP>
-            <GrayP>수량: <span>{orderData.quantity.toLocaleString()}</span>개</GrayP>
-          </div>  
-        </Div1>
-        <Div2> - </Div2>
-        <Div3> {orderData.shipping_fee === 0? "무료배송" : orderData.shipping_fee.toLocaleString() + "원"} </Div3>
-        <Div4>
-          <PriceP><span>{orderData.price.toLocaleString()}</span>원</PriceP>
-        </Div4>
-      </Article>
+    {orderProductArr.map((ele) => {
+      return(
+        <Article key={ele.product_id}>
+          <Div1>
+            <PImage src={ele.image} alt={"ele.product_name "+ "썸네일"} /> 
+            <div>
+              <GrayP>{ele.store_name}</GrayP>
+              <ProductNameP>{ele.product_name}</ProductNameP>
+              <GrayP>수량: <span>{ele.quantity.toLocaleString()}</span>개</GrayP>
+            </div>  
+          </Div1>
+          <Div2> - </Div2>
+          <Div3> {ele.shipping_fee === 0? "무료배송" : ele.shipping_fee.toLocaleString() + "원"} </Div3>
+          <Div4>
+            <PriceP><span>{ele.price.toLocaleString()}</span>원</PriceP>
+          </Div4>
+        </Article>
+      )
+    })}
 
       <TotalP>총 주문금액 <TotalPriceSpan>{(orderData.total_price).toLocaleString()}</TotalPriceSpan></TotalP>
     </>
