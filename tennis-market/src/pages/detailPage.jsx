@@ -51,6 +51,7 @@ export default function DetailPage() {
   const calculateTotal = (e) => {
     if(e.target.id === 'plus_btn') {
       if(count === detail_data.data.stock) return;
+      if(detail_data.data.stock === 0) return;
       setCount(count + 1);
     }
     if(e.target.id === 'minus_btn') {
