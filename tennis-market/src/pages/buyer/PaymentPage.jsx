@@ -1,16 +1,24 @@
 import styled from "styled-components"
 import MainLayout from "../../components/layout/MainLayout"
-import image from "../../assets/images/rabbit.png"
 import { PaymentAddressInput, PaymentInput, PaymentRadio } from "../../components/inputs"
 import { useState } from "react";
 import { normalAxios } from "../../axios";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "../../components/spinner";
-import { L_btn, L_btn_disable, M_btn } from "../../components/buttons";
-
+import { L_btn, L_btn_disable } from "../../components/buttons";
+import PaymentProducts from "../../components/payment/PaymentProducts";
+import { AlertOpen, OREDER_DATA } from "../../atom/Atom";
+import { useRecoilState } from "recoil";
+import { AlertModal } from "../../components/modal/AlertModal";
+import { useNavigate } from "react-router-dom";
 
 export default function PaymentPage() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false); 
+  const [isAgreePay, setIsAgreepay] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
+  const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
+  const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
   const [payMethod, setPayMethod] = useState("CARD");
   const [infoInputs, setInfoInputs] = useState({
     "name": "",
@@ -40,35 +48,38 @@ export default function PaymentPage() {
     console.log(infoInputs, "🐰")
   }
 
-  const orderData = {
-    "product_id": "",
-    "quantity" : "Int",
-    "order_kind" : "String", // 바로주문하기일 경우에는 direct_order여야 합니다.
+  const orderParam = {
+    "product_id": orderData.product_id,
+    "quantity" : orderData.quantity,
+    "order_kind" : orderData.order_kind, // 바로주문하기일 경우에는 direct_order여야 합니다.
+    "total_price": orderData.total_price, // 총 금액(total_price)은 자동계산되나, 유효성검사를 위해 받아와야 합니다.
 
     "receiver": receiver,
     "receiver_phone_number": receiver_phone_number,
     "address": address1 + " " + address2,
     "address_message": address_message,
     "payment_method": payMethod, //CARD, DEPOSIT, PHONE_PAYMENT, NAVERPAY, KAKAOPAY 중 하나 선택
-    "total_price": "Int" // 총 금액(total_price)은 자동계산되나, 유효성검사를 위해 받아와야 합니다.
   }
   
-  const uploadApi = useMutation({
-    mutationFn: () => {
-      // setIsLoading(true);
-      return normalAxios.post('/order/',orderData)
+  const orderMutate = useMutation({
+    mutationFn: (data) => {
+      for (const [key, value] of Object.entries(infoInputs)) {
+        if(!value) {
+          setAlertMsg("필수값을 모두 입력해주세요.")
+          setOpenAlert(true);
+          return;
+        } 
+      }
+      setIsLoading(true);
+      return normalAxios.post('/order/',data)
     },
     onSettled: () => {
       setIsLoading(false);
     },
     onSuccess : (data) => {
-      if(data.status === 201) {
-      
-      } else if(data.status === 400) {
-
-      } else if(data.status === 401) {
-      
-      }
+      if(data.status === 290) {
+        navigate("/");
+      } 
     },
     onError : (e) => {console.log(e.message)},
   })
@@ -76,6 +87,7 @@ export default function PaymentPage() {
   return (
     <MainLayout>
       <Main>
+        <AlertModal content={alertMsg}/>
         {isLoading && <Spinner />}
         <section>
           <H1>주문/결제하기</H1>
@@ -85,22 +97,7 @@ export default function PaymentPage() {
             <Li $thd='true'>배송비</Li>  
             <Li $fth='true'>주문금액</Li>
           </TopUl>
-          <Article>
-            <Div1>
-              <PImage src={image} alt={"ele.product_name "+ "썸네일"} /> 
-              <div>
-                <GrayP>백엔드글로벌</GrayP>
-                <ProductNameP>딥러닝 개발자 무릎 담요</ProductNameP>
-                <GrayP>수량: <span>1</span>개</GrayP>
-              </div>  
-            </Div1>
-            <Div2> - </Div2>
-            <Div3> 무료배송 </Div3>
-            <Div4>
-              <PriceP><span>46,000</span>원</PriceP>
-            </Div4>
-          </Article>
-          <TotalP>총 주문금액 <TotalPriceSpan>46,500</TotalPriceSpan></TotalP>
+          <PaymentProducts />
         </section>
         <section>
           <H2 $line="true">배송정보</H2>
@@ -137,29 +134,28 @@ export default function PaymentPage() {
             <TopArea>
               <FlexDiv>
                 <p>- 상품금액</p>
-                <p><span>465000</span>원</p>
+                <p><PriceSpan>{orderData.price.toLocaleString()}</PriceSpan>원</p>
               </FlexDiv>
               <FlexDiv>
                 <p>- 할인금액</p>
-                <p><span>0</span>원</p>
+                <p><PriceSpan>0</PriceSpan>원</p>
               </FlexDiv>
               <FlexDiv>
                 <p>- 배송비</p>
-                <p><span>0</span>원</p>
+                <p><PriceSpan>{orderData.shipping_fee.toLocaleString()}</PriceSpan>원</p>
               </FlexDiv>
               <ToTalPriceDiv>
                 <FlexDiv>
                   <p>- 결제금액</p>
-                  <p><span>465000</span>원</p>
+                  <p><TotalPriceSpan>{orderData.total_price.toLocaleString()}</TotalPriceSpan>원</p>
                 </FlexDiv>
               </ToTalPriceDiv>
             </TopArea>
             <BottomArea>
-              <CheckboxInput type="checkbox" name="agreeCheck" id="agreeCheck"/>
+              <CheckboxInput type="checkbox" name="agreeCheck" id="agreeCheck" checked={isAgreePay} onChange={()=> setIsAgreepay(true)}/>
               <label htmlFor="agreeCheck">주문 내용을 확인했으며, 정보 제공 등에 동의합니다.</label>
               <WrapLastBtn>
-                {/* <L_btn>결제하기</L_btn> */}
-                <L_btn_disable>결제하기</L_btn_disable>
+                {isAgreePay ? <L_btn btnFn={() => orderMutate.mutate(orderParam)}>결제하기</L_btn> : <L_btn_disable>결제하기</L_btn_disable>}
               </WrapLastBtn>
             </BottomArea>
           </TotalInfoArticle>
@@ -230,74 +226,8 @@ const Li = styled.li`
   width: ${(props) => props.$thd ? '20%' : ''};
   width: ${(props) => props.$fth ? '20%' : ''};
 `
-const Article = styled.article`
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 18px;
-  box-sizing: border-box;
-  border-bottom: 1px solid ${({theme}) => theme.gray2};
 
-  @media only screen and (max-width: 860px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 30px;
-  }
-`
-
-// --- DIV 구역 ----
-const Div1 = styled.div`
-  display: flex;
-  gap: 36px;
-  justify-content: flex-start;
-  align-items: center;
-  width: 50%;
-  flex-shrink: 1;
-  @media only screen and (max-width: 860px) {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-`
-const Div2 = styled.div`
-  text-align: center;
-  width: 10%;
-`
-const Div3 = styled.div`
-  width: 20%;
-  text-align: center;
-  @media only screen and (max-width: 860px) {
-    text-align: left;
-    width: 100%;
-  }
-
-`
-const Div4 = styled.div`
-  width: 20%;
-  text-align: center;
-  @media only screen and (max-width: 860px) {
-    width: 100%;
-    text-align: left;
-  }
-`
-
-// -- div1 상품정보 --
-const PImage = styled.img`
-  width: 104px;
-  height: 104px;
-  border-radius: 10px;
-  object-fit: cover;
-`
-const GrayP = styled.p`
-  font-size: 14px;
-  color: ${({theme}) => theme.gray3};
-`
-const ProductNameP = styled.p`
-  font-size: 18px;
-  padding: 10px 0;
-`
-
-// -- div4 가격 --
-const PriceP = styled.p`
+const PriceSpan = styled.span`
   font-weight: 700;
   font-size: 18px;
 `
@@ -311,6 +241,7 @@ const TotalP = styled.p`
   margin-top: 30px;
   `
 const TotalPriceSpan = styled.span`
+  font-weight: 700;
   font-size: 24px;
   color: ${({theme}) => theme.red};
 `

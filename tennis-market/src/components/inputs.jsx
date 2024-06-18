@@ -125,6 +125,11 @@ const RadioInput = styled.input`
     // 그림자가 없으면 그냥 설정한 색상이 꽉 찬 원으로만 나옵니다.
   }
 `
+const Essential = styled.span`
+  font-size: 14px;
+  color: ${({theme}) => theme.red};
+
+`
 
 export const NormalInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false, placeholder}) => {
   return (
@@ -178,7 +183,7 @@ export const CartCheckbox = ({label, id, singleCheckHandler, checkItems}) => {
 export const PaymentInput = ({type, id, label,value, setValue, maxlength, errMsg, errStatus=false, placeholder}) => {
   return (
     <WrapPayInput>
-      <PayLabel htmlFor={id}>{label}</PayLabel>
+      <PayLabel htmlFor={id}><Essential>* </Essential>{label}</PayLabel>
       {/* {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>} */}
       <PayInput value={value} type={type} id={id} name={id} onChange={setValue} maxLength={maxlength} placeholder={placeholder}/>
     </WrapPayInput>
@@ -187,7 +192,7 @@ export const PaymentInput = ({type, id, label,value, setValue, maxlength, errMsg
 export const PaymentAddressInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false}) => {
   return (
     <WrapPayInput>
-      <PayLabel htmlFor={id}>{label}</PayLabel>
+      <PayLabel htmlFor={id}><Essential>* </Essential>{label}</PayLabel>
       {/* {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>} */}
       <WrapAddressInput>
         <WrapAddressBtn>

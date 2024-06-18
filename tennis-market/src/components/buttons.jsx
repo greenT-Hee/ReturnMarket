@@ -133,9 +133,9 @@ const RoundStyle = styled.span`
 `
 
 //--- large ---
-export const L_btn = ({children, event}) => {
+export const L_btn = ({children, btnFn}) => {
   return (
-    <LargeBtnStyle type="button" onClick={() => event}>{children}</LargeBtnStyle>
+    <LargeBtnStyle type="button" onClick={btnFn}>{children}</LargeBtnStyle>
   )
 }
 export const L_btn_disable = ({children}) => {

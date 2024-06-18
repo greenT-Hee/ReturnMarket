@@ -6,7 +6,7 @@ import rabbit from "../assets/images/rabbit.png";
 import { normalAxios } from "../axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ConfirmOpen, user_info, user_role } from "../atom/Atom";
+import { ConfirmOpen, OREDER_DATA, user_info, user_role } from "../atom/Atom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { ComfirmModal } from "../components/modal/comfirmModals";
 
@@ -19,6 +19,7 @@ export default function DetailPage() {
   const [count, setCount] = useState(1);
   const [isInCart, setIsInCart] = useState(true);
   const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
+  const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
   const [confirmMsg, setConfirmMsg] = useState('');
  
   const getDetail = async () => {
@@ -108,6 +109,21 @@ export default function DetailPage() {
     onError : (e) => {console.log(e.message)},
   })
 
+  const handleOrder = () => {
+    setOrderData({
+      product_name: detail_data.data.product_name,
+      store_name: detail_data.data.store_name,
+      image: detail_data.data.image,
+      product_id: parseInt(pid),
+      quantity: parseInt(count),
+      order_kind: "direct_order",
+      shipping_fee: detail_data.data.shipping_fee,
+      price: (count * detail_data.data.price),
+      total_price: (count * detail_data.data.price) + detail_data.data.shipping_fee,
+    })
+    navigate('/payment');
+  }
+
   return (
     <MainLayout>
     {isPending && 
@@ -164,7 +180,7 @@ export default function DetailPage() {
                     <>
                      {(userInfo.user_type === 'BUYER') && 
                        <OrderBtnFelx>
-                         <M_btn>바로구매</M_btn>
+                         <M_btn btnFn={handleOrder}>바로구매</M_btn>
                          <MS_btn_white btnFn={addCart}>장바구니</MS_btn_white>
                        </OrderBtnFelx>
                      }
