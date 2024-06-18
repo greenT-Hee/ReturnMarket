@@ -49,8 +49,8 @@ export default function PaymentPage() {
   }
 
   const orderParam = {
-    "product_id": orderData.product_id,
-    "quantity" : orderData.quantity,
+    "product_id": orderData.product_id ? orderData.product_id : null,
+    "quantity" : orderData.quantity ? orderData.quantity : null,
     "order_kind" : orderData.order_kind, // 바로주문하기일 경우에는 direct_order여야 합니다.
     "total_price": orderData.total_price, // 총 금액(total_price)은 자동계산되나, 유효성검사를 위해 받아와야 합니다.
 
@@ -78,7 +78,7 @@ export default function PaymentPage() {
     },
     onSuccess : (data) => {
       if(data.status === 290) {
-        navigate("/");
+        navigate("/order");
       } 
     },
     onError : (e) => {console.log(e.message)},
@@ -152,7 +152,7 @@ export default function PaymentPage() {
               </ToTalPriceDiv>
             </TopArea>
             <BottomArea>
-              <CheckboxInput type="checkbox" name="agreeCheck" id="agreeCheck" checked={isAgreePay} onChange={()=> setIsAgreepay(true)}/>
+              <CheckboxInput type="checkbox" name="agreeCheck" id="agreeCheck" checked={isAgreePay} onChange={()=> setIsAgreepay(isAgreePay ? false : true)}/>
               <label htmlFor="agreeCheck">주문 내용을 확인했으며, 정보 제공 등에 동의합니다.</label>
               <WrapLastBtn>
                 {isAgreePay ? <L_btn btnFn={() => orderMutate.mutate(orderParam)}>결제하기</L_btn> : <L_btn_disable>결제하기</L_btn_disable>}

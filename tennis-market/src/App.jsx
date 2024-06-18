@@ -23,6 +23,7 @@ import DetailPage from './pages/detailPage';
 import CartPage from './pages/buyer/CartPage';
 import { TOTAL_PRICE, user_info, user_role } from './atom/Atom';
 import PaymentPage from './pages/buyer/PaymentPage';
+import OrderPage from './pages/buyer/OrderPage';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
@@ -60,6 +61,7 @@ function App() {
                 {/* -- buyer -- */}
                 <Route path="/cart" element={<CartPage />}></Route>
                 <Route path="/payment" element={<PaymentPage />}></Route>
+                <Route path="/order" element={<OrderPage />}></Route>
               </Routes>
             </ThemeProvider>
           </BrowserRouter>

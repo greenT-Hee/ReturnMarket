@@ -2,21 +2,25 @@ import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { normalAxios } from "../../axios";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
-import { AlertOpen, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
+import { AlertOpen, OREDER_DATA, TOTAL_PRICE, TOTAL_SHIPPING_FEE } from "../../atom/Atom";
 import deleteIcon from "../../assets/images/icon-delete.svg";
 import { CartCheckbox } from "../inputs";
 import { S_btn } from "../buttons";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg, refetch, is_active}) {
+  const navigate = useNavigate();
   // const [detail, setDetail] = useState(null);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
   // --- 🩶 계산 관련 state 🩶---
   const [totalPrice, setTotalPrice] = useRecoilState(TOTAL_PRICE);
   const [totalShippinfee, setTotalShippinfee] = useRecoilState(TOTAL_SHIPPING_FEE);
   const [count, setCount] = useState(quantity);
-  const [isMount, setIsMount] = useState(false);
+  const [arr, setArr] = useState([]);
 
+
+// --- 🐰 상품 정보 불러오기 ---
   const getDetails = async () => {
     return normalAxios.get('/products/' + parseInt(pid));
   };
@@ -27,7 +31,18 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     refetchOnWindowFocus: false,
   });
 
-  // ----- checkbox ------
+  useEffect( () => {
+    if(!isFetching) {
+      setTotalPrice(totalPrice + (detail.data.price * count));
+      setTotalShippinfee(totalShippinfee + detail.data.shipping_fee);
+      arr.push(detail.data.product_name)
+    } else {
+      setTotalPrice(0);
+      setTotalShippinfee(0);
+    }
+  }, [isFetching])
+
+  // ----- 🐰 개별 checkbox 관리------
   const singleCheckHandler = (checked, id) => {
     if(checked) {
       setCeckItems(prev => [...prev, id]);
@@ -35,7 +50,7 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
       setCeckItems(checkItems.filter(ele => ele !== id));
     }
   } 
-    // --- 단일 삭제 ---
+  // --- 🐰 단일 삭제 ---
   // -- 단일 삭제 체크 여부 ---
   const clickDeleteSingleBtn = (item_id) => {
     if(!checkItems.includes(item_id)) {
@@ -63,7 +78,7 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     onError : (e) => {console.log(e.message)},
   });
   
-  // --- count 수정 ----
+  // --- 🐰 count 수정 ----
   const calculateCount = (e) => {
     if(e.target.id === 'plus_btn') {
       if(count === detail.data.stock) return;
@@ -76,19 +91,18 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
       setTotalPrice(totalPrice - detail.data.price)
     }
   };
-  
   const editCountData = {
     "product_id": pid ,
     "quantity": count,
 		"is_active": is_active,  // 장바구니 내 상품 활성화 버튼, 같이 보내지 않으면 False
   }
-
   const editCountMutate = useMutation({
     mutationFn: (editCountData) => {
       return normalAxios.put(`/cart/${parseInt(iid)}/`, editCountData);
     },
     onSuccess : (data) => {
       if(data.status === 200) {
+        refetch();
         setOpenAlert(true);
         setAlertMsg("수량이 수정되었습니다.");
       }
@@ -96,16 +110,28 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     onError : (e) => {console.log(e.message)},
   });
   
-  useEffect( () => {
-    if(!isFetching) {
-      setTotalPrice(totalPrice + (detail.data.price * count));
-      setTotalShippinfee(totalShippinfee + detail.data.shipping_fee);
-    } else {
-      setTotalPrice(0);
-      setTotalShippinfee(0);
-    }
-    console.log(isFetching, "isFetching");
-  }, [isFetching])
+
+  // --- 🐰 주문하기 ---
+  const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
+  const handleSingleOrder = () => {
+    setOrderData({
+      product_name: detail.data.product_name,
+      store_name: detail.data.store_name,
+      image: detail.data.image,
+      product_id: parseInt(pid),
+      quantity: parseInt(quantity),
+      order_kind: "cart_one_order",
+      shipping_fee: detail.data.shipping_fee,
+      price: (count * detail.data.price),
+      total_price: (count * detail.data.price) + detail.data.shipping_fee,
+    })
+    navigate('/payment');
+  }
+
+
+
+
+
   return (
     <>
     {isSuccess && 
@@ -135,11 +161,11 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
             <CountPlus type="button" $plus="true" id="plus_btn" onClick={calculateCount}>+</CountPlus>
           </CountBox>
           <StockP>남은 개수: <span>{detail.data.stock}</span></StockP>
-          <EditBtn type="button" onClick={() => editCountMutate.mutate(editCountData)}>옵션 수정 완료</EditBtn>
+          <EditBtn type="button" onClick={() => editCountMutate.mutate(editCountData)}>옵션 수정 확정</EditBtn>
         </Div3>
         <Div4>
           <TotalPriceP><span >{(detail.data.price * count).toLocaleString()}</span>원</TotalPriceP>
-          <S_btn>주문하기</S_btn>
+          <S_btn btnFn={handleSingleOrder}>주문하기</S_btn>
         </Div4>
       </>
     }

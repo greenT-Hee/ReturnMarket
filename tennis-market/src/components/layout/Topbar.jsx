@@ -164,13 +164,13 @@ export function TopbarMain() {
           {/* 마이페이지 드롭박스 */}
           {(openMypage && userInfo.user_type === 'BUYER') && 
             <MypageUl $buyer='true'>
-              <MypageLi>마이페이지</MypageLi>
+              <MypageLi>주문목록</MypageLi>
               <MypageLi onClick={() => logout.mutate()}>로그아웃</MypageLi>
             </MypageUl>
           }
           {(openMypage && userInfo.user_type === 'SELLER')  && 
             <MypageUl>
-              <MypageLi>마이페이지</MypageLi>
+              <MypageLi>주문목록</MypageLi>
               <MypageLi onClick={() => logout.mutate()}>로그아웃</MypageLi>
             </MypageUl>
           }

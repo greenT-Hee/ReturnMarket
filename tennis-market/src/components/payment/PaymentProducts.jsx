@@ -4,7 +4,16 @@ import { useRecoilState } from "recoil";
 
 export default function PaymentProducts() {
   const [orderData, setOrderData] = useRecoilState(OREDER_DATA);
+  // // --- 🐰 상품 정보 불러오기 ---
+  // const getDetails = async () => {
+  //   return normalAxios.get('/products/' + parseInt(pid));
+  // };
 
+  // const { isSuccess, data : detail, isFetching, refetch: reDetails} = useQuery({
+  //   queryKey: ['detail', pid],
+  //   queryFn: getDetails,
+  //   refetchOnWindowFocus: false,
+  // });
   return (
     <>
       <Article>

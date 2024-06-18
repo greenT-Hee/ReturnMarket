@@ -145,7 +145,7 @@ export default function CartPage() {
               <L_btn>주문하기</L_btn>
             </OrderAllBtnDiv>
           </section>
-          }
+        }
       </Main>
     </MainLayout>
   )
