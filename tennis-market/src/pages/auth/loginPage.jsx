@@ -6,7 +6,7 @@ import { AlertOpen, user_info, user_role } from "../../atom/Atom";
 import { useMutation } from '@tanstack/react-query';
 import { LineInput } from "../../components/inputs";
 import { M_btn } from "../../components/buttons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertModal } from "../../components/modal/AlertModal";
 import { normalAxios } from "../../axios";
 import { setAccessTokenToCookie } from "../../api/auth";
@@ -47,6 +47,13 @@ function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [alertCont, setAlertCont] = useState('');
+
+  useEffect(() => {
+    if(userInfo.login_type) {
+      navigate("/");
+    }
+  },[])
+
   const loginData = {
     "username": username,
 		"password": password,
