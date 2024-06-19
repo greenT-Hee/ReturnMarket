@@ -75,7 +75,7 @@ const SmallBtnStyle = styled.button`
   display: block;
   width: 80px;
   max-width: 100%;
-  border: ${(props) => props.$white ? `1px solid #bfbfbf` : `unset`};
+  border: ${(props) => props.$white ? `1px solid ${props.theme.gray3}` : `unset`};
   padding: 10px;
   border-radius: 5px;
   font-size: 16px;

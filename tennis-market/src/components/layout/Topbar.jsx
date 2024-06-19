@@ -13,9 +13,10 @@ import { normalAxios } from '../../axios';
 import ResetRecoilContext from '../../ResetRecoilContext';
 import Cookies from 'universal-cookie';
 import { AlertModal } from '../modal/AlertModal';
+import searchIcon from '../../assets/images/icon-search.svg'
 
 const HeaderStyle = styled.header`
-  padding: 25px 20px;
+  padding: 24px 20px;
   width: 100%;
   box-sizing: border-box;
   box-shadow: 0 5px 6px rgba(0,0,0,0.06);
@@ -37,7 +38,7 @@ const HeaderLayout = styled.div`
 `
 
 const Logo = styled.img`
-  width: 100px;
+  width: 120px;
   cursor: pointer;
 `
 
@@ -53,15 +54,22 @@ const LeftFlex = styled.div`
   align-items:flex-end;
   justify-content: center;
   gap: 30px;
+  position: relative;
 `
 
 const SearchInput = styled.input`
-  width: 400px;
+  width: 360px;
   max-width: 100%;
   padding: 15px 23px;
   border: none;
   outline: 2px solid ${({theme}) => theme.main};
   border-radius: 32px;
+`
+const SearchIcon = styled.img`
+  position: absolute;
+  right: 16px;
+  top: 9px;
+  cursor: pointer;
 `
 const RightArea = styled.div`
   position: relative;
@@ -157,7 +165,8 @@ export function TopbarMain() {
       <HeaderLayout>
         <LeftFlex>
           <h1><Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/></h1>
-          <SearchInput type="search" />
+          <SearchInput type="text" />
+          <SearchIcon src={searchIcon} alt="검색아이콘" />
         </LeftFlex>
 
         <RightArea>

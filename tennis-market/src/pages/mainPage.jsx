@@ -104,7 +104,6 @@ function MainPage() {
   const { isPending, isError, data, error, isSuccess} = useQuery({
     queryKey: ['buyer_products'],
     queryFn: getBuyerProducts,
-    // queryFn: userInfo.user_type === 'SELLER' ? getSellerProducts : getBuyerProducts, 
   })
 
   return (
