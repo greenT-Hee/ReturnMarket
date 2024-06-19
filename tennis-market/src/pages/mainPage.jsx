@@ -6,6 +6,7 @@ import { useMutation, useQueries, useQuery } from "@tanstack/react-query"
 import { useRecoilValue } from "recoil"
 import { user_info } from "../atom/Atom"
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react"
 
 const ProductUl = styled.ul`
   max-width: 1280px;
@@ -15,7 +16,7 @@ const ProductUl = styled.ul`
   gap: 70px;
   margin: 60px auto 120px;
   justify-content: center;
-
+  position: relative;
   @media only screen and (max-width: 1280px) {
     grid-template-columns: repeat(2, 380px);
   }
@@ -93,34 +94,71 @@ const Loading = styled.p`
   font-size: 24px;
 
 `
+const MoreGetBtn = styled.button`
+  display: block;
+  border: 0;
+  background: ${({theme}) => theme.w};
+  color: ${({theme}) => theme.gray3};
+  border: 2px solid ${({theme}) => theme.gray3};
+  border-radius: 32px;
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%);
+  min-width: 120px;
+  font-size: 14px;
+  padding: 8px 0;
+  cursor: pointer;
 
+  &:hover {
+    background: ${({theme}) => theme.main};
+    color: ${({theme}) => theme.w};
+    border: 2px solid ${({theme}) => theme.main};
+  }
+`
 function MainPage() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(user_info);
+  const [page, setPage] = useState(1)
+  const [productArr, setProductArr] = useState([])
   const getBuyerProducts = async () => {
-   return normalAxios.get('/products/');
+   return normalAxios.get('/products/?page=' + page);
   };
 
-  const { isPending, isError, data, error, isSuccess} = useQuery({
-    queryKey: ['buyer_products'],
+  const { isPending, isError, data, isSuccess} = useQuery({
+    queryKey: ['buyer_products', page],
     queryFn: getBuyerProducts,
+    refetchOnWindowFocus: false,
+    // retryOnMount: false,
+    // refetchOnMount: false
   })
+
+  useEffect(() => {
+    if(data) {
+      if((page * 15) === productArr.length) return;
+      if(page === 1) {
+        setProductArr(data.data.results);
+        } else {
+        setProductArr([...productArr, ...data.data.results]);
+      }
+    }
+  }, [data,page])
 
   return (
     <MainLayout>
       {/* 슬라이더 */}
       <MainSwiper />
-
       {/* 상품 리스트 */}
       <section>
         <h2 className="screen_out">상품 리스트 영역</h2>
         {isPending && <Loading>🎾 상품 준비 중</Loading>}
         {isError && <Loading>ERROR</Loading>}
-        {isSuccess && 
+        {productArr.length > 0 && 
           <ProductUl>
-            {data.data.results.map((ele, idx) => {
+            {productArr?.map((ele, idx) => {
               return(
-                <ProdcutLi key={ele.product_id} onClick={() => navigate(`product/${ele.product_id}`)}>
+                <ProdcutLi key={ele.product_id + page} onClick={() => navigate(`product/${ele.product_id}`)}>
                   <ProdcutImg src={ele.image} alt={ele.product_name + "썸네일"} />
                   {ele.stock === 0 && <SoldoutDiv>픔절</SoldoutDiv>}
                   <ShopP>{ele.store_name}</ShopP>
@@ -129,9 +167,9 @@ function MainPage() {
                 </ProdcutLi>
               )
             })}
+            <MoreGetBtn type="button" onClick={()=> setPage(page + 1)}>더 보기</MoreGetBtn>
           </ProductUl>
         }
-
       </section>
     </MainLayout>
   )

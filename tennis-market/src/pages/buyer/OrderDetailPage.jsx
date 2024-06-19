@@ -25,7 +25,6 @@ export default function OrderDetailPage() {
       let obj = data?.data?.results.find(x => parseInt(x.order_number) === parseInt(order_num));
       setDetail(obj);
       }
-      console.log(detail)
     }, [isSuccess]);
   
   return (

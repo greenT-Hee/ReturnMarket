@@ -49,8 +49,6 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
       if(!obj.quantity) obj.quantity = parseInt(quantity);
       setOrderProductArr([...orderProductArr, obj]);
       } 
-      console.log(quantity)
-      // console.log(orderProductArr)
   }, [detail]);
 
   useEffect(() => {
