@@ -101,7 +101,7 @@ export default function OrderPage() {
               <OrderNumberP>주문번호: <span>{ele.order_number}</span></OrderNumberP>
               <TopContBox>
                 <OrderDateP><span>{ele.created_at.split("T")[0]}</span> 주문</OrderDateP>
-                <DetailBtn type='button'>{'주문 상세보기 >'}</DetailBtn>
+                <DetailBtn type='button' onClick={() => navigate('/order/'+ ele.order_number)}>{'주문 상세보기 >'}</DetailBtn>
               </TopContBox>
               {ele.order_items.map((pid, item_idx) => {
                 return  (

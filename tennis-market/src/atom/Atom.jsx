@@ -57,5 +57,10 @@ const OREDER_PRODUCT_ARRAY = atom({
   default:[],// default value (aka initial value)
   effects_UNSTABLE: [persistAtom],
 });
+const ORDER_DETAIL = atom({
+  key: "ORDER_DETAIL", // unique ID (with respect to other atoms/selectors)
+  default:{},// default value (aka initial value)
+  effects_UNSTABLE: [persistAtom],
+});
 
-export  {ModalOpen, ConfirmOpen,AlertOpen, user_role, user_info, TOTAL_PRICE, TOTAL_SHIPPING_FEE, OREDER_DATA, OREDER_PRODUCT_ARRAY}
+export  {ModalOpen, ConfirmOpen,AlertOpen, user_role, user_info, TOTAL_PRICE, TOTAL_SHIPPING_FEE, OREDER_DATA, OREDER_PRODUCT_ARRAY, ORDER_DETAIL}

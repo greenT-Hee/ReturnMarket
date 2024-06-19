@@ -69,12 +69,12 @@ const WrapContBox = styled.div`
   display: flex;
   justify-content: space-between;
   border-radius: 8px;
+  height: fit-content;
   border: 1px solid ${({theme}) => theme.gray2};
   margin-bottom: 10px;
   @media only screen and (max-width: 760px) {
    flex-direction: column;
   }
-
 `
 
 const ContBox = styled.div`
