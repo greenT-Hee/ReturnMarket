@@ -34,14 +34,13 @@ const GlobalStyle = createGlobalStyle`
   `
 
 function App() {
-
-  const userInfo = useRecoilValue(user_info);
+  const userRole = useRecoilValue(user_role);
+  const [newRole, setNewRole] = useState("");
   const [theme, setTheme] = useState(lightTheme);
   const [recoilKey, setRecoilKey] = useState(0);
   const resetRecoil = () => {
 		setRecoilKey(prev => prev + 1);
 	};
-
   return (
     <QueryClientProvider client={queryClient}>
       <ResetRecoilContext.Provider value={resetRecoil}>
@@ -58,14 +57,14 @@ function App() {
                 {/* --- 비회원만 --- */}
                 <Route path="/login" element={<LoginPage />} />
                 {/* -- seller -- */}
-                <Route element={<PrivateRouter isAuth={userInfo.user_type === "SELLER"} />}>
+                <Route element={<PrivateRouter isAuth={userRole === "SELLER"} />}>
                   <Route path="/seller_center" element={<SellerCenterPage />} />
                   <Route path="/regist_product" element={<RegistProductPage />} />
                   <Route path="/edit/:pid" element={<EditPage />} />
                 </Route>
               
                 {/* -- buyer -- */}
-                <Route element={<PrivateRouter isAuth={userInfo.user_type === "BUYER"} />}>
+                <Route element={<PrivateRouter isAuth={userRole === "BUYER"} />}>
                   <Route path="/cart" element={<CartPage />} />
                   <Route path="/payment" element={<PaymentPage />} />
                   <Route path="/order" element={<OrderPage />} />

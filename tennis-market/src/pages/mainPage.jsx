@@ -14,7 +14,7 @@ const ProductUl = styled.ul`
   display: grid;
   grid-template-columns: repeat(3, 380px);
   gap: 70px;
-  margin: 60px auto 120px;
+  margin: 60px auto 180px;
   justify-content: center;
   position: relative;
   @media only screen and (max-width: 1280px) {
@@ -102,7 +102,7 @@ const MoreGetBtn = styled.button`
   border: 2px solid ${({theme}) => theme.gray3};
   border-radius: 32px;
   position: absolute;
-  bottom: -60px;
+  bottom: -120px;
   left: 50%;
   right: 50%;
   transform: translateX(-50%);
