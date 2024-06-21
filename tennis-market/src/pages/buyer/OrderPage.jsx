@@ -94,7 +94,10 @@ export default function OrderPage() {
         </WrapBanner>
         {/* 반복 */}
         <WrapArticle>
-        {order.map((ele, idx) => {
+        {order.length === 0 && 
+          <NoCont>결제된 상품이 없습니다.</NoCont>
+        }
+        {order?.map((ele, idx) => {
           return (
             <OrderArticle key={idx}>
               {/* {idx} */}
@@ -222,4 +225,9 @@ const DetailBtn = styled.button`
   @media only screen and (max-width: 500px) {
   font-size: 14px;
   }
+`
+const NoCont = styled.p`
+  text-align: center;
+  font-weight: 500;
+  color: ${({theme}) => theme.gray3};
 `
