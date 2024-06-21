@@ -110,6 +110,7 @@ export default function PaymentPage() {
             <PaymentInput type={"text"} label={"수령인"} id={"receiver"} value={receiver?receiver:""} setValue={handleInputValue} maxlength={20}/>
             <PaymentInput type={"text"} label={"휴대폰"} id={"receiver_phone_number"} value={receiver_phone_number ? receiver_phone_number : ""} setValue={handleInputValue} maxlength={11}/>
             <PaymentAddressInput type={"text"} label={"배송주소"} id={"address"} setValue={handleInputValue} />
+            {/* <DaumPostcode onComplete={onCompleteAddress}></DaumPostcode> */}
             <PaymentInput type={"text"} label={"배송메시지"} id={"address_message"}value={address_message?address_message:""}  setValue={handleInputValue} maxlength={100}/>
           </article>
         </section>

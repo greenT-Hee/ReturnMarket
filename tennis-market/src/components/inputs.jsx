@@ -3,6 +3,8 @@ import checkOn from "../assets/images/icon-check-on.svg";
 import checkOff from "../assets/images/icon-check-off.svg";
 import { useEffect, useState } from "react";
 import { S_btn, S_btn_white } from "./buttons";
+import DaumPostcode from 'react-daum-postcode';
+
 const Label = styled.label`
   display: block;
   color: ${({theme}) => theme.gray3};
@@ -95,11 +97,44 @@ const WrapAddressInput = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  position: relative;
   `
 const WrapAddressBtn = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+`
+const WrapDaum = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,0.45);
+  box-sizing: border-box;
+`
+const DaumStyleDiv = styled.div`
+  width: 450px;
+  max-width: 100%;
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+`
+
+const CloseDaum = styled.button`
+  display: block;
+  background: none;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  color: ${({theme}) => theme.w};
+  float: right;
+  margin: 0 -15px 8px 0;
+  cursor: pointer;
+  padding: 0 20px;
 `
 const WrapRadio = styled.div`
   display: flex;
@@ -190,15 +225,29 @@ export const PaymentInput = ({type, id, label,value, setValue, maxlength, errMsg
   )
 }
 export const PaymentAddressInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false}) => {
+  const [address, setAddress] = useState("");
+  const [openDaum, setOpenDaum] = useState(false);
+  const handleAddress = (data) => {
+    setAddress(`[${data.zonecode}] ${data.address}`);
+    setOpenDaum(false);
+  } 
   return (
     <WrapPayInput>
       <PayLabel htmlFor={id}><Essential>* </Essential>{label}</PayLabel>
       {/* {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>} */}
       <WrapAddressInput>
         <WrapAddressBtn>
-          <PayInput type={type} id={"address1"} name={"address1"} onChange={setValue} maxLength={maxlength}/>
-          <S_btn>주소 찾기</S_btn>
+          <PayInput readOnly type={type} id={"address1"} name={"address1"} value={address}/>
+          <S_btn btnFn={() => openDaum? setOpenDaum(false) : setOpenDaum(true)}>주소 찾기</S_btn>
         </WrapAddressBtn>
+        {openDaum &&
+          <WrapDaum>
+            <DaumStyleDiv>
+              <CloseDaum onClick={() => setOpenDaum(false)}>X</CloseDaum>
+              <DaumPostcode onComplete={data => handleAddress(data)}></DaumPostcode>
+            </DaumStyleDiv>
+          </WrapDaum>
+        }
         <PayInput type={type} id={"address2"} name={"address2"} onChange={setValue} maxLength={maxlength} placeholder={"상세주소"}/>
       </WrapAddressInput>
     </WrapPayInput>
