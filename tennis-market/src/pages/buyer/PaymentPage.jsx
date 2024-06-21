@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import MainLayout from "../../components/layout/MainLayout"
 import { PaymentAddressInput, PaymentInput, PaymentRadio } from "../../components/inputs"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { normalAxios } from "../../axios";
 import { useMutation } from "@tanstack/react-query";
 import Spinner from "../../components/spinner";
@@ -45,7 +45,6 @@ export default function PaymentPage() {
         [name]: value,
       });
     }
-    console.log(infoInputs, "🐰")
   }
 
   const orderParam = {
@@ -82,8 +81,7 @@ export default function PaymentPage() {
       } 
     },
     onError : (e) => {console.log(e.message)},
-  })
-
+  });
   return (
     <MainLayout>
       <Main>

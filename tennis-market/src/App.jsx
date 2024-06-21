@@ -21,10 +21,10 @@ import EditPage from './pages/seller/editPage';
 import ErrorPage from './pages/errorPage';
 import DetailPage from './pages/detailPage';
 import CartPage from './pages/buyer/CartPage';
-import { TOTAL_PRICE, user_info, user_role } from './atom/Atom';
+import { OREDER_DATA, TOTAL_PRICE, user_info, user_role } from './atom/Atom';
 import PaymentPage from './pages/buyer/PaymentPage';
 import OrderPage from './pages/buyer/OrderPage';
-import PrivateRouter from './components/PrivateRouter';
+import {PrivateRouter,  IsLoginRouter } from './components/PrivateRouter';
 import OrderDetailPage from './pages/buyer/OrderDetailPage';
 import SearchPage from './pages/searchPage';
 
@@ -35,13 +35,13 @@ const GlobalStyle = createGlobalStyle`
   `
 
 function App() {
-  const userRole = useRecoilValue(user_role);
-  const [newRole, setNewRole] = useState("");
+  const orderData = useRecoilValue(OREDER_DATA);
   const [theme, setTheme] = useState(lightTheme);
   const [recoilKey, setRecoilKey] = useState(0);
   const resetRecoil = () => {
 		setRecoilKey(prev => prev + 1);
 	};
+
   return (
     <QueryClientProvider client={queryClient}>
       <ResetRecoilContext.Provider value={resetRecoil}>
@@ -57,18 +57,21 @@ function App() {
                 <Route path="/product/:pid" element={<DetailPage />}></Route>
                 <Route path="/*" element={<ErrorPage />}></Route>
                 {/* --- 비회원만 --- */}
-                <Route path="/login" element={<LoginPage />} />
+                <Route element={<IsLoginRouter />}>
+                  <Route path="/login" element={<LoginPage />} />
+                </Route>
+                
                 {/* -- seller -- */}
-                <Route element={<PrivateRouter isAuth={userRole === "SELLER"} />}>
+                <Route element={<PrivateRouter isAuth={"SELLER"} />}>
                   <Route path="/seller_center" element={<SellerCenterPage />} />
                   <Route path="/regist_product" element={<RegistProductPage />} />
                   <Route path="/edit/:pid" element={<EditPage />} />
                 </Route>
               
                 {/* -- buyer -- */}
-                <Route element={<PrivateRouter isAuth={userRole === "BUYER"} />}>
+                <Route element={<PrivateRouter isAuth={"BUYER"} />}>
                   <Route path="/cart" element={<CartPage />} />
-                  <Route path="/payment" element={<PaymentPage />} />
+                  {orderData && <Route path="/payment" element={<PaymentPage />} />}
                   <Route path="/order" element={<OrderPage />} />
                   <Route path="/order/:order_num" element={<OrderDetailPage />} />
                 </Route>

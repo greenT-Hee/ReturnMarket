@@ -11,6 +11,7 @@ import { AlertOpen, OREDER_DATA, OREDER_PRODUCT_ARRAY, TOTAL_PRICE, TOTAL_SHIPPI
 import { AlertModal } from "../../components/modal/AlertModal";
 import CartDetails from "../../components/cart/CartDetails";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../../components/spinner";
 
 export default function CartPage() {
   const navigate = useNavigate();
@@ -118,7 +119,7 @@ export default function CartPage() {
             <NoContP>🛒 장바구니에 담긴 상품이 없습니다.</NoContP>
           )}
           {/* 상품 리스트 */}
-          { cart?.data?.results.map ((ele, idx) => {
+          { (cart?.data?.count > 0) && cart?.data?.results.map ((ele, idx) => {
             return (
               <Article key={idx}>
                 <CartDetails 

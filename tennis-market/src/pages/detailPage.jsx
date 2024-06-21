@@ -190,7 +190,7 @@ export default function DetailPage() {
                      }
                      {(userInfo.user_type === 'SELLER') && 
                        <OrderBtnFelx>
-                         <RedFontP>구매자만 상품을 구매할 수 있습니다.</RedFontP>
+                         <RedFontP>구매자만 상품 결제가 가능합니다.</RedFontP>
                        </OrderBtnFelx>     
                      }
                     </>

@@ -115,6 +115,10 @@ const MoreGetBtn = styled.button`
     border: 2px solid ${({theme}) => theme.main};
   }
 `
+const NoCont = styled.p`
+  text-align: center;
+  padding: 240px 0;
+`
 function MainPage() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(user_info);
@@ -150,8 +154,10 @@ function MainPage() {
       {/* 상품 리스트 */}
       <section>
         <h2 className="screen_out">상품 리스트 영역</h2>
-        {isPending && <Loading><img src={loadingGif} alt="로딩" /></Loading>}
         {isError && <Loading>ERROR</Loading>}
+        {productArr.length === 0 && 
+          <NoCont>준비된 상품이 없습니다.🥹</NoCont>
+        }
         {productArr.length > 0 && 
           <ProductUl>
             {productArr?.map((ele, idx) => {
