@@ -14,7 +14,7 @@ export default function OrderList({pid, unique_key, quantity,cart,setIsInCart, s
   const getDetail = async () => {
     return normalAxios.get('/products/' + pid);
   };
-  const { data  } = useQuery({
+  const { data , isPending } = useQuery({
     queryKey: ['getDetail', pid],
     queryFn: getDetail,
     refetchOnWindowFocus: false,
@@ -39,6 +39,21 @@ export default function OrderList({pid, unique_key, quantity,cart,setIsInCart, s
 
   return (
     <WrapContBox key={unique_key}>
+      {isPending && 
+        <>
+        <ContBox>
+          <OrderStatusP>결제완료</OrderStatusP>
+          <FlexItemInfo>
+            <NoImg></NoImg>
+            <div>
+              <NoTxt></NoTxt>
+              <NoTxt></NoTxt>
+              <NoTxt></NoTxt>
+            </div>
+          </FlexItemInfo>
+        </ContBox>
+      </>
+      }
       {data &&
         <>
           <ContBox>
@@ -132,4 +147,16 @@ const FlexItemInfo = styled.div`
     flex-direction: column;
     align-items: center;
   }
+`
+const NoImg = styled.div`
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  background:  ${({theme}) => theme.gray2};
+`
+const NoTxt = styled.div`
+  width: 200px;
+  height: 20px;
+  background:  ${({theme}) => theme.gray2};
+  margin-bottom: 4px;
 `

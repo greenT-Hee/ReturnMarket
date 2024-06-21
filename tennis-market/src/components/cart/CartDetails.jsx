@@ -143,7 +143,23 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
   
   return (
     <>
-      {loading && <Spinner/>}
+    {loading && <Spinner/>}
+    {isFetching && 
+      <>
+        <Div1>
+          <CartCheckbox id={iid} checkItems={checkItems} singleCheckHandler={singleCheckHandler}/>
+        </Div1>
+        <Div2>
+          <NoImg></NoImg> 
+          <div>
+            <NoTxt></NoTxt>
+            <NoTxt></NoTxt>
+            <NoTxt></NoTxt>
+            <NoTxt></NoTxt>
+          </div> 
+        </Div2>
+      </>
+    }
     {isSuccess && 
       <>
         <DeleteBtn type="button" onClick={() => clickDeleteSingleBtn(iid)}>
@@ -152,18 +168,18 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
         <Div1>
           <CartCheckbox id={iid} checkItems={checkItems} singleCheckHandler={singleCheckHandler}/>
         </Div1>
-          <Div2>
-            <PImage src={detail.data.image} alt={"ele.product_name "+ "썸네일"} /> 
-            <div>
-              <GrayP>{detail.data.store_name}</GrayP>
-              <ProductNameP>{detail.data.product_name}</ProductNameP>
-              <PriceP><span>{detail.data.price.toLocaleString()}</span>원</PriceP>
-              <GrayP>
-                <span>{detail.data.shipping_method === "PARCEL" ? "택배배송" : "직접배송"} / </span>
-                <span >{detail.data.shipping_fee === 0 ? "무료배송" : detail.data.shipping_fee.toLocaleString() + "원" }</span>
-              </GrayP>
-            </div> 
-          </Div2>
+        <Div2>
+          <PImage src={detail.data.image} alt={"ele.product_name "+ "썸네일"} /> 
+          <div>
+            <GrayP>{detail.data.store_name}</GrayP>
+            <ProductNameP>{detail.data.product_name}</ProductNameP>
+            <PriceP><span>{detail.data.price.toLocaleString()}</span>원</PriceP>
+            <GrayP>
+              <span>{detail.data.shipping_method === "PARCEL" ? "택배배송" : "직접배송"} / </span>
+              <span >{detail.data.shipping_fee === 0 ? "무료배송" : detail.data.shipping_fee.toLocaleString() + "원" }</span>
+            </GrayP>
+          </div> 
+        </Div2>
         <Div3>
           <CountBox>
             <CountMinus type="button" $minus="true" id="minus_btn" onClick={calculateCount}>-</CountMinus>
@@ -332,4 +348,17 @@ const TotalPriceP = styled.p`
   font-size: 20px;
   font-weight: 700;
   color: ${({theme}) => theme.red};
+`
+
+const NoImg = styled.div`
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  background:  ${({theme}) => theme.gray2};
+`
+const NoTxt = styled.div`
+  width: 200px;
+  height: 20px;
+  background:  ${({theme}) => theme.gray2};
+  margin-bottom: 4px;
 `

@@ -7,7 +7,7 @@ import { useRecoilValue } from "recoil"
 import { user_info } from "../atom/Atom"
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react"
-
+import loadingGif from "../assets/images/catLoad.gif"
 const ProductUl = styled.ul`
   max-width: 1280px;
   box-sizing: border-box;
@@ -88,11 +88,9 @@ const PriceSpan = styled.span`
     font-size: 20px;
   }
 `
-const Loading = styled.p`
+const Loading = styled.div`
   padding: 80px 0 160px;
   text-align: center;
-  font-size: 24px;
-
 `
 const MoreGetBtn = styled.button`
   display: block;
@@ -152,7 +150,7 @@ function MainPage() {
       {/* 상품 리스트 */}
       <section>
         <h2 className="screen_out">상품 리스트 영역</h2>
-        {isPending && <Loading>🎾 상품 준비 중</Loading>}
+        {isPending && <Loading><img src={loadingGif} alt="로딩" /></Loading>}
         {isError && <Loading>ERROR</Loading>}
         {productArr.length > 0 && 
           <ProductUl>
