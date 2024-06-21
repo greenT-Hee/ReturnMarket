@@ -98,7 +98,7 @@ function LoginPage() {
         <LineInput type={'text'} setValue={(e) => setUsername(e.target.value)} placeholder={'아이디를 입력하세요'}/>
         <LineInput type={'password'} setValue={(e) => setPassword(e.target.value)} placeholder={'비밀번호를 입력하세요'}/>
         <WrapBtn>
-          <M_btn btnFn={handleLogin}>로그인하기</M_btn>
+          <M_btn type="submit" btnFn={handleLogin}>로그인하기</M_btn>
         </WrapBtn>
       </FormRound>
 

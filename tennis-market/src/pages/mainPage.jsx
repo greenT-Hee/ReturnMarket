@@ -125,15 +125,15 @@ function MainPage() {
   const getBuyerProducts = async () => {
    return normalAxios.get('/products/?page=' + page);
   };
-
+  
   const { isPending, isError, data, isSuccess} = useQuery({
     queryKey: ['buyer_products', page],
     queryFn: getBuyerProducts,
     refetchOnWindowFocus: false,
     // retryOnMount: false,
     // refetchOnMount: false
-  })
-
+    })
+    
   useEffect(() => {
     if(data) {
       if((page * 15) === productArr.length) return;

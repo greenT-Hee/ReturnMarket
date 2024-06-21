@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { AlertOpen, user_info } from '../../atom/Atom';
 import { MS_btn_icon } from '../buttons';
-import { useContext, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { normalAxios } from '../../axios';
 import ResetRecoilContext from '../../ResetRecoilContext';
 import Cookies from 'universal-cookie';
@@ -136,7 +136,7 @@ export function TopbarMain() {
   const userInfo = useRecoilValue(user_info);
   const [openMypage, setOpenMypage] = useState(false);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
-
+  const [searchVal, setSearchVal] = useState("");
 
   const resetRecoil = useContext(ResetRecoilContext);
   const cookies = new Cookies();
@@ -156,8 +156,7 @@ export function TopbarMain() {
       }
     },
     onError : (e) => {console.log(e.message)},
-  })
-
+  });
 
   return (
     <HeaderStyle>
@@ -165,8 +164,8 @@ export function TopbarMain() {
       <HeaderLayout>
         <LeftFlex>
           <h1><Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/></h1>
-          <SearchInput type="text" />
-          <SearchIcon src={searchIcon} alt="검색아이콘" />
+          <SearchInput type="text" onChange={e => setSearchVal(e.target.value)}/>
+          <SearchIcon src={searchIcon} alt="검색아이콘" onClick={() => navigate('/search/' + searchVal)}/>
         </LeftFlex>
 
         <RightArea>

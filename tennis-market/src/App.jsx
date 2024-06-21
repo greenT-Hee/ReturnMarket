@@ -26,6 +26,7 @@ import PaymentPage from './pages/buyer/PaymentPage';
 import OrderPage from './pages/buyer/OrderPage';
 import PrivateRouter from './components/PrivateRouter';
 import OrderDetailPage from './pages/buyer/OrderDetailPage';
+import SearchPage from './pages/searchPage';
 
 const queryClient = new QueryClient();
 const GlobalStyle = createGlobalStyle`
@@ -51,6 +52,7 @@ function App() {
               <Routes>
                 {/* --- 공통 --- */}
                 <Route path="/" element={<MainPage />}></Route>
+                <Route path="/search/:keyword" element={<SearchPage />}></Route>
                 <Route path="/signup" element={<SignupPage />}></Route>
                 <Route path="/product/:pid" element={<DetailPage />}></Route>
                 <Route path="/*" element={<ErrorPage />}></Route>

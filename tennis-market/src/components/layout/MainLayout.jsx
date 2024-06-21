@@ -3,6 +3,7 @@ import { TopbarMain } from "./Topbar";
 import scrollIcon from "../../assets/images/icon-scroll.svg";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 
 const ScrollImg = styled.img`
@@ -19,22 +20,22 @@ export default function MainLayout({children}) {
         top: 0,
         behavior: 'smooth'
     })
-
   }
   useEffect(() => {
     const handleShowButton = () => {
-        if (window.scrollY > 700) {
-            setShowButton(true)
-        } else {
-            setShowButton(false)
-        }
+      if (window.scrollY > 700) {
+          setShowButton(true)
+      } else {
+          setShowButton(false)
+      }
     }
+    window.addEventListener("scroll", handleShowButton)
+    return () => {
+        window.removeEventListener("scroll", handleShowButton)
+      }
+    }, []);
 
-  window.addEventListener("scroll", handleShowButton)
-  return () => {
-      window.removeEventListener("scroll", handleShowButton)
-    }
-  }, [])
+  
   return (
     <>
       <TopbarMain />
