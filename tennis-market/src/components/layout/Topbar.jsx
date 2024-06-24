@@ -15,6 +15,7 @@ import ResetRecoilContext from '../../ResetRecoilContext';
 import Cookies from 'universal-cookie';
 import { AlertModal } from '../modal/AlertModal';
 import searchIcon from '../../assets/images/icon-search.svg'
+import searchIconGray from '../../assets/images/icon-search-gray.svg'
 
 const HeaderStyle = styled.header`
   display: flex;
@@ -197,7 +198,7 @@ export function TopbarMain() {
   const userInfo = useRecoilValue(user_info);
   const [openMypage, setOpenMypage] = useState(false);
   const [openAlert, setOpenAlert] = useRecoilState(AlertOpen);
-  const [searchVal, setSearchVal] = useState("검색어없음");
+  const [searchVal, setSearchVal] = useState("");
 
   const resetRecoil = useContext(ResetRecoilContext);
   const cookies = new Cookies();
@@ -226,7 +227,8 @@ export function TopbarMain() {
         <LeftFlex>
           <h1><Logo src={logo} alt="리턴마켓로고" onClick={() => navigate('/')}/></h1>
           <SearchInput type="text" onChange={e => setSearchVal(e.target.value)}/>
-          <SearchIcon src={searchIcon} alt="검색아이콘" onClick={() => navigate('/search/' + searchVal)}/>
+          {!searchVal && <SearchIcon src={searchIconGray} alt="검색아이콘_비활성" />}
+          {searchVal && <SearchIcon src={searchIcon} alt="검색아이콘" onClick={() => navigate('/search/' + searchVal)}/>}
         </LeftFlex>
 
         <RightArea>
