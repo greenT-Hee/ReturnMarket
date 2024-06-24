@@ -119,7 +119,7 @@ function ConsumerForm() {
     const phoneReg = /^(01[0]{1})?[0-9]{3,4}?[0-9]{4}$/gm;
     const registrationReg = /\d{10}/gm;
     if(e.target.name === 'password') pwdReg.test(e.target.value) ? setValidPwd(true) : setValidPwd(false);
-    if(e.target.name === 'password2') e.target.value === password && validPwd ? setCheckCorrectPwd(true) : setCheckCorrectPwd(false);
+    if(e.target.name === 'password2') (e.target.value === password && validPwd && password.length > 0 )? setCheckCorrectPwd(true) : setCheckCorrectPwd(false);
     if(e.target.name === 'phone_number') {
       e.target.value =e.target.value.replace(/[^0-9]/g, "");
       phoneReg.test(e.target.value) ? setValidPhone(true) : setValidPhone(false);

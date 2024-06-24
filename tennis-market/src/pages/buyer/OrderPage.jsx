@@ -45,7 +45,7 @@ export default function OrderPage() {
     queryKey: ['cartList'],
     queryFn: getCartList,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    // refetchOnMount: false,
   });
 
   const handleConfrim =() => {
@@ -100,7 +100,6 @@ export default function OrderPage() {
         {isSuccess && order?.map((ele, idx) => {
           return (
             <OrderArticle key={ele.order_number}>
-              {ele.order_number}
               <OrderNumberP>주문번호: <span>{ele.order_number}</span></OrderNumberP>
               <TopContBox>
                 <OrderDateP><span>{ele.created_at.split("T")[0]}</span> 주문</OrderDateP>
@@ -117,10 +116,8 @@ export default function OrderPage() {
                     setIsInCart={setIsInCart}
                     setConfirmMsg={setConfirmMsg}
                     /> 
-                    <p>{pid.toString() + ele.order_number.toString()}</p>
                   </>
                 )
-                
               })}
               <ToTalPriceP>{ele.total_price.toLocaleString()}원</ToTalPriceP>
             </OrderArticle>
@@ -233,4 +230,7 @@ const NoCont = styled.p`
   text-align: center;
   font-weight: 500;
   color: ${({theme}) => theme.gray3};
+  @media only screen and (max-width: 1080px) {
+    padding: 160px 0;
+  }
 `

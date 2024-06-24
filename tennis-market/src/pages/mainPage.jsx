@@ -122,7 +122,8 @@ const NoCont = styled.p`
 function MainPage() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(user_info);
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
+  const [isMore, setIsMore] = useState(true);
   const [productArr, setProductArr] = useState([])
   const getBuyerProducts = async () => {
    return normalAxios.get('/products/?page=' + page);
@@ -138,10 +139,12 @@ function MainPage() {
     
   useEffect(() => {
     if(data) {
-      if((page * 15) === productArr.length) return;
+      console.log(page,Math.ceil(data.data.count / 15) )
+      if(page === Math.ceil(data.data.count / 15) ) setIsMore(false);
       if(page === 1) {
         setProductArr(data.data.results);
-        } else {
+      } else {
+        if((page * 15) === productArr.length) return;
         setProductArr([...productArr, ...data.data.results]);
       }
     }
@@ -171,7 +174,7 @@ function MainPage() {
                 </ProdcutLi>
               )
             })}
-            <MoreGetBtn type="button" onClick={()=> setPage(page + 1)}>더 보기</MoreGetBtn>
+            {isMore && <MoreGetBtn type="button" onClick={()=> setPage(page + 1)}>더 보기</MoreGetBtn>}
           </ProductUl>
         }
       </section>
