@@ -70,6 +70,10 @@ const WrapPayInput = styled.div`
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid ${({theme}) => theme.gray2};
+  @media only screen and (max-width: 800px) {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
 `
 
 const PayLabel = styled.label`
@@ -92,17 +96,25 @@ const PayInput = styled.input`
   &::placeholder {
     font-size: 14px;
   }
+  @media only screen and (max-width: 430px) {
+    max-width: 100%;
+  }
 `
 const WrapAddressInput = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
   position: relative;
+  max-width: 100%;
   `
 const WrapAddressBtn = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+  @media only screen and (max-width: 500px) {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 `
 const WrapDaum = styled.div`
   position: fixed;
@@ -138,8 +150,11 @@ const CloseDaum = styled.button`
 `
 const WrapRadio = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 10px;
+  @media only screen and (max-width: 700px) {
+    /* flex-direction: column; */
+  }
 `
 const RadioInput = styled.input`
   width: 18px;

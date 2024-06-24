@@ -7,7 +7,7 @@ import { user_role } from "../../atom/Atom";
 const Section = styled.section`
   width: 570px;
   max-width: 100%;
-  margin: 50px auto;
+  margin: 120px auto;
   padding: 20px;
   box-sizing: border-box;
 `
@@ -16,6 +16,10 @@ const LgooStyle = styled.img`
   width: 220px;
   max-width: 100%;
   margin: 0 auto 40px;
+  cursor: pointer;
+  @media only screen and (max-width: 900px) {
+    width: 170px;
+  }
 `
 const UL = styled.ul`
   display: flex;
@@ -35,7 +39,6 @@ export default function AuthLayout({children}) {
   const [userRole, setUserRole] = useRecoilState(user_role);
   
   const handleSort = (e) => {
-    console.log(e.target.innerText)
     if(e.target.innerText === '구매회원가입') {
       setUserRole("BUYER");
     } else {

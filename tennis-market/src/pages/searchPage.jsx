@@ -12,7 +12,7 @@ export default function SearchPage() {
   const {keyword} = useParams();
   const navigate = useNavigate();
   const getSearchResult = async () => {
-    return normalAxios.get('/products/?search=' + keyword);
+    return normalAxios.get('/products/?search=' + keyword );
   };
 
   const { isSuccess: searchComplete, data: searchResult} = useQuery({

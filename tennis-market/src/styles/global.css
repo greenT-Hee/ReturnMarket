@@ -38,3 +38,10 @@ input[type="number"]::-webkit-inner-spin-button {
     background: #4E1DD9;
     color: #fff;
  }
+
+
+ .swiper-button-prev:after, .swiper-rtl .swiper-button-next:after, 
+ .swiper-button-next:after, .swiper-rtl .swiper-button-prev:after{
+    font-size: 25px !important;
+    font-weight: 900;
+ }

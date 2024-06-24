@@ -6,7 +6,7 @@ import rabbit from "../assets/images/rabbit.png";
 import { normalAxios } from "../axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ConfirmOpen, OREDER_DATA, OREDER_PRODUCT_ARRAY, user_info, user_role } from "../atom/Atom";
+import { ConfirmOpen, OREDER_DATA, OREDER_PRODUCT_ARRAY, user_info } from "../atom/Atom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { ComfirmModal } from "../components/modal/comfirmModals";
 
@@ -38,7 +38,7 @@ export default function DetailPage() {
     queryKey: ['product_detail', pid],
     queryFn: getDetail,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    // refetchOnMount: false,
   });
 
   const { isSuccess : cartOk, data : cart } = useQuery({
@@ -61,7 +61,7 @@ export default function DetailPage() {
   };
 
   useEffect(() => {
-    if(cartOk && user_role === "BUYER") {
+    if(cartOk && userInfo.user_type === "BUYER") {
       if(cart?.data?.results.length > 0) {
         cart.data.results.map((ele) => {
           if(ele.product_id === parseInt(pid)) setIsInCart(false);
@@ -350,14 +350,21 @@ const PriceBox = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 50px;
+  @media only screen and (max-width: 430px) {
+    flex-wrap: wrap;
+  }
 `
 const TotalNumBox = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  @media only screen and (max-width: 430px) {
+    flex-wrap: wrap;
+  }
 `
 const CountP = styled.p`
   color: ${({theme}) => theme.gray3};
+  line-height: 1.2;
 `
 const CountSpan = styled.span`
   color: ${({theme}) => theme.sub};
@@ -378,6 +385,10 @@ const OrderBtnFelx = styled.div`
   align-items: center;
   justify-content: flex-end;
   gap: 14px;
+  @media only screen and (max-width: 430px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `
 
 const RedFontP = styled.p`

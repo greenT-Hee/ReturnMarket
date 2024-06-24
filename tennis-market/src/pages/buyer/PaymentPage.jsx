@@ -224,6 +224,10 @@ const Li = styled.li`
   width: ${(props) => props.$scd ? '10%' : ''};
   width: ${(props) => props.$thd ? '20%' : ''};
   width: ${(props) => props.$fth ? '20%' : ''};
+  @media only screen and (max-width: 850px) {
+    text-align: left;
+    display:  ${(props) => props.$first ? 'block' : 'none'};
+  }
 `
 
 const PriceSpan = styled.span`
@@ -268,6 +272,11 @@ const WrapRadioDiv = styled.div`
   padding: 18px 0;
   border-top: 2px solid ${({theme}) => theme.gray3};
   border-bottom: 2px solid ${({theme}) => theme.gray3};
+  @media only screen and (max-width: 680px) {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 `
 
 const CheckboxInput = styled.input`

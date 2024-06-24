@@ -12,6 +12,10 @@ const ScrollImg = styled.img`
   bottom: 5%;
   z-index: 100;
   cursor: pointer;
+  @media only screen and (max-width: 600px) {
+    width: 45px;
+    height: 45px;
+  }
 `
 export default function MainLayout({children}) {
   const [showButton, setShowButton] = useState(false);

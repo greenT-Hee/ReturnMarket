@@ -108,7 +108,7 @@ export default function CartPage() {
                 onChange={(e)=>AllCheckHandler(e.target.checked)} 
                 checked={(cart?.data?.count > 0 && (checkItems.length === cart?.data?.count)) ? true : false}
                 />
-              </Li>
+            </Li>
             <Li $scd='true'>상품정보</Li>
             <Li $thd='true'>수량</Li>
             <Li $fth='true'>상품금액</Li>
@@ -138,7 +138,7 @@ export default function CartPage() {
           })}
         </section>
 
-        {cart?.data.count > 0 &&
+        {cartOk && cart?.data.count > 0 &&
           <section>
             <h2 className="screen_out">장바구니 총 가격 계산 영역</h2>
             <TotalLineUl>
@@ -200,6 +200,9 @@ const WrapAllDelBtn = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
+  @media only screen and (max-width: 860px) {
+    justify-content: flex-start;
+  }
 `
 const TopUl = styled.ul`
   display: flex;
@@ -218,6 +221,9 @@ const Li = styled.li`
   width: ${(props) => props.$scd ? '50%' : ''};
   width: ${(props) => props.$thd ? '20%' : ''};
   width: ${(props) => props.$fth ? '20%' : ''};
+  @media only screen and (max-width: 860px) {
+    display:  ${(props) => props.$first ? 'block' : 'none'};
+  }
 `
 
 const Article = styled.article`
@@ -252,6 +258,10 @@ const TotalLineUl = styled.ul`
   margin: 80px 0 40px;
   text-align: center;
   border-radius: 10px;
+  @media only screen and (max-width: 600px) {
+    flex-direction: column;
+    gap: 30px;
+  }
 `
 const OrderAllBtnDiv = styled.div`
   display: flex;

@@ -14,10 +14,18 @@ const TopTitleArea = styled.div`
   padding: 42px 0;
   box-sizing: border-box;
   margin-top: 97px;
+  @media only screen and (max-width: 900px) {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
 `
 const TopH2 = styled.h2`
   font-size: 36px;
   font-weight: 500;
+  @media only screen and (max-width: 900px) {
+    font-size: 30px;
+  }
 `
 const TopH2Span = styled.span`
   color: ${({theme}) => theme.main};
@@ -33,19 +41,26 @@ const SidebarLayout = styled.article`
   display: flex;
   gap: 30px;
   height: 100%;
-  @media only screen and (max-width: 1280px) {
+  @media only screen and (max-width: 900px) {
     flex-wrap: ${(props) => props.$center ? 'wrap' : null};
     flex-direction: ${(props) => props.$center ? 'row' : 'column'};
   }
 `
-
+const WrpaSidebarUlDiv= styled.div `
+  @media only screen and (max-width: 900px) {
+   overflow-y: scroll;
+  }
+`
 const SidebarUl = styled.ul`
   display: flex;
   flex-direction: column;
+  @media only screen and (max-width: 900px) {
+   flex-direction: row;
+  }
 `
 
 const SidebarContBox = styled.div`
-  width: 250px;
+  min-width: 250px;
   @media only screen and (max-width: 1280px) {
     width: 100%;
   }
@@ -98,7 +113,7 @@ export default function SellerLayout({children}) {
             <MS_btn_icon icon={plustIcon} btnFn={() => navigate('/regist_product')}>상품 업로드</MS_btn_icon>
           </TopTitleArea>
           <SidebarLayout $center='true'>
-            <div>
+            <WrpaSidebarUlDiv>
               <SidebarUl>
                 <li><TabMenu_on_btn>판매중인 상품</TabMenu_on_btn></li>
                 <li><TabMenu_off_btn round={2}>주문/배송</TabMenu_off_btn></li>
@@ -106,7 +121,7 @@ export default function SellerLayout({children}) {
                 <li><TabMenu_off_btn>통계</TabMenu_off_btn></li>
                 <li><TabMenu_off_btn>스토어 설정</TabMenu_off_btn></li>
               </SidebarUl>
-            </div>
+            </WrpaSidebarUlDiv>
             <RightSideSyle>{children}</RightSideSyle>
           </SidebarLayout>
         </>
