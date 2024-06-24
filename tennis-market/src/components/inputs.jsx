@@ -239,12 +239,15 @@ export const PaymentInput = ({type, id, label,value, setValue, maxlength, errMsg
     </WrapPayInput>
   )
 }
-export const PaymentAddressInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false}) => {
-  const [address, setAddress] = useState("");
+export const PaymentAddressInput = ({type, id, label, setValue, maxlength, errMsg, errStatus=false, setInfoInputs, infoInputs}) => {
   const [openDaum, setOpenDaum] = useState(false);
+  const [address, setAddress] = useState("");
   const handleAddress = (data) => {
     setAddress(`[${data.zonecode}] ${data.address}`);
+    setInfoInputs({...infoInputs, 'address1': `[${data.zonecode}] ${data.address}`});
+
     setOpenDaum(false);
+    console.log(address)
   } 
   return (
     <WrapPayInput>
@@ -252,7 +255,7 @@ export const PaymentAddressInput = ({type, id, label, setValue, maxlength, errMs
       {/* {errStatus ? <ErrMsg>{errMsg}</ErrMsg> : <ErrMsg $error>{errMsg}</ErrMsg>} */}
       <WrapAddressInput>
         <WrapAddressBtn>
-          <PayInput readOnly type={type} id={"address1"} name={"address1"} value={address}/>
+          <PayInput readOnly type={type} id={"address1"} name={"address1"} value={address} />
           <S_btn btnFn={() => openDaum? setOpenDaum(false) : setOpenDaum(true)}>주소 찾기</S_btn>
         </WrapAddressBtn>
         {openDaum &&

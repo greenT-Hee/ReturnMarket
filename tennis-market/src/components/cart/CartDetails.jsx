@@ -34,7 +34,7 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     
   useEffect( () => {
     if(!isFetching) {
-      setTotalPrice(totalPrice + (detail.data.price * count));
+      setTotalPrice(totalPrice + (detail.data.price * quantity));
       setTotalShippinfee(totalShippinfee + detail.data.shipping_fee);
     } else {
       setTotalPrice(0);
@@ -106,8 +106,14 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
   const editCountData = {
     "product_id": pid ,
     "quantity": count,
-		"is_active": is_active,  // 장바구니 내 상품 활성화 버튼, 같이 보내지 않으면 False
+    "is_active": is_active,  // 장바구니 내 상품 활성화 버튼, 같이 보내지 않으면 False
   }
+  useEffect(() => {
+    if(count != quantity) {
+      editCountMutate.mutate(editCountData);
+  }
+ }, [count]);
+ 
   const editCountMutate = useMutation({
     mutationFn: (editCountData) => {
       return normalAxios.put(`/cart/${parseInt(iid)}/`, editCountData);
@@ -115,13 +121,11 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
     onSuccess : (data) => {
       if(data.status === 200) {
         refetch();
-        setOpenAlert(true);
-        setAlertMsg("수량이 수정되었습니다.");
+        // setCount(data.data.quantity);
       }
     },
     onError : (e) => {console.log(e.message)},
-  });
-  
+  });  
 
   // --- 🐰 주문하기 ---
   const handleOrderData = () => {
@@ -130,17 +134,16 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
       store_name: detail.data.store_name,
       image: detail.data.image,
       product_id: parseInt(pid),
-      quantity: parseInt(quantity),
+      quantity: parseInt(count),
       order_kind: "cart_one_order",
       shipping_fee: detail.data.shipping_fee,
-      price: (count * detail.data.price),
-      total_price: (count * detail.data.price) + detail.data.shipping_fee,
+      price: (parseInt(count) * detail.data.price),
+      total_price: (parseInt(count) * detail.data.price) + detail.data.shipping_fee,
     }
     setOrderData(obj);
     setOrderProductArr([obj])
     navigate('/payment');
   }
-  
   return (
     <>
     {loading && <Spinner/>}
@@ -182,12 +185,12 @@ function CartDetails({pid, iid, setCeckItems, checkItems, quantity, setAlertMsg,
         </Div2>
         <Div3>
           <CountBox>
-            <CountMinus type="button" $minus="true" id="minus_btn" onClick={calculateCount}>-</CountMinus>
+            <CountMinus type="button" $minus="true" id="minus_btn" onClick={e=>calculateCount(e)}>-</CountMinus>
             <CountNumber type="button">{count}</CountNumber>
-            <CountPlus type="button" $plus="true" id="plus_btn" onClick={calculateCount}>+</CountPlus>
+            <CountPlus type="button" $plus="true" id="plus_btn" onClick={e=>calculateCount(e)}>+</CountPlus>
           </CountBox>
           <StockP>남은 개수: <span>{detail.data.stock}</span></StockP>
-          <EditBtn type="button" onClick={() => editCountMutate.mutate(editCountData)}>옵션 수정 확정</EditBtn>
+          {/* <EditBtn type="button" onClick={() => editCountMutate.mutate(editCountData)}>옵션 수정 확정</EditBtn> */}
         </Div3>
         <Div4>
           <TotalPriceP><span >{(detail.data.price * count).toLocaleString()}</span>원</TotalPriceP>

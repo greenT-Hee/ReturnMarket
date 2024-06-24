@@ -64,6 +64,7 @@ export default function PaymentPage() {
     mutationFn: (data) => {
       for (const [key, value] of Object.entries(infoInputs)) {
         if(!value) {
+          console.log(key + ":" +value)
           setAlertMsg("필수값을 모두 입력해주세요.")
           setOpenAlert(true);
           return;
@@ -76,7 +77,7 @@ export default function PaymentPage() {
       setIsLoading(false);
     },
     onSuccess : (data) => {
-      if(data.status === 290) {
+      if(data.status === 200) {
         navigate("/order");
       } 
     },
@@ -109,7 +110,7 @@ export default function PaymentPage() {
             <H3>배송지 정보</H3>
             <PaymentInput type={"text"} label={"수령인"} id={"receiver"} value={receiver?receiver:""} setValue={handleInputValue} maxlength={20}/>
             <PaymentInput type={"text"} label={"휴대폰"} id={"receiver_phone_number"} value={receiver_phone_number ? receiver_phone_number : ""} setValue={handleInputValue} maxlength={11}/>
-            <PaymentAddressInput type={"text"} label={"배송주소"} id={"address"} setValue={handleInputValue} />
+            <PaymentAddressInput type={"text"} label={"배송주소"} id={"address"} setValue={handleInputValue} setInfoInputs={setInfoInputs} infoInputs={infoInputs}/>
             {/* <DaumPostcode onComplete={onCompleteAddress}></DaumPostcode> */}
             <PaymentInput type={"text"} label={"배송메시지"} id={"address_message"}value={address_message?address_message:""}  setValue={handleInputValue} maxlength={100}/>
           </article>

@@ -148,7 +148,9 @@ const MainSection = styled.section`
   margin: 0 auto 120px;
   display: flex;
   gap: 30px;
-  flex-wrap: wrap;
+  @media only screen and (max-width: 1080px) {
+   flex-direction: column;
+  }
 `
 const WrapBanner = styled.div`
   width: 380px;

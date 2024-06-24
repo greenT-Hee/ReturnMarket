@@ -139,7 +139,7 @@ function MainPage() {
     
   useEffect(() => {
     if(data) {
-      console.log(page,Math.ceil(data.data.count / 15) )
+      // console.log(page,Math.ceil(data.data.count / 15) )
       if(page === Math.ceil(data.data.count / 15) ) setIsMore(false);
       if(page === 1) {
         setProductArr(data.data.results);
