@@ -219,12 +219,6 @@ export default function EditPage() {
 
   const { product_name, price, shipping_fee, stock, product_info, image} = inputs;
   
-  // --- input 관리 ---
-  useEffect(() => {
-    console.log("🐰",inputs)
-    console.log("🐰",isSuccess)
-  }, [])
-
   function handleInputValue(e) {
     const { value, name } = e.target;
     if(e.target.name === 'price') {
@@ -248,7 +242,7 @@ export default function EditPage() {
       // 이미지 파일 세팅
       const currentImg = imgRef.current.files;
       setPostImg(currentImg);
-      console.log(postImg)
+      // console.log(postImg)
       // formData.append("image", imgRef.current.files);
       
       //이미지 미리보기

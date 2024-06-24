@@ -77,7 +77,6 @@ export default function SellerCenterPage() {
   const [openConfrim, setOpenConfirm] = useRecoilState(ConfirmOpen);
   const [pid, setPid] = useState('');
   const selectId = (e) => {
-    console.log(e.currentTarget.id);
     setPid(parseInt(e.currentTarget.id))
   }
 

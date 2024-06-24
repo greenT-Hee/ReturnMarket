@@ -217,7 +217,7 @@ export default function RegistProductPage() {
       // 이미지 파일 세팅
       const currentImg = imgRef.current.files;
       setPostImg(currentImg);
-      console.log(postImg)
+      // console.log(postImg)
       // formData.append("image", imgRef.current.files);
       
       //이미지 미리보기

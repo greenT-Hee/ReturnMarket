@@ -43,7 +43,7 @@ export default function OrderDetailPage() {
             <BannerImgMobile src={banner3} alt="banner3" />
           </WrapBanner>
           <WrapCards>
-            {detail.order_items.map((pid, item_idx) => {
+            {detail?.order_items?.map((pid, item_idx) => {
               return  (
                 <OrderDetail 
                 pid={pid} 

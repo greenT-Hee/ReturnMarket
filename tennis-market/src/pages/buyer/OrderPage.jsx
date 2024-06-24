@@ -30,7 +30,7 @@ export default function OrderPage() {
       queryKey: ['order_list'],
       queryFn: getOrderList,
       });
-    const order = data? data.data.results : [];
+    const order = data ? data.data.results : [];
 
    //---🐰 cart ---
    const getCartList = async () => {
@@ -97,10 +97,10 @@ export default function OrderPage() {
         {order.length === 0 && 
           <NoCont>결제된 상품이 없습니다.</NoCont>
         }
-        {order?.map((ele, idx) => {
+        {isSuccess && order?.map((ele, idx) => {
           return (
-            <OrderArticle key={idx}>
-              {/* {idx} */}
+            <OrderArticle key={ele.order_number}>
+              {ele.order_number}
               <OrderNumberP>주문번호: <span>{ele.order_number}</span></OrderNumberP>
               <TopContBox>
                 <OrderDateP><span>{ele.created_at.split("T")[0]}</span> 주문</OrderDateP>
@@ -108,14 +108,17 @@ export default function OrderPage() {
               </TopContBox>
               {ele.order_items.map((pid, item_idx) => {
                 return  (
-                  <OrderList 
-                  pid={pid} 
-                  unique_key={pid.toString() + ele.order_number.toString()} 
-                  quantity={ele.order_quantity[item_idx]} 
-                  cart={cart}
-                  setIsInCart={setIsInCart}
-                  setConfirmMsg={setConfirmMsg}
-                  /> 
+                  <>
+                    <OrderList 
+                    pid={pid} 
+                    unique_key={pid.toString() + ele.order_number.toString()} 
+                    quantity={ele.order_quantity[item_idx]} 
+                    cart={cart}
+                    setIsInCart={setIsInCart}
+                    setConfirmMsg={setConfirmMsg}
+                    /> 
+                    <p>{pid.toString() + ele.order_number.toString()}</p>
+                  </>
                 )
                 
               })}
