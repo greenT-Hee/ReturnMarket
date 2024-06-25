@@ -138,7 +138,7 @@ export default function CartPage() {
           })}
         </section>
 
-        {cartOk && cart?.data.count > 0 &&
+        {cartOk && cart?.data?.count > 0 &&
           <section>
             <h2 className="screen_out">장바구니 총 가격 계산 영역</h2>
             <TotalLineUl>
