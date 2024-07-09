@@ -2,8 +2,8 @@
 
 ### 🔗 <a href="https://d2z06y6p7kswpz.cloudfront.net/">페이지 바로가기</a>
 <b>테스트 계정</b><br/>
-(핀매자) returnS/qwer1234!<br/>
-(구매자) returnB/qwer1234!
+(핀매자) returnS/1234qwer!<br/>
+(구매자) returnB/1234qwer!
 <br/>
 <br/>
 ## 🎾 개요
