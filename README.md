@@ -16,13 +16,6 @@
 
 <br />
 
-## 🩶 목표
-- React를 라이브러리를 사용하여 회원가입 및 로그인을 기능 구현
-- 오롯이 혼자 API를 POST, GET요청을 통해 CRUD 구현해보기 
-- Redux를 사용하여 props 지옥에서 벗어나서 상태관리하기 
-
-<br />
-
 ## ⚙ 개발환경 
 - 개발 기간: 2024.06. (3주)
 - 스택: React.js, Vite, Axios, Recoil, React-Query ,styled-component
